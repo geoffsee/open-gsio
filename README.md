@@ -1,6 +1,6 @@
 ## open-geoff-seemueller-io
 
-I am making this available for others to learn from. It is a downstream fork of the source code powering my personal website. Search and attachments are not implemented. I have several more mature variants of this repository which have extended capabilities.  
+I am making this available for others to learn from. It is a downstream fork of the source code powering my personal website. Search and attachments are not implemented.
 
 
 ### Stack:
