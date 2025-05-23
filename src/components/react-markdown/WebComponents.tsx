@@ -42,10 +42,7 @@ export const webComponents = {
   ),
   ul: ({ children }) => (
     <UnorderedList
-      // pl={3}
-      // mb={2}
       fontSize="sm"
-      // stylePosition="inside" // Keep bullets inside the text flow
     >
       {children}
     </UnorderedList>
@@ -59,12 +56,7 @@ export const webComponents = {
   li: ({ children, ...rest }) => {
     const filteredChildren = React.Children.toArray(children)
       .filter((child) => !(typeof child === "string" && child.trim() === "\n"))
-      .map((child, index, array) => {
-        // if (typeof child === 'string' && index === array.length - 1 && /\n/.test(child)) {
-        //     return '\n';
-        // }
-        return child;
-      });
+      .map((child) => child);
 
     return <ListItem {...rest}>{filteredChildren}</ListItem>;
   },

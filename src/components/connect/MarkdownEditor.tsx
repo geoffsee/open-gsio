@@ -7,7 +7,7 @@ export const MarkdownEditor = (props: {
   onChange: (p: any) => any;
 }) => {
   return (
-    <Box sx={styles}>
+    <Box>
       <link rel="stylesheet" href="/" media="print" onLoad="this.media='all'" />
       <Textarea
         value={props.markdown}

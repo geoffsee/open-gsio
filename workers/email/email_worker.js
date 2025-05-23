@@ -17,7 +17,6 @@ export default class EmailWorker extends WorkerEntrypoint {
       addr: "contact@seemueller.io",
     });
     console.log("Recipient:", to);
-    // msg.setRecipient(to);
     msg.setRecipient(to);
     msg.setSubject("New Contact Request: Website");
     msg.addMessage({

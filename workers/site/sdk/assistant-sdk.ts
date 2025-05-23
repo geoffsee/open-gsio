@@ -27,8 +27,6 @@ export class AssistantSdk {
       tools
         .map((tool) => {
           switch (tool) {
-            // case "user-attachments": return "### Attachments\nUser supplied attachments are normalized to text and will have this header (# Attachment:...) in the message.";
-            // case "web-search": return "### Web Search\nResults are optionally available in 'Live Search'.";
             default:
               return `- ${tool}`;
           }
