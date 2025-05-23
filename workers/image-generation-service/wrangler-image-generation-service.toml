@@ -1,0 +1,16 @@
+main="main.js"
+name = "image-generation-service"
+compatibility_date = "2024-12-20"
+node_compat = true
+dev.port = 3002
+
+routes = [
+    { pattern = "text2image.seemueller.io", custom_domain = true }
+]
+
+[vars]
+OPENAI_API_KEY = ""
+OPENAI_API_ENDPOINT = ""
+IMAGE_MODEL = "black-forest-labs/flux-1.1-pro"
+REPLICATE_TOKEN = ""
+TEXT2IMAGE_PROVIDER = "replicate"

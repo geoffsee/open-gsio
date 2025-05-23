@@ -1,0 +1,34 @@
+name: "Update VPN Blocklist"
+
+on:
+  #  uncomment to deploy on next push
+  #  push:
+  #    branches:
+  #      - main
+  workflow_dispatch: # Manual trigger
+  schedule:
+    - cron: "57 8 * * *"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      # Step 5: Update block-list-ipv4.txt
+      - name: Update block-list-ipv4.txt
+        run: -|
+          curl https://raw.githubusercontent.com/X4BNet/lists_vpn/refs/heads/main/output/vpn/ipv4.txt > workers/session-proxy/block-list-ipv4.txt
+
+      # Step 6: Deploy application
+      - name: Deploy application
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: bun deploy:session-proxy:production && bun deploy:session-proxy:staging && bun deploy:session-proxy:dev

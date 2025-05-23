@@ -1,0 +1,39 @@
+main="./workers/site/worker.ts"
+name = "geoff-seemueller-io"
+compatibility_date = "2025-04-04"
+workers_dev = false
+dev.port = 3001
+dev.ip = "localhost"
+observability.enabled = true
+compatibility_flags = ["nodejs_compat"]
+assets = { directory = "./dist/client", binding = "ASSETS" }
+preview_urls = false
+# wrangler.toml (wrangler v3.78.6^)
+
+# Dev configuration (local)
+durable_objects.bindings = [{name = "SITE_COORDINATOR", class_name = "SiteCoordinator", script_name = "geoff-seemueller-io"}]
+migrations  = [{tag = "v1", new_classes = ["SiteCoordinator"]}]
+kv_namespaces = [{binding = "KV_STORAGE", id = "", preview_id = ""}]
+services = [{binding = "EMAIL_SERVICE", service = "email-service-rpc"}]
+
+# Dev configuration (remote)
+[env.dev]
+kv_namespaces = [{binding = "KV_STORAGE", id = "", preview_id = ""}]
+durable_objects.bindings = [{name = "SITE_COORDINATOR", class_name = "SiteCoordinator", script_name = "geoff-seemueller-io-dev"}]
+migrations  = [{tag = "v1", new_classes = ["SiteCoordinator"]}]
+services = [{binding = "EMAIL_SERVICE", service = "email-service-rpc"}]
+
+
+# Staging configuration
+[env.staging]
+kv_namespaces = [{binding = "KV_STORAGE", id = "", preview_id = ""}]
+durable_objects.bindings = [{name = "SITE_COORDINATOR", class_name = "SiteCoordinator", script_name = "geoff-seemueller-io-staging"}]
+migrations  = [{tag = "v1", new_classes = ["SiteCoordinator"]}]
+services = [{binding = "EMAIL_SERVICE", service = "email-service-rpc"}]
+
+# Production configuration
+[env.production]
+kv_namespaces = [{binding = "KV_STORAGE", id = "", preview_id = ""}]
+durable_objects.bindings = [{name = "SITE_COORDINATOR", class_name = "SiteCoordinator", script_name = "geoff-seemueller-io-production"}]
+migrations  = [{tag = "v1", new_classes = ["SiteCoordinator"]}]
+services = [{binding = "EMAIL_SERVICE", service = "email-service-rpc"}]

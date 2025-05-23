@@ -1,0 +1,21 @@
+/* CSS for people who'd rather be coding */
+
+* {
+  box-sizing: border-box; /* Because guessing sizes is for amateurs */
+}
+
+a {
+  text-decoration: none;
+  color: #fffff0; /* White, like the light at the end of a dark terminal */
+}
+
+a:hover {
+  color: #c0c0c0; /* Light gray, like the reflections of your code */
+}
+
+/* Media query, because even I have standards */
+@media (max-width: 600px) {
+  body {
+    font-size: 14px; /* For ants */
+  }
+}

@@ -1,0 +1,17 @@
+main="analytics_worker.js"
+name = "analytics"
+compatibility_date = "2024-12-20"
+
+routes = [
+    { pattern = "metrics.seemueller.io", custom_domain = true }
+]
+
+[dev]
+port = 3003
+
+[placement]
+mode = "smart"
+
+[[analytics_engine_datasets]]
+binding = "ANALYTICS_ENGINE"
+dataset = "global_analytics"

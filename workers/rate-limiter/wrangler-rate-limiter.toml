@@ -1,0 +1,22 @@
+name = "rate-limiter"
+main = "index.ts"
+compatibility_date = "2024-12-20"
+node_compat = true
+dev.port = 3003
+
+routes = [
+    { pattern = "text2image.seemueller.io/generate*", zone_name = "seemueller.io" },
+]
+
+# The rate limiting API is in open beta.
+[[unsafe.bindings]]
+name = "TEXT2IMAGE_RATE_LIMITER"
+type = "ratelimit"
+# An identifier you define, that is unique to your Cloudflare account.
+# Must be an integer.
+namespace_id = "1001"
+
+# Limit: the number of requests allowed within a given period in a single
+# Cloudflare location
+# Period: the duration of the period, in seconds. Must be either 10 or 60
+simple = { limit = 26, period = 101}
