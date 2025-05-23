@@ -1,7 +1,6 @@
 import react from "@vitejs/plugin-react";
 import vike from "vike/plugin";
 import { defineConfig } from "vite";
-import { cloudflare } from "@cloudflare/vite-plugin";
 import * as child_process from "node:child_process";
 
 export default defineConfig(({ command }) => {
