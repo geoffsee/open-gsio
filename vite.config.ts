@@ -30,12 +30,12 @@ export default defineConfig(({ command }) => {
       port: 3000,
       proxy: {
         // proxies requests to worker backend
-        // "/api": {
-        //   target: "http://localhost:3001",
-        // },
-        // "/fonts": {
-        //   target: "http://localhost:3001/fonts",
-        // },
+        "/api": {
+          target: "http://localhost:3001",
+        },
+        "/fonts": {
+          target: "http://localhost:3001/fonts",
+        },
       },
     },
     build: {
