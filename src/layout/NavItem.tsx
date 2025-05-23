@@ -8,6 +8,7 @@ function NavItem({ path, children, color, onClick, as, cursor }) {
       href={path}
       mb={2}
       cursor={cursor}
+      // ml={5}
       mr={2}
       color={color ?? "text.accent"}
       letterSpacing="normal"

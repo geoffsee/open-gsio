@@ -118,6 +118,7 @@ const components = {
       bg: "background.primary",
       color: "text.primary",
       boxShadow: "md",
+      // p: 4,
 
       ".mdxeditor-toolbar": {
         border: "1px solid",
@@ -126,6 +127,8 @@ const components = {
         bg: "background.primary",
         m: 2,
         p: 2,
+        // mb: 3,
+        // p: 3,
 
         "& button": {
           border: "none",
@@ -150,6 +153,7 @@ const components = {
             boxShadow: "0 0 0 2px var(--text-primary)",
             transform: "translateY(-1px)",
             transition: "all 0.2s ease",
+            // border: '2px solid transparent', // No border needed for SVG
           },
           '&[data-state="off"]': {
             bg: "transparent",
@@ -169,6 +173,7 @@ const components = {
   CodeBlocks: {
     baseStyle: (props) => ({
       bg: "background.primary",
+      // color: 'text.primary',
     }),
   },
 };

@@ -89,6 +89,7 @@ function ConnectComponent() {
             onChange={(e) => handleChange("lastname")(e.target.value)}
             color="text.primary"
             borderColor="text.primary"
+            // bg="text.primary"
           />
         </HStack>
         <Input
@@ -107,6 +108,7 @@ function ConnectComponent() {
       </Box>
       <Button
         variant="outline"
+        // colorScheme="blackAlpha"
         onClick={handleSubmitButton}
         alignSelf="flex-end"
         size="md"

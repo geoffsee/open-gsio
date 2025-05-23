@@ -53,7 +53,7 @@ const createServerContext = (env, ctx) => {
     chatService: ChatService.create({
       openAIApiKey: env.OPENAI_API_KEY,
       openAIBaseURL: env.VITE_OPENAI_API_ENDPOINT,
-      activeStreams: {},
+      activeStreams: undefined,
       maxTokens: 16384,
       systemPrompt:
         "You are an assistant designed to provide accurate, concise, and context-aware responses while demonstrating your advanced reasoning capabilities.",

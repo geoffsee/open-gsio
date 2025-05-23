@@ -11,11 +11,11 @@ Fork of [geoff.seemueller.io](https://geoff.seemueller.io).
 
 ## Quickstart
 
-1. `bun i`
-2. `bun run build`
+1. `pnpm i`
+2. `pnpm run build`
 3. Configure .dev.vars
 4. Setup KV_STORAGE bindings for local development.
-5. In isolated shells, run `bun run worker:dev` and `bun run vite:dev`
+5. In isolated shells, run `pnpm run worker:dev` and `pnpm run vite:dev`
 
 
 ### Further Documentation
@@ -29,7 +29,7 @@ History
 | Hash    | Change                                                                |
 | ------- | --------------------------------------------------------------------- |
 | 049bf97 | **Add** *seemueller.ai* sidebar link and constrain Hero heading width |
-| 6be5f68 | **Consolidate** configuration files (CI, bundler, environment)        |
+| 6be5f68 | **Consolidate** configuration files (CI, pnpmdler, environment)        |
 | a047f19 | **Expand** Markdown usage guide for end‑users                         |
 
 ---
@@ -40,7 +40,7 @@ History
 | ----------------- | --------------------------------------------------------------------------- |
 | ce3457a           | **Introduce** custom error page and purge dead code                         |
 | 806c933           | **Fix** duplicate`robots.txt` entries (SEO)                                |
-| 4bbe8ea · e909e0b | **Restore** bundle‑size safeguards and **switch** toBun as package manager |
+| 4bbe8ea · e909e0b | **Restore** pnpmdle‑size safeguards and **switch** topnpm as package manager |
 | 7f1520b·aa71f86 | **Automate** VPN block‑list deployment; retire legacy pull script           |
 | b332c93           | **Repair** CI job for block‑list updates                                    |
 | d506e7d           | **Deprecate** experimental **Mixtral** model                                |
@@ -53,7 +53,7 @@ History
 | ----------------- | ------------------------------------------------------------------------ |
 | 8b9e9eb           | **Add** per‑model `max_tokens` limits                                    |
 | cb0d912           | **Expose** Cloudflare AI models for staging                              |
-| 85de6ed·cec4f70 | **Shrink** production bundles: re‑enable minifier and drop unused assets |
+| 85de6ed·cec4f70 | **Shrink** production pnpmdles: re‑enable minifier and drop unused assets |
 | 4805c7e · 9709f61 | **Refresh** landing‑page copy (“Welcomehome”)                           |
 
 ---

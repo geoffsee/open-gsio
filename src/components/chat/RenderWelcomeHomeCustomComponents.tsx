@@ -175,6 +175,7 @@ const CustomKatex: React.FC<{ math: string; displayMode: boolean }> = ({
     <Box
       as="span"
       display={displayMode ? "block" : "inline"}
+      // bg={bg}
       p={displayMode ? 4 : 1}
       my={displayMode ? 4 : 0}
       borderRadius="md"
