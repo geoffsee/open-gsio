@@ -1,6 +1,6 @@
 ## open-geoff-seemueller-io
 
-Downstream fork of the source code powering my personal website. Search and attachments are not implemented.
+Fork of [https://geoff.seemueller.io]. Search and attachments are not implemented. If you encounter problems with setup, please create an issue in this repo and it will be addressed.
 
 
 ### Stack:
