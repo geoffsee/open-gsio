@@ -14,7 +14,8 @@ I am making this available for others to learn from. It is a downstream fork of 
 1. `bun i`
 2. `bun run build`
 3. Configure .dev.vars
-4. In isolated shells, run `bun run worker:dev` and `bun run vite:dev`
+4. Setup KV_STORAGE bindings for local development.
+5. In isolated shells, run `bun run worker:dev` and `bun run vite:dev`
 
 
 ### Further Documentation
