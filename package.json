@@ -3,9 +3,9 @@
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf .wrangler && rm -rf dist",
     "build": "pnpm client:build && pnpm worker:build",
-    "vite:dev": "pnpm vite dev --host 0.0.0.0",
-    "worker:dev": "pnpm run build && pnpm wrangler dev",
-    "client": "pnpm vite:dev",
+    "client:dev": "pnpm vite dev --host 0.0.0.0",
+    "server:dev": "pnpm run build && pnpm wrangler dev",
+    "client": "pnpm client:dev",
     "client:build": "vite build",
     "worker:build": "WRANGLER_LOG=info wrangler build",
     "agents:dev": "(cd ../web-agent-rs; cargo run)",
