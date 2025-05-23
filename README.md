@@ -15,7 +15,7 @@ Fork of [geoff.seemueller.io](https://geoff.seemueller.io).
 2. `bun run build`
 3. Configure .dev.vars
 4. Setup KV_STORAGE bindings for local development.
-5. In isolated shells, run `bun run client:dev` and `bun run server:dev`
+5. In isolated shells, run `bun run server:dev` and `bun run client:dev`
 
 
 ### Further Documentation
