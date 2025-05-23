@@ -1,6 +1,6 @@
 ## open-geoff-seemueller-io
 
-Fork of [geoff.seemueller.io](https://geoff.seemueller.io). Search and attachments are not implemented. If you encounter problems with setup, please create an issue in this repo and it will be addressed.
+Fork of [geoff.seemueller.io](https://geoff.seemueller.io).
 
 
 ### Stack:
