@@ -2,7 +2,7 @@ import React, { KeyboardEvent, useState } from "react";
 import { Box, Flex, IconButton, Textarea } from "@chakra-ui/react";
 import { Check, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import store, { type IMessage } from "../../stores/ClientChatStore";
+import store, { type IMessage } from "../../../stores/ClientChatStore";
 
 interface MessageEditorProps {
   message: IMessage;

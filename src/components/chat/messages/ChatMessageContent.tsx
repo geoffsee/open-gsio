@@ -1,9 +1,9 @@
 import React from "react";
 
-import CustomMarkdownRenderer from "./CustomMarkdownRenderer";
+import MessageMarkdownRenderer from "./MessageMarkdownRenderer";
 
 const ChatMessageContent = ({ content }) => {
-  return <CustomMarkdownRenderer markdown={content} />;
+  return <MessageMarkdownRenderer markdown={content} />;
 };
 
 export default React.memo(ChatMessageContent);

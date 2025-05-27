@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Box, Grid, GridItem } from "@chakra-ui/react";
-import ChatMessages from "./ChatMessages";
-import ChatInput from "./ChatInput";
+import ChatMessages from "./messages/ChatMessages";
+import ChatInput from "./input/ChatInput";
 import chatStore from "../../stores/ClientChatStore";
 import menuState from "../../stores/AppMenuStore";
-import WelcomeHomeMessage from "../WelcomeHomeMessage";
+import WelcomeHome from "../WelcomeHome";
 
 const Chat = observer(({ height, width }) => {
   const scrollRef = useRef();
@@ -26,7 +26,7 @@ const Chat = observer(({ height, width }) => {
       gap={0}
     >
       <GridItem alignSelf="center" hidden={!(chatStore.messages.length < 1)}>
-        <WelcomeHomeMessage visible={chatStore.messages.length < 1} />
+        <WelcomeHome visible={chatStore.messages.length < 1} />
       </GridItem>
 
       <GridItem

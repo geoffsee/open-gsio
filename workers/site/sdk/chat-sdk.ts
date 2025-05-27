@@ -2,7 +2,7 @@ import {OpenAI} from "openai";
 import Message from "../models/Message";
 import {AssistantSdk} from "./assistant-sdk";
 import {IMessage} from "../../../src/stores/ClientChatStore";
-import {getModelFamily} from "../../../src/components/chat/SupportedModels";
+import {getModelFamily} from "../../../src/components/chat/lib/SupportedModels";
 
 export class ChatSdk {
     static async preprocess({

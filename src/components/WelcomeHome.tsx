@@ -4,9 +4,8 @@ import {
   welcome_home_text,
   welcome_home_tip,
 } from "../static-data/welcome_home_text";
-import CustomMarkdownRenderer, {
-  WelcomeHomeMarkdownRenderer,
-} from "./chat/CustomMarkdownRenderer";
+import {renderMarkdown} from "./markdown/MarkdownComponent";
+
 
 function WelcomeHomeMessage({ visible }) {
   const containerVariants = {
@@ -60,7 +59,7 @@ function WelcomeHomeMessage({ visible }) {
           >
             <Box userSelect={"none"}>
               <motion.div variants={textVariants}>
-                <WelcomeHomeMarkdownRenderer markdown={welcome_home_text} />
+                {renderMarkdown(welcome_home_text)}
               </motion.div>
             </Box>
           </motion.div>
@@ -73,7 +72,7 @@ function WelcomeHomeMessage({ visible }) {
             color="text.secondary"
             mt={1}
           >
-            <CustomMarkdownRenderer markdown={welcome_home_tip} />
+            {renderMarkdown(welcome_home_tip)}
           </Box>
         </motion.div>
       </VStack>
