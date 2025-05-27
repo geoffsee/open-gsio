@@ -2,7 +2,7 @@ import { applySnapshot, flow, Instance, types } from "mobx-state-tree";
 import Message from "../models/Message";
 import Attachment from "../models/Attachment";
 import IntermediateStep from "../models/IntermediateStep";
-import { UserOptionsStore } from "./index";
+import UserOptionsStore from "./UserOptionsStore";
 
 const ClientChatStore = types
   .model("ClientChatStore", {
@@ -15,11 +15,6 @@ const ClientChatStore = types
     tools: types.optional(types.array(types.string), []),
     intermediateSteps: types.array(IntermediateStep),
   })
-  .views((self) => ({
-    get getModel() {
-      return self.model;
-    },
-  }))
   .actions((self) => ({
     cleanup() {
       if (self.eventSource) {
@@ -321,6 +316,7 @@ const ClientChatStore = types
   }));
 
 export type IMessage = Instance<typeof Message>;
+
 export type IClientChatStore = Instance<typeof this>;
 
 export default ClientChatStore.create();
