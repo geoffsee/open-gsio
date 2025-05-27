@@ -23,17 +23,17 @@ export class AssistantSdk {
     const now = new Date();
     const formattedMinutes = String(now.getMinutes()).padStart(2, "0");
     const currentTime = `${now.getHours()}:${formattedMinutes} ${now.getSeconds()}s`;
-    const toolsInfo =
-      tools
-        .map((tool) => {
-          switch (tool) {
-            // case "user-attachments": return "### Attachments\nUser supplied attachments are normalized to text and will have this header (# Attachment:...) in the message.";
-            // case "web-search": return "### Web Search\nResults are optionally available in 'Live Search'.";
-            default:
-              return `- ${tool}`;
-          }
-        })
-        .join("\n\n") || "- No additional tools selected.";
+    // const toolsInfo =
+    //   tools
+    //     .map((tool) => {
+    //       switch (tool) {
+    //         // case "user-attachments": return "### Attachments\nUser supplied attachments are normalized to text and will have this header (# Attachment:...) in the message.";
+    //         // case "web-search": return "### Web Search\nResults are optionally available in 'Live Search'.";
+    //         default:
+    //           return `- ${tool}`;
+    //       }
+    //     })
+    //     .join("\n\n") || "- No additional tools selected.";
 
     return `# Assistant Knowledge
 ## Current Context
