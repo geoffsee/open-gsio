@@ -21,12 +21,10 @@ export class CerebrasSdk {
         }>,
         _NotCustomized
       >;
-      attachments: any;
       maxTokens: unknown | number | undefined;
       messages: any;
       model: string;
       env: Env;
-      tools: any;
     },
     dataCallback: (data) => void,
   ) {
@@ -35,15 +33,12 @@ export class CerebrasSdk {
       messages,
       env,
       maxTokens,
-      tools,
       systemPrompt,
       model,
-      attachments,
     } = param;
 
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
-      tools: tools,
     });
 
     const safeMessages = ChatSdk.buildMessageChain(messages, {
@@ -51,7 +46,6 @@ export class CerebrasSdk {
       model,
       assistantPrompt,
       toolResults: preprocessedContext,
-      attachments: attachments,
     });
 
     const openai = new OpenAI({

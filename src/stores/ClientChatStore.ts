@@ -1,6 +1,5 @@
 import { applySnapshot, flow, Instance, types } from "mobx-state-tree";
 import Message from "../models/Message";
-import IntermediateStep from "../models/IntermediateStep";
 import UserOptionsStore from "./UserOptionsStore";
 
 const ClientChatStore = types
@@ -10,8 +9,6 @@ const ClientChatStore = types
     isLoading: types.optional(types.boolean, false),
     model: types.optional(types.string, "llama-3.3-70b-versatile"),
     imageModel: types.optional(types.string, "black-forest-labs/flux-1.1-pro"),
-    tools: types.optional(types.array(types.string), []),
-    intermediateSteps: types.array(IntermediateStep),
   })
   .actions((self) => ({
     cleanup() {
@@ -39,7 +36,6 @@ const ClientChatStore = types
         const payload = {
           messages: self.messages.slice(),
           model: self.model,
-          tools: self.tools.slice(),
         };
 
         yield new Promise((resolve) => setTimeout(resolve, 500));
@@ -96,8 +92,6 @@ const ClientChatStore = types
               self.appendToLastMessage(
                 parsedData.data.choices[0]?.delta?.content || "",
               );
-            } else {
-              self.handleIntermediateSteps(parsedData);
             }
           } catch (error) {
             console.error("Error processing stream:", error);
@@ -160,7 +154,6 @@ const ClientChatStore = types
           const payload = {
             messages: self.messages.slice(),
             model: self.model,
-            tools: self.tools.slice(),
           };
 
           const response = yield fetch("/api/chat", {
@@ -211,8 +204,6 @@ const ClientChatStore = types
                 self.appendToLastMessage(
                   parsedData.data.choices[0]?.delta?.content || "",
                 );
-              } else {
-                self.handleIntermediateSteps(parsedData);
               }
             } catch (error) {
               console.error("Error processing stream:", error);
@@ -240,30 +231,10 @@ const ClientChatStore = types
     reset() {
       applySnapshot(self, {});
     },
-    addIntermediateStep(stepData) {
-      return;
-    },
-
-    handleIntermediateSteps(eventData: any) {
-      try {
-        self.appendToLastMessage(eventData?.data.trim() + "\n");
-        self.addIntermediateStep({
-          kind: eventData.type,
-          data: eventData.data,
-        });
-      } catch (e) {}
-    },
     removeMessagesAfter(index: number) {
       if (index >= 0 && index < self.messages.length) {
         self.messages.splice(index + 1);
       }
-    },
-    setTools(tools: string[]) {
-      self.tools.clear();
-      self.tools.push(...tools);
-    },
-    getTools() {
-      return self.tools.slice();
     },
     updateLastMessage(content: string) {
       if (self.messages.length > 0) {
