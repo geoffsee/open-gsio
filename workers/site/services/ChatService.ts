@@ -1,6 +1,6 @@
 import {flow, getSnapshot, types} from 'mobx-state-tree';
 import OpenAI from 'openai';
-import ChatSdk from '../sdk/chat-sdk';
+import ChatSdk from '../lib/chat-sdk';
 import Message from "../models/Message";
 import O1Message from "../models/O1Message";
 import {getModelFamily, ModelFamily} from "../../../src/components/chat/lib/SupportedModels";
@@ -8,7 +8,7 @@ import {OpenAiChatSdk} from "../providers/openai";
 import {GroqChatSdk} from "../providers/groq";
 import {ClaudeChatSdk} from "../providers/claude";
 import {FireworksAiChatSdk} from "../providers/fireworks";
-import handleStreamData from "../sdk/handleStreamData";
+import handleStreamData from "../lib/handleStreamData";
 import {GoogleChatSdk} from "../providers/google";
 import {XaiChatSdk} from "../providers/xai";
 import {CerebrasSdk} from "../providers/cerebras";

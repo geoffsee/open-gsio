@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import ChatSdk from "../sdk/chat-sdk";
+import ChatSdk from "../lib/chat-sdk";
 import { StreamParams } from "../services/ChatService";
 
 export class GoogleChatSdk {
