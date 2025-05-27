@@ -1,0 +1,25 @@
+{
+  "name": "session-proxy-open-gsio",
+  "main": "./index.ts",
+  "dev": {
+    "port": 3001
+  },
+  "compatibility_date": "2025-05-27",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "preview_urls": false,
+  "workers_dev": false,
+  "routes": [
+    {
+      "custom_domain": true,
+      "pattern": "example.com"
+    }
+  ],
+  "services": [
+    {
+      "binding": "WORKER_SITE",
+      "service": "open-gsio"
+    }
+  ]
+}

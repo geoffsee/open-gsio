@@ -11,6 +11,8 @@
     "deploy": "CI=true vite build && wrangler deploy --minify",
     "deploy:email-service": "wrangler deploy --cwd workers/email",
     "deploy:analytics-service": "wrangler deploy --cwd workers/analytics",
+    "deploy:session-proxy": "wrangler deploy --cwd workers/session-proxy",
+    "deploy:all": "pnpm deploy && pnpm deploy:session:proxy && pnpm deploy:email-service && pnpm deploy:analytics-service",
     "tail": "wrangler tail",
     "tail:email-service": "wrangler tail -c workers/email/wrangler-email.toml",
     "tail:analytics-service": "wrangler tail -c workers/analytics/wrangler-analytics.toml",
