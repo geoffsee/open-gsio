@@ -19,10 +19,11 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 import { marked } from "marked";
-import CodeBlock from "../code/CodeBlock";
-import ImageWithFallback from "./ImageWithFallback";
+import CodeBlock from "../../code/CodeBlock";
+import ImageWithFallback from "../../markdown/ImageWithFallback";
 import markedKatex from "marked-katex-extension";
 import katex from "katex";
+import domPurify from "../lib/domPurify";
 
 try {
   if (localStorage) {
@@ -41,6 +42,10 @@ try {
 
 const MemoizedCodeBlock = React.memo(CodeBlock);
 
+/**
+ * Utility to map heading depth to Chakra heading styles that
+ * roughly match typical markdown usage.
+ */
 const getHeadingProps = (depth: number) => {
   switch (depth) {
     case 1:
@@ -72,12 +77,7 @@ const CustomHeading: React.FC<{ text: string; depth: number }> = ({
 }) => {
   const headingProps = getHeadingProps(depth);
   return (
-    <Heading
-      {...headingProps}
-      wordBreak="break-word"
-      maxWidth="100%"
-      color="text.accent"
-    >
+    <Heading {...headingProps} wordBreak="break-word" maxWidth="100%">
       {text}
     </Heading>
   );
@@ -90,6 +90,7 @@ const CustomParagraph: React.FC<{ children: React.ReactNode }> = ({
     <Text
       as="p"
       fontSize="sm"
+      color="text.accent"
       lineHeight="short"
       wordBreak="break-word"
       maxWidth="100%"
@@ -175,7 +176,6 @@ const CustomKatex: React.FC<{ math: string; displayMode: boolean }> = ({
     <Box
       as="span"
       display={displayMode ? "block" : "inline"}
-      // bg={bg}
       p={displayMode ? 4 : 1}
       my={displayMode ? 4 : 0}
       borderRadius="md"
@@ -244,7 +244,6 @@ const CustomText: React.FC<{ text: React.ReactNode }> = ({ text }) => {
     <Text
       fontSize="sm"
       lineHeight="short"
-      color="text.accent"
       wordBreak="break-word"
       maxWidth="100%"
       as="span"
@@ -257,7 +256,6 @@ const CustomText: React.FC<{ text: React.ReactNode }> = ({ text }) => {
 interface CustomStrongProps {
   children: React.ReactNode;
 }
-
 const CustomStrong: React.FC<CustomStrongProps> = ({ children }) => {
   return <Text as="strong">{children}</Text>;
 };
@@ -370,6 +368,11 @@ const CustomImage: React.FC<{ href: string; text: string; title?: string }> = ({
   );
 };
 
+/**
+ * A helper function that iterates through a list of Marked tokens
+ * and returns an array of React elements. This is the heart of the
+ * custom-rendering logic, used both top-level and for nested tokens.
+ */
 function parseTokens(tokens: marked.Token[]): JSX.Element[] {
   const output: JSX.Element[] = [];
   let blockquoteContent: JSX.Element[] = [];
@@ -459,6 +462,7 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
       case "hr":
         output.push(<CustomHr key={i} />);
         break;
+
       case "list": {
         const { ordered, start, items } = token;
         const listItems = items.map((listItem, idx) => {
@@ -552,7 +556,6 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
         }
         break;
       }
-
       default:
         console.warn("Unhandled token type:", token.type, token);
     }
@@ -561,7 +564,7 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
   return output;
 }
 
-export function renderCustomComponents(markdown: string): JSX.Element[] {
+export function renderMessageMarkdown(markdown: string): JSX.Element[] {
   marked.setOptions({
     breaks: true,
     gfm: true,
@@ -569,6 +572,6 @@ export function renderCustomComponents(markdown: string): JSX.Element[] {
     async: true,
   });
 
-  const tokens = marked.lexer(markdown);
+  const tokens = marked.lexer(domPurify(markdown));
   return parseTokens(tokens);
 }

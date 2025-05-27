@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "@chakra-ui/react";
-import clientChatStore from "../../stores/ClientChatStore";
+import clientChatStore from "../../../stores/ClientChatStore";
 import { CirclePause, Send } from "lucide-react";
 
 import { motion } from "framer-motion";

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { Stack } from "@chakra-ui/react";
 import Chat from "../../components/chat/Chat";
 import clientChatStore from "../../stores/ClientChatStore";
-import { getModelFamily } from "../../components/chat/SupportedModels";
+import { getModelFamily } from "../../components/chat/lib/SupportedModels";
 
 // renders "/"
 export default function IndexPage() {

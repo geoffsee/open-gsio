@@ -2,8 +2,8 @@ import React from "react";
 import {Box, Grid, GridItem} from "@chakra-ui/react";
 import MessageBubble from "./MessageBubble";
 import {observer} from "mobx-react-lite";
-import chatStore from "../../stores/ClientChatStore";
-import {useIsMobile} from "../contexts/MobileContext";
+import chatStore from "../../../stores/ClientChatStore";
+import {useIsMobile} from "../../contexts/MobileContext";
 
 interface ChatMessagesProps {
   scrollRef: React.RefObject<HTMLDivElement>;

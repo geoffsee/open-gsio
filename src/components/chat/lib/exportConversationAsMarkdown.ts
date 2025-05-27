@@ -1,5 +1,5 @@
 // Function to generate a Markdown representation of the current conversation
-import { type IMessage } from "../../stores/ClientChatStore";
+import { type IMessage } from "../../../stores/ClientChatStore";
 import { Instance } from "mobx-state-tree";
 
 export function formatConversationMarkdown(

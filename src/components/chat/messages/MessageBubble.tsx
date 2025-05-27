@@ -3,11 +3,10 @@ import { motion } from "framer-motion";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import MessageRenderer from "./ChatMessageContent";
 import { observer } from "mobx-react-lite";
-import { IntermediateStepsComponent } from "./IntermediateStepsComponent";
 import MessageEditor from "./MessageEditorComponent";
 import UserMessageTools from "./UserMessageTools";
-import clientChatStore from "../../stores/ClientChatStore";
-import UserOptionsStore from "../../stores/UserOptionsStore";
+import clientChatStore from "../../../stores/ClientChatStore";
+import UserOptionsStore from "../../../stores/UserOptionsStore";
 
 const MotionBox = motion(Box);
 
@@ -128,7 +127,6 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
               },
             }}
           >
-            <IntermediateStepsComponent hidden={msg.role === "user"} />
             {isEditing ? (
               <MessageEditor message={msg} onCancel={handleCancelEdit} />
             ) : isLoading ? (

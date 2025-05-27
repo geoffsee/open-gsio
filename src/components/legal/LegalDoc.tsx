@@ -1,7 +1,6 @@
 import React from "react";
 import { Box, VStack } from "@chakra-ui/react";
-import Markdown from "react-markdown";
-import { webComponents } from "../react-markdown/WebComponents";
+import {renderMarkdown} from "../markdown/MarkdownComponent";
 
 function LegalDoc({ text }) {
   return (
@@ -13,7 +12,7 @@ function LegalDoc({ text }) {
           whiteSpace="pre-wrap"
           spacing={4}
         >
-          <Markdown components={webComponents}>{text}</Markdown>
+            {renderMarkdown(text)}
         </Box>
       </VStack>
     </Box>

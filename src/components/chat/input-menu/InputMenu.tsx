@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -11,17 +11,18 @@ import {
   MenuList,
   Text,
   useDisclosure,
+  useOutsideClick,
 } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
 import { ChevronDown, Copy, RefreshCcw, Settings } from "lucide-react";
-import ClientChatStore from "../../stores/ClientChatStore";
-import clientChatStore from "../../stores/ClientChatStore";
+import ClientChatStore from "../../../stores/ClientChatStore";
+import clientChatStore from "../../../stores/ClientChatStore";
 import FlyoutSubMenu from "./FlyoutSubMenu";
-import { useIsMobile } from "../contexts/MobileContext";
-import { getModelFamily, SUPPORTED_MODELS } from "./SupportedModels";
-import { formatConversationMarkdown } from "./exportConversationAsMarkdown";
+import { useIsMobile } from "../../contexts/MobileContext";
+import { useIsMobile as useIsMobileUserAgent } from "../../../layout/_IsMobileHook";
+import { getModelFamily, SUPPORTED_MODELS } from "../lib/SupportedModels";
+import { formatConversationMarkdown } from "../lib/exportConversationAsMarkdown";
 
-// Common styles for MenuButton and IconButton
 export const MsM_commonButtonStyles = {
   bg: "transparent",
   color: "text.primary",
@@ -36,9 +37,27 @@ export const MsM_commonButtonStyles = {
 const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
   ({ isDisabled }) => {
     const isMobile = useIsMobile();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+    const isMobileUserAgent = useIsMobileUserAgent();
+    const {
+      isOpen,
+      onOpen,
+      onClose,
+      onToggle,
+      getDisclosureProps,
+      getButtonProps,
+    } = useDisclosure();
+
+    const [controlledOpen, setControlledOpen] = useState<boolean>(false);
+
+    useEffect(() => {
+      setControlledOpen(isOpen);
+    }, [isOpen]);
 
     const textModels = SUPPORTED_MODELS;
+
+    const handleClose = useCallback(() => {
+      onClose();
+    }, [isOpen]);
 
     const handleCopyConversation = useCallback(() => {
       navigator.clipboard
@@ -65,13 +84,27 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
       return ClientChatStore.model === value;
     }
 
+    const menuRef = useRef();
+    const [menuState, setMenuState] = useState();
+
+    useOutsideClick({
+      enabled: !isMobile && isOpen,
+      ref: menuRef,
+      handler: () => {
+        handleClose();
+      },
+    });
+
     return (
       <Menu
-        isOpen={isOpen}
+        isOpen={controlledOpen}
         onClose={onClose}
         onOpen={onOpen}
+        autoSelect={false}
         closeOnSelect={false}
-        closeOnBlur={true}
+        closeOnBlur={isOpen && !isMobileUserAgent}
+        isLazy={true}
+        lazyBehavior={"unmount"}
       >
         {isMobile ? (
           <MenuButton
@@ -107,13 +140,14 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
           borderRadius="md"
           boxShadow="lg"
           minW={"10rem"}
+          ref={menuRef}
         >
-          <Divider color="text.tertiary" />
           <FlyoutSubMenu
             title="Text Models"
             flyoutMenuOptions={textModels.map((m) => ({ name: m, value: m }))}
             onClose={onClose}
             parentIsOpen={isOpen}
+            setMenuState={setMenuState}
             handleSelect={selectModelFn}
             isSelected={isSelectedModelFn}
           />
@@ -136,8 +170,8 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
             bg="background.tertiary"
             color="text.primary"
             onClick={() => {
+              clientChatStore.setActiveConversation("conversation:new");
               onClose();
-              clientChatStore.reset();
             }}
             _hover={{ bg: "rgba(0, 0, 0, 0.05)" }}
             _focus={{ bg: "rgba(0, 0, 0, 0.1)" }}

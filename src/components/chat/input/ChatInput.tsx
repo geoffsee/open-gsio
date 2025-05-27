@@ -7,12 +7,12 @@ import {
   useBreakpointValue,
 } from "@chakra-ui/react";
 import { observer } from "mobx-react-lite";
-import chatStore from "../../stores/ClientChatStore";
-import InputMenu from "./flyoutmenu/InputMenu";
+import chatStore from "../../../stores/ClientChatStore";
+import InputMenu from "../input-menu/InputMenu";
 import InputTextarea from "./ChatInputTextArea";
 import SendButton from "./ChatInputSendButton";
-import { useMaxWidth } from "../../layout/useMaxWidth";
-import userOptionsStore from "../../stores/UserOptionsStore";
+import { useMaxWidth } from "../../../layout/useMaxWidth";
+import userOptionsStore from "../../../stores/UserOptionsStore";
 
 const ChatInput = observer(() => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
