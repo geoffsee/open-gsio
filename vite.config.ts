@@ -9,7 +9,7 @@ export default defineConfig(({ command }) => {
       name: "sitemap-generator",
       buildStart(options) {
         if (command === "build") {
-          child_process.execSync("./scripts/gen_sitemap.js");
+          child_process.execSync("./scripts/generate_sitemap.js");
           console.log("Generated Sitemap -> public/sitemap.xml");
         }
       },
