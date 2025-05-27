@@ -9,7 +9,7 @@ import {
   UnionStringArray,
 } from "mobx-state-tree";
 import Message from "../models/Message";
-import ChatSdk from "../sdk/chat-sdk";
+import ChatSdk from "../lib/chat-sdk";
 
 export class FireworksAiChatSdk {
   private static async streamFireworksResponse(

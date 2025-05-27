@@ -7,24 +7,10 @@ export default class SiteCoordinator extends DurableObject {
     this.env = env;
   }
 
-  // Public method to calculate dynamic max tokens
   async dynamicMaxTokens(input, maxOuputTokens) {
     return 2000;
-    // const baseTokenLimit = 1024;
-    //
-    //
-    // const { encode } = await import("gpt-tokenizer/esm/model/gpt-4o");
-    //
-    // const inputTokens = Array.isArray(input)
-    //     ? encode(input.map(i => i.content).join(' '))
-    //     : encode(input);
-    //
-    // const scalingFactor = inputTokens.length > 300 ? 1.5 : 1;
-    //
-    // return Math.min(baseTokenLimit + Math.floor(inputTokens.length * scalingFactor^2), maxOuputTokens);
   }
 
-  // Public method to retrieve conversation history
   async getConversationHistory(conversationId) {
     const history = await this.env.KV_STORAGE.get(
       `conversations:${conversationId}`,
@@ -33,7 +19,6 @@ export default class SiteCoordinator extends DurableObject {
     return JSON.parse(history) || [];
   }
 
-  // Public method to save a message to the conversation history
   async saveConversationHistory(conversationId, message) {
     const history = await this.getConversationHistory(conversationId);
     history.push(message);
@@ -52,7 +37,6 @@ export default class SiteCoordinator extends DurableObject {
     );
   }
 
-  // New method to get stream data
   async getStreamData(streamId) {
     const streamEntry = await this.env.KV_STORAGE.get(`streams:${streamId}`);
     if (!streamEntry) {
@@ -61,7 +45,6 @@ export default class SiteCoordinator extends DurableObject {
 
     const { data, expirationTimestamp } = JSON.parse(streamEntry);
     if (Date.now() > expirationTimestamp) {
-      // await this.state.storage.delete(streamId); // Clean up expired entry
       await this.deleteStreamData(`streams:${streamId}`);
       return null;
     }
@@ -69,7 +52,6 @@ export default class SiteCoordinator extends DurableObject {
     return data;
   }
 
-  // New method to delete stream data (cleanup)
   async deleteStreamData(streamId) {
     await this.env.KV_STORAGE.delete(`streams:${streamId}`);
   }
