@@ -1,6 +1,5 @@
 import { applySnapshot, flow, Instance, types } from "mobx-state-tree";
 import Message from "../models/Message";
-import Attachment from "../models/Attachment";
 import IntermediateStep from "../models/IntermediateStep";
 import UserOptionsStore from "./UserOptionsStore";
 
@@ -11,7 +10,6 @@ const ClientChatStore = types
     isLoading: types.optional(types.boolean, false),
     model: types.optional(types.string, "llama-3.3-70b-versatile"),
     imageModel: types.optional(types.string, "black-forest-labs/flux-1.1-pro"),
-    attachments: types.optional(types.array(Attachment), []),
     tools: types.optional(types.array(types.string), []),
     intermediateSteps: types.array(IntermediateStep),
   })
@@ -41,7 +39,6 @@ const ClientChatStore = types
         const payload = {
           messages: self.messages.slice(),
           model: self.model,
-          attachments: self.attachments.slice(),
           tools: self.tools.slice(),
         };
 
@@ -163,7 +160,6 @@ const ClientChatStore = types
           const payload = {
             messages: self.messages.slice(),
             model: self.model,
-            attachments: self.attachments.slice(),
             tools: self.tools.slice(),
           };
 
@@ -244,15 +240,6 @@ const ClientChatStore = types
     reset() {
       applySnapshot(self, {});
     },
-    addAttachment(attachment: Instance<typeof Attachment>) {
-      self.attachments.push(attachment);
-
-      if (self.attachments.length > 0) {
-        if (!self.tools.includes("user-attachments")) {
-          self.tools.push("user-attachments");
-        }
-      }
-    },
     addIntermediateStep(stepData) {
       return;
     },
@@ -269,21 +256,6 @@ const ClientChatStore = types
     removeMessagesAfter(index: number) {
       if (index >= 0 && index < self.messages.length) {
         self.messages.splice(index + 1);
-      }
-    },
-    removeAttachment(url: string) {
-      const f =
-        self.attachments.filter((attachment) => attachment.url !== url) ?? [];
-      self.attachments.clear();
-
-      self.attachments.push(...f);
-
-      if (self.attachments.length === 0) {
-        const remainingTools = self.tools.filter(
-          (tool) => tool !== "user-attachments",
-        );
-        self.tools.clear();
-        self.tools.push(...remainingTools);
       }
     },
     setTools(tools: string[]) {

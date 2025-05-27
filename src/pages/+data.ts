@@ -1,10 +1,10 @@
-// https://vike.dev/data
 import Routes from "../../src/renderer/routes";
 
 export { data };
 export type Data = Awaited<ReturnType<typeof data>>;
 import type { PageContextServer } from "vike/types";
 
+// sets the window title depending on the route
 const data = async (pageContext: PageContextServer) => {
   const getTitle = (path) => {
     return Routes[normalizePath(path)]?.heroLabel || "";

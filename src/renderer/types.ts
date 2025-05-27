@@ -1,4 +1,3 @@
-// renderer/types.ts
 export type { PageProps };
 
 type Page = (pageProps: PageProps) => React.ReactElement;
@@ -10,8 +9,6 @@ declare global {
       Page: Page;
       pageProps?: PageProps;
       fetch?: typeof fetch;
-
-      // Add your environment bindings here
       env: import("../../workers/site/env");
     }
   }

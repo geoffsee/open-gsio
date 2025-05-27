@@ -4,7 +4,7 @@ import Chat from "../../components/chat/Chat";
 import clientChatStore from "../../stores/ClientChatStore";
 import { getModelFamily } from "../../components/chat/SupportedModels";
 
-// renders for path: "/"
+// renders "/"
 export default function IndexPage() {
   useEffect(() => {
     try {

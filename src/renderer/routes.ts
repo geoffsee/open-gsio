@@ -1,3 +1,4 @@
+// Top level control interface for navigation
 export default {
   "/": { sidebarLabel: "Home", heroLabel: "g.s" },
   // "/about": { sidebarLabel: "About", heroLabel: "About Me" },

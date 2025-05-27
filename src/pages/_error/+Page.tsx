@@ -1,3 +1,4 @@
+// client error catcher
 import { usePageContext } from "../../renderer/usePageContext";
 import { Center, Text } from "@chakra-ui/react";
 
