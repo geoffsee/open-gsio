@@ -1,5 +1,4 @@
 import React from "react";
-// https://vike.dev/onRenderHtml
 export { onRenderHtml };
 
 import { renderToStream } from "react-streaming/server";
@@ -7,6 +6,7 @@ import { escapeInject } from "vike/server";
 import { Layout } from "../layout/Layout";
 import type { OnRenderHtmlAsync } from "vike/types";
 
+// See https://vike.dev/onRenderHtml for usage details
 const onRenderHtml: OnRenderHtmlAsync = async (
   pageContext,
 ): ReturnType<OnRenderHtmlAsync> => {
@@ -49,8 +49,6 @@ window.ga_api = "/api/metrics";
 
   return {
     documentHtml: res,
-    pageContext: {
-      // enableEagerStreaming: true
-    },
+    pageContext: {},
   };
 };
