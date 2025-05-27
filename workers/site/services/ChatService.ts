@@ -14,7 +14,6 @@ import {XaiChatSdk} from "../sdk/models/xai";
 import {CerebrasSdk} from "../sdk/models/cerebras";
 import {CloudflareAISdk} from "../sdk/models/cloudflareAi";
 
-// Types
 export interface StreamParams {
   env: Env;
   openai: OpenAI;
@@ -92,10 +91,8 @@ const ChatService = types
       const handleAgentProcess = async (
           {controller, encoder, webhook, dynamicContext}: StreamHandlerParams
       ) => {
-        console.log("handleAgentProcess::start");
         if (!webhook) return;
-        console.log("handleAgentProcess::[Loading Live Search]");
-        dynamicContext.append("\n## Live Search\n~~~markdown\n");
+        dynamicContext.append("\n## Agent Results\n~~~markdown\n");
 
         for await (const chunk of self.streamAgentData({webhook})) {
           controller.enqueue(encoder.encode(chunk));
@@ -103,9 +100,7 @@ const ChatService = types
         }
 
         dynamicContext.append("\n~~~\n");
-        console.log(`handleAgentProcess::[Finished loading Live Search!][length: ${dynamicContext.content.length}]`);
         ChatSdk.sendDoubleNewline(controller, encoder);
-        console.log("handleAgentProcess::exit")
       };
 
       const createStreamParams = async (
@@ -331,12 +326,10 @@ const ChatService = types
               const encoder = new TextEncoder();
 
               try {
-                // Send initial retry directive
-                // controller.enqueue(encoder.encode('retry: 0\n\n'));
                 const dynamicContext = Message.create(streamConfig.preprocessedContext);
 
 
-                // Process webhook if configured
+                // Process agents if configured
                 await self.bootstrapAgents({
                   savedStreamConfig,
                   controller,
@@ -408,7 +401,6 @@ const ChatService = types
           const streamConfig = JSON.parse(savedStreamConfig);
           console.log(`chatService::handleSseStream::${streamId}::[stream configured]`);
 
-          // Create the SSE readable stream
           const stream = self.createSseReadableStream({
             streamId,
             streamConfig,
@@ -419,17 +411,14 @@ const ChatService = types
           // Use `tee()` to create two streams: one for processing and one for the response
           const [processingStream, responseStream] = stream.tee();
 
-          // Add the new stream to activeStreams
           self.setActiveStream(streamId, {
-            ...streamConfig, // Ensure streamConfig matches the expected structure
+            ...streamConfig,
           });
 
-          // Process the stream for internal logic
           processingStream.pipeTo(
               new WritableStream({
                 close() {
-                  console.log(`chatService::handleSseStream::${streamId}::[stream closed]`);
-                  self.removeActiveStream(streamId); // Use action to update state
+                  self.removeActiveStream(streamId);
                 },
               })
           );
@@ -443,7 +432,6 @@ const ChatService = types
             },
           });
         }),
-
       };
     });
 
