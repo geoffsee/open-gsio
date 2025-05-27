@@ -28,15 +28,6 @@ export function createRouter() {
         },
       )
 
-      .get(
-        "/api/streams/webhook/:streamId",
-        withParams,
-        async ({ streamId }, env, ctx) => {
-          const { chatService } = createServerContext(env, ctx);
-          return chatService.proxyWebhookStream(streamId); // Handles SSE for streamId
-        },
-      )
-
       .post("/api/feedback", async (r, e, c) => {
         const { feedbackService } = createServerContext(e, c);
         return feedbackService.handleFeedback(r);

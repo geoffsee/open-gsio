@@ -7,13 +7,11 @@ export class XaiChatSdk {
       openai: OpenAI;
       systemPrompt: any;
       preprocessedContext: any;
-      attachments: any;
       maxTokens: unknown | number | undefined;
       messages: any;
       disableWebhookGeneration: boolean;
       model: any;
       env: Env;
-      tools: any;
     },
     dataCallback: (data: any) => any,
   ) {
@@ -21,7 +19,6 @@ export class XaiChatSdk {
       openai,
       systemPrompt,
       maxTokens,
-      tools,
       messages,
       attachments,
       env,
@@ -49,7 +46,6 @@ export class XaiChatSdk {
 
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
-      tools: tools,
     });
 
     const safeMessages = ChatSdk.buildMessageChain(messages, {
@@ -57,7 +53,6 @@ export class XaiChatSdk {
       model,
       assistantPrompt,
       toolResults: preprocessedContext,
-      attachments: attachments,
     });
 
     const xAiClient = new OpenAI({

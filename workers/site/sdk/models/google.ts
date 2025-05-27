@@ -12,15 +12,12 @@ export class GoogleChatSdk {
       messages,
       env,
       maxTokens,
-      tools,
       systemPrompt,
       model,
-      attachments,
     } = param;
 
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
-      tools: tools,
     });
 
     const safeMessages = ChatSdk.buildMessageChain(messages, {
@@ -28,7 +25,6 @@ export class GoogleChatSdk {
       model,
       assistantPrompt,
       toolResults: preprocessedContext,
-      attachments: attachments,
     });
 
     const openai = new OpenAI({

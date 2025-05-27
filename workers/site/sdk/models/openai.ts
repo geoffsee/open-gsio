@@ -7,12 +7,9 @@ export class OpenAiChatSdk {
       openai: OpenAI;
       systemPrompt: any;
       preprocessedContext: any;
-      attachments: any;
       maxTokens: unknown | number | undefined;
       messages: any;
-      disableWebhookGeneration: boolean;
       model: any;
-      tools: any;
     },
     dataCallback: (data: any) => any,
   ) {
@@ -20,9 +17,7 @@ export class OpenAiChatSdk {
       openai,
       systemPrompt,
       maxTokens,
-      tools,
       messages,
-      attachments,
       model,
       preprocessedContext,
     } = ctx;
@@ -33,14 +28,12 @@ export class OpenAiChatSdk {
 
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
-      tools: tools,
     });
     const safeMessages = ChatSdk.buildMessageChain(messages, {
       systemPrompt: systemPrompt,
       model,
       assistantPrompt,
       toolResults: preprocessedContext,
-      attachments: attachments,
     });
 
     return OpenAiChatSdk.streamOpenAiResponse(

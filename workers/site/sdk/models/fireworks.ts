@@ -42,7 +42,6 @@ export class FireworksAiChatSdk {
     param: {
       openai: OpenAI;
       systemPrompt: any;
-      disableWebhookGeneration: boolean;
       preprocessedContext: ModelSnapshotType2<
         ModelPropertiesDeclarationToProperties<{
           role: ISimpleType<UnionStringArray<string[]>>;
@@ -50,12 +49,10 @@ export class FireworksAiChatSdk {
         }>,
         _NotCustomized
       >;
-      attachments: any;
       maxTokens: number;
       messages: any;
       model: any;
       env: Env;
-      tools: any;
     },
     dataCallback: (data) => void,
   ) {
@@ -64,15 +61,12 @@ export class FireworksAiChatSdk {
       messages,
       env,
       maxTokens,
-      tools,
       systemPrompt,
       model,
-      attachments,
     } = param;
 
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
-      tools: tools,
     });
 
     const safeMessages = ChatSdk.buildMessageChain(messages, {
@@ -80,7 +74,6 @@ export class FireworksAiChatSdk {
       model,
       assistantPrompt,
       toolResults: preprocessedContext,
-      attachments: attachments,
     });
 
     const fireworksOpenAIClient = new OpenAI({

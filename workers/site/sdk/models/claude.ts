@@ -49,7 +49,6 @@ export class ClaudeChatSdk {
     param: {
       openai: OpenAI;
       systemPrompt: any;
-      disableWebhookGeneration: boolean;
       preprocessedContext: ModelSnapshotType2<
         ModelPropertiesDeclarationToProperties<{
           role: ISimpleType<UnionStringArray<string[]>>;
@@ -57,12 +56,10 @@ export class ClaudeChatSdk {
         }>,
         _NotCustomized
       >;
-      attachments: any;
       maxTokens: unknown | number | undefined;
       messages: any;
       model: string;
       env: Env;
-      tools: any;
     },
     dataCallback: (data) => void,
   ) {
@@ -71,15 +68,12 @@ export class ClaudeChatSdk {
       messages,
       env,
       maxTokens,
-      tools,
       systemPrompt,
       model,
-      attachments,
     } = param;
 
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
-      tools: tools,
     });
 
     const safeMessages = ChatSdk.buildMessageChain(messages, {
@@ -87,7 +81,6 @@ export class ClaudeChatSdk {
       model,
       assistantPrompt,
       toolResults: preprocessedContext,
-      attachments: attachments,
     });
 
     const anthropic = new Anthropic({
