@@ -11,7 +11,7 @@ import chatStore from "../../../stores/ClientChatStore";
 import InputMenu from "../input-menu/InputMenu";
 import InputTextarea from "./ChatInputTextArea";
 import SendButton from "./ChatInputSendButton";
-import { useMaxWidth } from "../../../layout/useMaxWidth";
+import { useMaxWidth } from "../../../hooks/useMaxWidth";
 import userOptionsStore from "../../../stores/UserOptionsStore";
 
 const ChatInput = observer(() => {

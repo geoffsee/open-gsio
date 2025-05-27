@@ -1,6 +1,6 @@
 import { OpenAI } from "openai";
-import ChatSdk from "../chat-sdk";
-import { StreamParams } from "../../services/ChatService";
+import ChatSdk from "../sdk/chat-sdk";
+import { StreamParams } from "../services/ChatService";
 
 export class GoogleChatSdk {
   static async handleGoogleStream(

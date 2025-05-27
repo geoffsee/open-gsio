@@ -1,8 +1,8 @@
 import { createRouter } from "./api-router";
 import SiteCoordinator from "./durable_objects/SiteCoordinator";
 
-// exports durable object
+// durable object
 export { SiteCoordinator };
 
-// exports worker
+// worker
 export default createRouter();

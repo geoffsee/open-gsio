@@ -1,4 +1,4 @@
-import { Sdk } from "./sdk";
+import { Utils } from "./utils";
 import few_shots from "../prompts/few_shots";
 
 export class AssistantSdk {
@@ -12,10 +12,10 @@ export class AssistantSdk {
       userTimezone = "UTC",
       userLocation = "",
     } = params;
-    const selectedFewshots = Sdk.selectEquitably?.(few_shots) || few_shots;
+    const selectedFewshots = Utils.selectEquitably?.(few_shots) || few_shots;
     const sdkDate =
-      typeof Sdk.getCurrentDate === "function"
-        ? Sdk.getCurrentDate()
+      typeof Utils.getCurrentDate === "function"
+        ? Utils.getCurrentDate()
         : new Date().toISOString();
     const [currentDate] = sdkDate.split("T");
     const now = new Date();

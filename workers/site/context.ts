@@ -4,7 +4,6 @@ import AssetService from "./services/AssetService";
 import MetricsService from "./services/MetricsService";
 import ChatService from "./services/ChatService";
 import TransactionService from "./services/TransactionService";
-import DocumentService from "./services/DocumentService";
 import FeedbackService from "./services/FeedbackService";
 
 const Context = types
@@ -14,7 +13,6 @@ const Context = types
     assetService: types.optional(AssetService, {}),
     metricsService: types.optional(MetricsService, {}),
     transactionService: types.optional(TransactionService, {}),
-    documentService: types.optional(DocumentService, {}),
     feedbackService: types.optional(FeedbackService, {}),
   })
   .actions((self) => {
@@ -45,7 +43,6 @@ const createServerContext = (env, ctx) => {
     contactService: ContactService.create({}),
     assetService: AssetService.create({}),
     transactionService: TransactionService.create({}),
-    documentService: DocumentService.create({}),
     feedbackService: FeedbackService.create({}),
     metricsService: MetricsService.create({
       isCollectingMetrics: true,

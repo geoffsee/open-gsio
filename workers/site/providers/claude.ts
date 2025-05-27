@@ -7,7 +7,7 @@ import {
   ModelSnapshotType2,
   UnionStringArray,
 } from "mobx-state-tree";
-import ChatSdk from "../chat-sdk";
+import ChatSdk from "../sdk/chat-sdk";
 
 export class ClaudeChatSdk {
   private static async streamClaudeResponse(
