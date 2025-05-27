@@ -14,7 +14,7 @@ export default class EmailWorker extends WorkerEntrypoint {
     const msg = createMimeMessage();
     msg.setSender({
       name: "New Website Contact",
-      addr: "contact@seemueller.io",
+      addr: "contact@example.com",
     });
     console.log("Recipient:", to);
     // msg.setRecipient(to);
@@ -27,8 +27,8 @@ export default class EmailWorker extends WorkerEntrypoint {
 
     try {
       const message = new EmailMessage(
-        "contact@seemueller.io",
-        "geoff@seemueller.io",
+        "contact@example.com",
+        "team@example.com",
         msg.asRaw(),
       );
       await this.env.SEB.send(message);
