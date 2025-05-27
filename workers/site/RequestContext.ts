@@ -6,8 +6,8 @@ import ChatService from "./services/ChatService";
 import TransactionService from "./services/TransactionService";
 import FeedbackService from "./services/FeedbackService";
 
-const Context = types
-  .model("ApplicationContext", {
+const RequestContext = types
+  .model("RequestContext", {
     chatService: ChatService,
     contactService: types.optional(ContactService, {}),
     assetService: types.optional(AssetService, {}),
@@ -36,10 +36,10 @@ const Context = types
     };
   });
 
-export type IRootStore = Instance<typeof Context>;
+export type IRootStore = Instance<typeof RequestContext>;
 
-const createServerContext = (env, ctx) => {
-  const instance = Context.create({
+const createRequestContext = (env, ctx) => {
+  const instance = RequestContext.create({
     contactService: ContactService.create({}),
     assetService: AssetService.create({}),
     transactionService: TransactionService.create({}),
@@ -61,6 +61,6 @@ const createServerContext = (env, ctx) => {
   return instance;
 };
 
-export { createServerContext };
+export { createRequestContext };
 
-export default Context;
+export default RequestContext;

@@ -1,21 +1,21 @@
 import { Router, withParams } from "itty-router";
-import { createServerContext } from "./context";
+import { createRequestContext } from "./RequestContext";
 
 export function createRouter() {
   return (
     Router()
       .get("/assets/*", (r, e, c) => {
-        const { assetService } = createServerContext(e, c);
+        const { assetService } = createRequestContext(e, c);
         return assetService.handleStaticAssets(r, e, c);
       })
 
       .post("/api/contact", (r, e, c) => {
-        const { contactService } = createServerContext(e, c);
+        const { contactService } = createRequestContext(e, c);
         return contactService.handleContact(r);
       })
 
       .post("/api/chat", (r, e, c) => {
-        const { chatService } = createServerContext(e, c);
+        const { chatService } = createRequestContext(e, c);
         return chatService.handleChatRequest(r);
       })
 
@@ -23,18 +23,18 @@ export function createRouter() {
         "/api/streams/:streamId",
         withParams,
         async ({ streamId }, env, ctx) => {
-          const { chatService } = createServerContext(env, ctx);
+          const { chatService } = createRequestContext(env, ctx);
           return chatService.handleSseStream(streamId); // Handles SSE for streamId
         },
       )
 
       .post("/api/feedback", async (r, e, c) => {
-        const { feedbackService } = createServerContext(e, c);
+        const { feedbackService } = createRequestContext(e, c);
         return feedbackService.handleFeedback(r);
       })
 
       .post("/api/tx", async (r, e, c) => {
-        const { transactionService } = createServerContext(e, c);
+        const { transactionService } = createRequestContext(e, c);
         return transactionService.handleTransact(r);
       })
 
@@ -50,12 +50,12 @@ export function createRouter() {
       // })
 
       .all("/api/metrics/*", async (r, e, c) => {
-        const { metricsService } = createServerContext(e, c);
+        const { metricsService } = createRequestContext(e, c);
         return metricsService.handleMetricsRequest(r);
       })
 
       .get("*", async (r, e, c) => {
-        const { assetService } = createServerContext(e, c);
+        const { assetService } = createRequestContext(e, c);
 
         console.log("Request received:", { url: r.url, headers: r.headers });
 
