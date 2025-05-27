@@ -2,7 +2,7 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf node_modules && rm -rf .wrangler && rm -rf dist",
-    "build": "pnpm client:build && pnpm worker:build",
+    "build": "pnpm client:build && pnpm server:build",
     "client:dev": "pnpm vite dev --host 0.0.0.0",
     "server:dev": "pnpm run build && pnpm wrangler dev",
     "client": "pnpm client:dev",
