@@ -1,4 +1,4 @@
-export class Sdk {
+export class Utils {
   static getSeason(date: string): string {
     const hemispheres = {
       Northern: ["Winter", "Spring", "Summer", "Autumn"],

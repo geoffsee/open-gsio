@@ -19,7 +19,7 @@ import ClientChatStore from "../../../stores/ClientChatStore";
 import clientChatStore from "../../../stores/ClientChatStore";
 import FlyoutSubMenu from "./FlyoutSubMenu";
 import { useIsMobile } from "../../contexts/MobileContext";
-import { useIsMobile as useIsMobileUserAgent } from "../../../layout/_IsMobileHook";
+import { useIsMobile as useIsMobileUserAgent } from "../../../hooks/_IsMobileHook";
 import { getModelFamily, SUPPORTED_MODELS } from "../lib/SupportedModels";
 import { formatConversationMarkdown } from "../lib/exportConversationAsMarkdown";
 

@@ -1,17 +1,15 @@
 import { OpenAI } from "openai";
-import ChatSdk from "../chat-sdk";
+import ChatSdk from "../sdk/chat-sdk";
 
-export class XaiChatSdk {
-  static async handleXaiStream(
+export class OpenAiChatSdk {
+  static async handleOpenAiStream(
     ctx: {
       openai: OpenAI;
       systemPrompt: any;
       preprocessedContext: any;
       maxTokens: unknown | number | undefined;
       messages: any;
-      disableWebhookGeneration: boolean;
       model: any;
-      env: Env;
     },
     dataCallback: (data: any) => any,
   ) {
@@ -20,7 +18,6 @@ export class XaiChatSdk {
       systemPrompt,
       maxTokens,
       messages,
-      env,
       model,
       preprocessedContext,
     } = ctx;
@@ -29,24 +26,9 @@ export class XaiChatSdk {
       return new Response("No messages provided", { status: 400 });
     }
 
-    const getMaxTokens = async (mt) => {
-      if (mt) {
-        return await ChatSdk.calculateMaxTokens(
-          JSON.parse(JSON.stringify(messages)),
-          {
-            env,
-            maxTokens: mt,
-          },
-        );
-      } else {
-        return undefined;
-      }
-    };
-
     const assistantPrompt = ChatSdk.buildAssistantPrompt({
       maxTokens: maxTokens,
     });
-
     const safeMessages = ChatSdk.buildMessageChain(messages, {
       systemPrompt: systemPrompt,
       model,
@@ -54,17 +36,12 @@ export class XaiChatSdk {
       toolResults: preprocessedContext,
     });
 
-    const xAiClient = new OpenAI({
-      baseURL: "https://api.x.ai/v1",
-      apiKey: env.XAI_API_KEY,
-    });
-
-    return XaiChatSdk.streamOpenAiResponse(
+    return OpenAiChatSdk.streamOpenAiResponse(
       safeMessages,
       {
         model,
         maxTokens: maxTokens as number,
-        openai: xAiClient,
+        openai: openai,
       },
       dataCallback,
     );
@@ -88,7 +65,11 @@ export class XaiChatSdk {
     const tuningParams: Record<string, any> = {};
 
     const gpt4oTuningParams = {
-      temperature: 0.75,
+      temperature: 0.86,
+      top_p: 0.98,
+      presence_penalty: 0.1,
+      frequency_penalty: 0.3,
+      max_tokens: opts.maxTokens,
     };
 
     const getTuningParams = () => {
@@ -100,14 +81,14 @@ export class XaiChatSdk {
       return gpt4oTuningParams;
     };
 
-    const xAIStream = await opts.openai.chat.completions.create({
+    const openAIStream = await opts.openai.chat.completions.create({
       model: opts.model,
       messages: messages,
       stream: true,
       ...getTuningParams(),
     });
 
-    for await (const chunk of xAIStream) {
+    for await (const chunk of openAIStream) {
       dataCallback({ type: "chat", data: chunk });
     }
   }

@@ -8,9 +8,8 @@ import {
   ModelSnapshotType2,
   UnionStringArray,
 } from "mobx-state-tree";
-import Message from "../../models/Message";
-import { MarkdownSdk } from "../markdown-sdk";
-import ChatSdk from "../chat-sdk";
+import Message from "../models/Message";
+import ChatSdk from "../sdk/chat-sdk";
 
 export class FireworksAiChatSdk {
   private static async streamFireworksResponse(
