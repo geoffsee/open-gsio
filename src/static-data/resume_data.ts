@@ -22,17 +22,10 @@ export const resumeData = {
     },
     {
       title: "Software Engineer",
-      company: "Global Analytics Platform",
+      company: "JSOC",
       timeline: "Jan 2020 - Mar 2022",
       description:
         "Spearheaded development of mission-critical data analytics systems.",
-    },
-    {
-      title: "Software Engineer",
-      company: "Force Nexus",
-      timeline: "Sep 2018 - Sep 2020",
-      description:
-        "Developed robust, real-time communication systems for special operations.",
     },
     {
       title: "U.S. Army Ranger",
