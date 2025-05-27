@@ -1,0 +1,23 @@
+{
+  "compatibility_date": "2025-05-27",
+  "main": "analytics_worker.js",
+  "name": "analytics",
+  "analytics_engine_datasets": [
+    {
+      "binding": "ANALYTICS_ENGINE",
+      "dataset": "global_analytics"
+    }
+  ],
+  "routes": [
+    {
+      "custom_domain": true,
+      "pattern": "your.route.here"
+    }
+  ],
+  "dev": {
+    "port": 3003
+  },
+  "placement": {
+    "mode": "smart"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "compatibility_date": "2025-05-27",
+  "main": "email_worker.js",
+  "name": "email-service-rpc",
+  "node_compat": true,
+  "dev": {
+    "port": 3002
+  },
+  "placement": {
+    "mode": "smart",
+    "send_email": [
+      {
+        "destination_address": "contact@example.com",
+        "name": "SEB"
+      }
+    ]
+  }
+}

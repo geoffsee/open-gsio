@@ -37,7 +37,7 @@ const onRenderHtml: OnRenderHtmlAsync = async (
 <meta charset="UTF-8">
 <meta name="description" content="Maker Site">
 <script>
-window.ga_tid = "resume-site";
+window.ga_tid = "open-gsio";
 window.ga_api = "/api/metrics";
 </script>
 <script src="/cfga.min.js" async></script>
