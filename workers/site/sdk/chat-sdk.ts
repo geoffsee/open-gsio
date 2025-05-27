@@ -1,74 +1,14 @@
-import { OpenAI } from "openai";
+import {OpenAI} from "openai";
 import Message from "../models/Message";
-import { executePreprocessingWorkflow } from "../workflows";
-import { MarkdownSdk } from "./markdown-sdk";
-import { AssistantSdk } from "./assistant-sdk";
-import { IMessage } from "../../../src/stores/ClientChatStore";
-import { getModelFamily } from "../../../src/components/chat/SupportedModels";
+import {AssistantSdk} from "./assistant-sdk";
+import {IMessage} from "../../../src/stores/ClientChatStore";
+import {getModelFamily} from "../../../src/components/chat/SupportedModels";
 
 export class ChatSdk {
   static async preprocess({
-    tools,
     messages,
-    contextContainer,
-    eventHost,
-    streamId,
-    openai,
-    env,
   }) {
-    const { latestAiMessage, latestUserMessage } =
-      ChatSdk.extractMessageContext(messages);
-
-    if (tools.includes("web-search")) {
-      try {
-        const { results } = await executePreprocessingWorkflow({
-          latestUserMessage,
-          latestAiMessage,
-          eventHost,
-          streamId,
-          chat: {
-            messages,
-            openai,
-          },
-        });
-
-        const { webhook } = results.get("preprocessed");
-
-        if (webhook) {
-          const objectId = env.SITE_COORDINATOR.idFromName("stream-index");
-
-          const durableObject = env.SITE_COORDINATOR.get(objectId);
-
-          await durableObject.saveStreamData(
-            streamId,
-            JSON.stringify({
-              webhooks: [webhook],
-            }),
-          );
-
-          await durableObject.saveStreamData(
-            webhook.id,
-            JSON.stringify({
-              parent: streamId,
-              url: webhook.url,
-            }),
-          );
-        }
-
-        console.log("handleOpenAiStream::workflowResults", {
-          webhookUrl: webhook?.url,
-        });
-      } catch (workflowError) {
-        console.error(
-          "handleOpenAiStream::workflowError::Failed to execute workflow",
-          workflowError,
-        );
-      }
-      return Message.create({
-        role: "assistant",
-        content: MarkdownSdk.formatContextContainer(contextContainer),
-      });
-    }
+    // a custom implementation for preprocessing would go here
     return Message.create({
       role: "assistant",
       content: "",
@@ -92,19 +32,9 @@ export class ChatSdk {
       return new Response("No messages provided", { status: 400 });
     }
 
-    const contextContainer = new Map();
-
     const preprocessedContext = await ChatSdk.preprocess({
-      tools,
       messages,
-      eventHost: ctx.env.EVENTSOURCE_HOST,
-      contextContainer: contextContainer,
-      streamId,
-      openai: ctx.openai,
-      env: ctx.env,
     });
-
-    console.log({ preprocessedContext: JSON.stringify(preprocessedContext) });
 
     const objectId = ctx.env.SITE_COORDINATOR.idFromName("stream-index");
     const durableObject = ctx.env.SITE_COORDINATOR.get(objectId);
@@ -137,20 +67,6 @@ export class ChatSdk {
         },
       },
     );
-  }
-
-  private static extractMessageContext(messages: any[]) {
-    const latestUserMessageObj = [...messages]
-      .reverse()
-      .find((msg) => msg.role === "user");
-    const latestAiMessageObj = [...messages]
-      .reverse()
-      .find((msg) => msg.role === "assistant");
-
-    return {
-      latestUserMessage: latestUserMessageObj?.content || "",
-      latestAiMessage: latestAiMessageObj?.content || "",
-    };
   }
 
   static async calculateMaxTokens(
@@ -230,18 +146,18 @@ export class ChatSdk {
     return messagesToSend;
   }
 
-  static async handleWebhookStream(
+  static async handleAgentStream(
     eventSource: EventSource,
     dataCallback: any,
   ): Promise<void> {
-    console.log("sdk::handleWebhookStream::start");
+    // console.log("sdk::handleWebhookStream::start");
     let done = false;
     return new Promise((resolve, reject) => {
       if (!done) {
-        console.log("sdk::handleWebhookStream::promise::created");
+        // console.log("sdk::handleWebhookStream::promise::created");
         eventSource.onopen = () => {
-          console.log("sdk::handleWebhookStream::eventSource::open");
-          console.log("Connected to webhook");
+          // console.log("sdk::handleWebhookStream::eventSource::open");
+          console.log("Connected to agent");
         };
 
         const parseEvent = (data) => {
