@@ -89,23 +89,23 @@ const ChatService = types
       };
 
 
-      const handleWebhookProcessing = async (
+      const handleAgentProcess = async (
           {controller, encoder, webhook, dynamicContext}: StreamHandlerParams
       ) => {
-        console.log("handleWebhookProcessing::start");
+        console.log("handleAgentProcess::start");
         if (!webhook) return;
-        console.log("handleWebhookProcessing::[Loading Live Search]");
+        console.log("handleAgentProcess::[Loading Live Search]");
         dynamicContext.append("\n## Live Search\n~~~markdown\n");
 
-        for await (const chunk of self.streamWebhookData({webhook})) {
+        for await (const chunk of self.streamAgentData({webhook})) {
           controller.enqueue(encoder.encode(chunk));
           dynamicContext.append(chunk);
         }
 
         dynamicContext.append("\n~~~\n");
-        console.log(`handleWebhookProcessing::[Finished loading Live Search!][length: ${dynamicContext.content.length}]`);
+        console.log(`handleAgentProcess::[Finished loading Live Search!][length: ${dynamicContext.content.length}]`);
         ChatSdk.sendDoubleNewline(controller, encoder);
-        console.log("handleWebhookProcessing::exit")
+        console.log("handleAgentProcess::exit")
       };
 
       const createStreamParams = async (
@@ -189,8 +189,8 @@ const ChatService = types
           self.webhookStreamActive = value;
         },
 
-        streamWebhookData: async function* ({webhook}) {
-          console.log("streamWebhookData::start");
+        streamAgentData: async function* ({webhook}) {
+          console.log("streamAgentData::start");
           if (self.webhookStreamActive) {
             return
           }
@@ -206,10 +206,10 @@ const ChatService = types
 
           let currentPromise = dataPromise();
           const eventSource = new EventSource(webhook.url.trim());
-          console.log("streamWebhookData::setWebhookStreamActive::true");
+          console.log("streamAgentData::setWebhookStreamActive::true");
           self.setWebhookStreamActive(true)
           try {
-            ChatSdk.handleWebhookStream(eventSource, (data) => {
+            ChatSdk.handleAgentStream(eventSource, (data) => {
               const formattedData = `data: ${JSON.stringify(data)}\n\n`;
               queue.push(formattedData);
               if (resolveQueueItem) resolveQueueItem();
@@ -218,7 +218,7 @@ const ChatService = types
               finished = true;
               if (resolveQueueItem) resolveQueueItem();
             }).catch((err) => {
-              console.log(`chatService::streamWebhookData::STREAM_ERROR::${err}`);
+              console.log(`chatService::streamAgentData::STREAM_ERROR::${err}`);
               errorOccurred = err;
               if (resolveQueueItem) resolveQueueItem();
             });
@@ -234,9 +234,9 @@ const ChatService = types
             }
             self.setWebhookStreamActive(false);
             eventSource.close();
-            console.log(`chatService::streamWebhookData::complete`);
+            // console.log(`chatService::streamAgentData::complete`);
           } catch (error) {
-            console.log(`chatService::streamWebhookData::error`);
+            console.log(`chatService::streamAgentData::error`);
             eventSource.close();
             self.setWebhookStreamActive(false);
             console.error("Error while streaming webhook data:", error);
@@ -290,10 +290,10 @@ const ChatService = types
           }
         },
         /**
-         * handleWebhookIfNeeded
-         * Checks if a webhook exists, and if so, processes it.
+         * bootstrapAgents
+         * Checks if an agent exists, and if so, bootstraps it.
          */
-        async handleWebhookIfNeeded(params: {
+        async bootstrapAgents(params: {
           savedStreamConfig: string;
           controller: ReadableStreamDefaultController;
           encoder: TextEncoder;
@@ -306,7 +306,7 @@ const ChatService = types
 
           if (webhook) {
             console.log(`chatService::handleSseStream::ReadableStream::webhook:start`);
-            await handleWebhookProcessing({
+            await handleAgentProcess({
               controller,
               encoder,
               webhook,
@@ -337,7 +337,7 @@ const ChatService = types
 
 
                 // Process webhook if configured
-                await self.handleWebhookIfNeeded({
+                await self.bootstrapAgents({
                   savedStreamConfig,
                   controller,
                   encoder,
