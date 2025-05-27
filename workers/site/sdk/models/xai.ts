@@ -20,7 +20,6 @@ export class XaiChatSdk {
       systemPrompt,
       maxTokens,
       messages,
-      attachments,
       env,
       model,
       preprocessedContext,

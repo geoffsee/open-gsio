@@ -109,67 +109,6 @@ const components = {
       },
     },
   },
-  MDXEditor: {
-    baseStyle: (props) => ({
-      border: "1px solid",
-      borderColor: "text.primary",
-      borderRadius: "lg",
-      height: "sm",
-      bg: "background.primary",
-      color: "text.primary",
-      boxShadow: "md",
-      // p: 4,
-
-      ".mdxeditor-toolbar": {
-        border: "1px solid",
-        borderColor: "text.primary",
-        borderRadius: "xl",
-        bg: "background.primary",
-        m: 2,
-        p: 2,
-        // mb: 3,
-        // p: 3,
-
-        "& button": {
-          border: "none",
-          borderRadius: "md",
-          cursor: "pointer",
-          px: 3,
-          py: 1,
-          mr: 2,
-          transition: "all 0.3s ease",
-
-          _hover: {
-            bg: "text.secondary",
-          },
-          _active: {
-            bg: "background.primary",
-            color: "text.primary",
-          },
-          '&[data-state="on"]': {
-            bg: "transparent",
-            fill: "text.primary",
-            stroke: "text.primary",
-            boxShadow: "0 0 0 2px var(--text-primary)",
-            transform: "translateY(-1px)",
-            transition: "all 0.2s ease",
-            // border: '2px solid transparent', // No border needed for SVG
-          },
-          '&[data-state="off"]': {
-            bg: "transparent",
-            fill: "text.secondary",
-            stroke: "text.secondary",
-            opacity: 0.8,
-            transition: "all 0.2s ease",
-          },
-        },
-      },
-
-      "[aria-label='editable markdown']": {
-        color: "text.primary",
-      },
-    }),
-  },
   CodeBlocks: {
     baseStyle: (props) => ({
       bg: "background.primary",
