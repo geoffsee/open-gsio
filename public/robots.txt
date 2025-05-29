@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-Allow: /connect
-Disallow: /api
-Disallow: /assets
-
-Sitemap: https://geoff.seemueller.io/sitemap.xml

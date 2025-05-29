@@ -3,14 +3,18 @@ import vike from "vike/plugin";
 import { defineConfig } from "vite";
 import * as child_process from "node:child_process";
 
+const APP_FQDN = "open-gsio.seemueller.workers.dev";
+
 export default defineConfig(({ command }) => {
   const customPlugins = [
     {
       name: "sitemap-generator",
       buildStart(options) {
         if (command === "build") {
-          child_process.execSync("./scripts/generate_sitemap.js");
+          child_process.execSync("./scripts/generate_sitemap.js " + APP_FQDN);
           console.log("Generated Sitemap -> public/sitemap.xml");
+          child_process.execSync("./scripts/generate_robots_txt.js " + APP_FQDN);
+          console.log("Generated robots.txt -> public/robots.txt");
         }
       },
     },
@@ -40,6 +44,7 @@ export default defineConfig(({ command }) => {
     build: {
       emitAssets: false,
       sourcemap: false,
+      minify: true,
       target: ["es2020", "edge88", "firefox78", "chrome87", "safari13"],
       rollupOptions: {
         output: {
