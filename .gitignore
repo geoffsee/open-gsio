@@ -3,3 +3,6 @@
 **/.wrangler/
 /.idea/
 public/sitemap.xml
+.dev.vars
+secrets.json
+wrangler.dev.jsonc

@@ -7,7 +7,7 @@ const ClientChatStore = types
     messages: types.optional(types.array(Message), []),
     input: types.optional(types.string, ""),
     isLoading: types.optional(types.boolean, false),
-    model: types.optional(types.string, "llama-3.3-70b-versatile"),
+    model: types.optional(types.string, "meta-llama/llama-4-scout-17b-16e-instruct"),
     imageModel: types.optional(types.string, "black-forest-labs/flux-1.1-pro"),
   })
   .actions((self) => ({

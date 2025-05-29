@@ -9,6 +9,7 @@
     "client:build": "vite build",
     "server:build": "WRANGLER_LOG=info wrangler build",
     "deploy": "CI=true vite build && wrangler deploy --minify",
+    "deploy:secrets": "wrangler secret bulk secrets.json",
     "deploy:email-service": "wrangler deploy --cwd workers/email",
     "deploy:analytics-service": "wrangler deploy --cwd workers/analytics",
     "deploy:session-proxy": "wrangler deploy --cwd workers/session-proxy",

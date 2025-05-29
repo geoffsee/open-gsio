@@ -1,8 +1,5 @@
 ## open-geoff-seemueller-io
 
-Fork of [geoff.seemueller.io](https://geoff.seemueller.io).
-
-
 ### Stack:
 - vike
 - react
@@ -12,16 +9,18 @@ Fork of [geoff.seemueller.io](https://geoff.seemueller.io).
 ## Quickstart
 
 1. `bun i`
-2. `bun run build`
-3. Configure .dev.vars
-4. Setup KV_STORAGE bindings for local development.
-5. In isolated shells, run `bun run server:dev` and `bun run client:dev`
+1. `bun run build`
+1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys)  
+1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
 
 > Note: it should be possible to use pnpm in place of bun
 
 ## Deploying
-1. Find all instances of example.com in this repository and replace with your domain.
-2. Run `wrangler deploy:all`
+1. Setup the KV_STORAGE bindings in `wrangler.jsonc`  
+1.  [Add another `GROQ_API_KEY` in secrets.json](https://console.groq.com/keys)
+1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
+
+> Note: Subsequent deployments should omit `bun run deploy:secrets`
 
 History
 ---

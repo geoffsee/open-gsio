@@ -14,7 +14,7 @@
   ],
   "main": "./workers/site/worker.ts",
   "preview_urls": false,
-  "workers_dev": false,
+  "workers_dev": true,
   "kv_namespaces": [
     {
       "binding": "KV_STORAGE",
