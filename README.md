@@ -9,7 +9,6 @@
 ## Quickstart
 
 1. `bun i`
-1. `bun run build`
 1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys)  
 1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
 
