@@ -8,7 +8,7 @@
     "ip": "localhost",
     "port": 3001
   },
-  "compatibility_date": "2025-04-04",
+  "compatibility_date": "2025-05-28",
   "compatibility_flags": [
     "nodejs_compat"
   ],
