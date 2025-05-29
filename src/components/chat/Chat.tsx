@@ -36,9 +36,7 @@ const Chat = observer(({ height, width }) => {
         ref={scrollRef}
         // If there are attachments, use "100px". Otherwise, use "128px" on Android, "73px" elsewhere.
         pb={
-          chatStore.attachments.length > 0
-            ? "100px"
-            : isAndroid
+          isAndroid
               ? "128px"
               : "73px"
         }
