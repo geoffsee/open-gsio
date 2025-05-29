@@ -1,4 +1,4 @@
-## open-geoff-seemueller-io
+# open-gsio
 ![image](https://github.com/user-attachments/assets/a323d373-6241-4b76-b564-f0d080ff93f7)
 
 ### Stack:
