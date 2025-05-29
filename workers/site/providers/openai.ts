@@ -1,5 +1,7 @@
 import { OpenAI } from "openai";
 import ChatSdk from "../lib/chat-sdk";
+import { Utils } from "../lib/utils";
+import {ChatCompletionCreateParamsStreaming} from "openai/resources/chat/completions/completions";
 
 export class OpenAiChatSdk {
   static async handleOpenAiStream(
@@ -81,14 +83,42 @@ export class OpenAiChatSdk {
       return gpt4oTuningParams;
     };
 
-    const openAIStream = await opts.openai.chat.completions.create({
+    let completionRequest: ChatCompletionCreateParamsStreaming = {
       model: opts.model,
-      messages: messages,
       stream: true,
-      ...getTuningParams(),
-    });
+      messages: messages
+    };
+
+    const isLocal = opts.openai.baseURL.includes("localhost");
+
+
+    if(isLocal) {
+      completionRequest["messages"] = Utils.normalizeWithBlanks(messages)
+      completionRequest["stream_options"] =  {
+        include_usage: true
+      }
+    } else {
+      completionRequest = {...completionRequest, ...getTuningParams()}
+    }
+
+    const openAIStream = await opts.openai.chat.completions.create(completionRequest);
 
     for await (const chunk of openAIStream) {
+      if (isLocal && chunk.usage) {
+        dataCallback({
+          type: "chat",
+          data: {
+            choices: [
+              {
+                delta: { content: "" },
+                logprobs: null,
+                finish_reason: "stop",
+              },
+            ],
+          },
+        });
+        break;
+      }
       dataCallback({ type: "chat", data: chunk });
     }
   }

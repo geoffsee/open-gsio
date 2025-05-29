@@ -59,4 +59,38 @@ export class Utils {
 
     return result;
   }
+
+  static normalizeWithBlanks<T extends Normalize.ChatMessage>(msgs: T[]): T[] {
+    const out: T[] = [];
+
+    // In local mode first turn expected to be user.
+    let expected: Normalize.Role = "user";
+
+    for (const m of msgs) {
+      while (m.role !== expected) {
+        // Insert blanks to match expected sequence user/assistant/user...
+        out.push(Normalize.makeBlank(expected) as T);
+        expected = expected === "user" ? "assistant" : "user";
+      }
+
+      out.push(m);
+      expected = expected === "user" ? "assistant" : "user";
+    }
+
+    return out;
+  }
+
+}
+
+module Normalize {
+  export type Role = "user" | "assistant";
+
+  export interface ChatMessage extends Record<any, any> {
+    role: Role;
+  }
+
+  export const makeBlank = (role: Role): ChatMessage => ({
+    role,
+    content: ""
+  });
 }

@@ -28,6 +28,13 @@ export function createRouter() {
         },
       )
 
+    .get("/api/models",
+        async (req, env, ctx) => {
+            const { chatService } = createRequestContext(env, ctx);
+            return chatService.getSupportedModels();
+        },
+    )
+
       .post("/api/feedback", async (r, e, c) => {
         const { feedbackService } = createRequestContext(e, c);
         return feedbackService.handleFeedback(r);
