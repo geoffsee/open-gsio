@@ -5,6 +5,8 @@
 - vike
 - react
 - cloudflare workers
+- itty-router
+- mobx-state-tree
 - openai sdk
 
 ## Quickstart
