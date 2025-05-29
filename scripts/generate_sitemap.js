@@ -24,7 +24,7 @@ const sitemapTemplate = `<?xml version="1.0" encoding="UTF-8"?>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://open-gsio.seemueller.workers.dev/connect</loc>
+        <loc>https://${host}/connect</loc>
         <lastmod>${currentDate}</lastmod>
         <priority>0.7</priority>
     </url>
