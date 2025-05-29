@@ -3,7 +3,7 @@ import OpenAI from 'openai';
 import ChatSdk from '../lib/chat-sdk';
 import Message from "../models/Message";
 import O1Message from "../models/O1Message";
-import {getModelFamily, ModelFamily} from "../../../src/components/chat/lib/SupportedModels";
+import {getModelFamily, ModelFamily, SUPPORTED_MODELS} from "../../../src/components/chat/lib/SupportedModels";
 import {OpenAiChatSdk} from "../providers/openai";
 import {GroqChatSdk} from "../providers/groq";
 import {ClaudeChatSdk} from "../providers/claude";
@@ -73,11 +73,21 @@ const ChatService = types
             throw new Error('Unsupported message format');
         };
 
+        const getSupportedModels = async () => {
+            if(self.env.OPENAI_API_ENDPOINT.includes("localhost")) {
+                const openaiClient = new OpenAI({baseURL: self.env.OPENAI_API_ENDPOINT})
+                const models = await openaiClient.models.list();
+                return Response.json(models.data.map(model => model.id));
+            }
+            return Response.json(SUPPORTED_MODELS);
+        };
+
         const createStreamParams = async (
             streamConfig: any,
             dynamicContext: any,
             durableObject: any
         ): Promise<StreamParams> => {
+
             return {
                 env: self.env,
                 openai: self.openai,
@@ -112,6 +122,7 @@ const ChatService = types
         };
 
         return {
+            getSupportedModels,
             setActiveStream(streamId: string, stream: any) {
                 const validStream = {
                     name: stream?.name || "Unnamed Stream",
@@ -129,10 +140,18 @@ const ChatService = types
             },
             setEnv(env: Env) {
                 self.env = env;
-                self.openai = new OpenAI({
-                    apiKey: self.openAIApiKey,
-                    baseURL: self.openAIBaseURL,
-                });
+
+                if(env.OPENAI_API_ENDPOINT.includes("localhost")) {
+                    self.openai = new OpenAI({
+                        apiKey: self.env.OPENAI_API_KEY,
+                        baseURL: self.env.OPENAI_API_ENDPOINT,
+                    });
+                } else{
+                    self.openai = new OpenAI({
+                        apiKey: self.openAIApiKey,
+                        baseURL: self.openAIBaseURL,
+                    });
+                }
             },
 
             handleChatRequest: async (request: Request) => {
@@ -154,12 +173,12 @@ const ChatService = types
             }) {
                 const {streamConfig, streamParams, controller, encoder, streamId} = params;
 
-                const modelFamily = getModelFamily(streamConfig.model);
+                const modelFamily = !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? getModelFamily(streamConfig.model) : "openai";
 
-                const handler = modelHandlers[modelFamily as ModelFamily];
+                const handler = !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? modelHandlers[modelFamily as ModelFamily] : modelHandlers.openai;
+
                 if (handler) {
                     try {
-
                         await handler(streamParams, handleStreamData(controller, encoder));
 
                     } catch (error) {

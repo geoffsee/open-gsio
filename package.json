@@ -17,7 +17,8 @@
     "tail": "wrangler tail",
     "tail:email-service": "wrangler tail -c workers/email/wrangler-email.toml",
     "tail:analytics-service": "wrangler tail -c workers/analytics/wrangler-analytics.toml",
-    "tail:session-proxy": "wrangler tail -c workers/session-proxy/wrangler-session-proxy.toml --env production"
+    "tail:session-proxy": "wrangler tail -c workers/session-proxy/wrangler-session-proxy.toml --env production",
+    "openai:local": "./scripts/start_inference_server.sh"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
@@ -42,7 +43,7 @@
     "mobx-react-lite": "^4.0.7",
     "mobx-state-tree": "^6.0.1",
     "moo": "^0.5.2",
-    "openai": "^4.76.0",
+    "openai": "^5.0.1",
     "qrcode.react": "^4.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

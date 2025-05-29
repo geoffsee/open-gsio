@@ -9,12 +9,19 @@ const ClientChatStore = types
     isLoading: types.optional(types.boolean, false),
     model: types.optional(types.string, "meta-llama/llama-4-scout-17b-16e-instruct"),
     imageModel: types.optional(types.string, "black-forest-labs/flux-1.1-pro"),
+    supportedModels: types.optional(types.array(types.string), [])
   })
   .actions((self) => ({
     cleanup() {
       if (self.eventSource) {
         self.eventSource.close();
         self.eventSource = null;
+      }
+    },
+    setSupportedModels(modelsList: string[]) {
+      self.supportedModels = modelsList;
+      if(!modelsList.includes(self.model)) {
+        self.model = modelsList.pop()
       }
     },
     sendMessage: flow(function* () {

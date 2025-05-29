@@ -24,6 +24,22 @@
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
 
+## Local Inference (Apple Silicon Only)
+~~~bash
+##### 
+# install mlx-omni-server (custom homebrew wrapper)
+brew tap seemueller-io/tap
+brew install seemueller-io/tap/mlx-omni-server
+#####
+# Run mlx-omni-server
+bun run openai:local
+####
+# Override OPENAI_* variables in .dev.vars
+sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars; echo 'OPENAI_API_KEY=not-needed' >> .dev.vars
+sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo 'OPENAI_API_ENDPOINT=http://localhost:10240' >> .dev.vars
+### Restart open-gsio server so it uses the new variables
+bun run server:dev
+~~~
 History
 ---
 

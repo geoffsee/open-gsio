@@ -53,7 +53,17 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
       setControlledOpen(isOpen);
     }, [isOpen]);
 
-    const textModels = SUPPORTED_MODELS;
+
+    const getSupportedModels = async () => {
+        return await (await fetch("/api/models")).json();
+    }
+
+      useEffect(() => {
+           getSupportedModels().then((supportedModels) => {
+               ClientChatStore.setSupportedModels(supportedModels);
+           });
+      }, []);
+
 
     const handleClose = useCallback(() => {
       onClose();
@@ -75,9 +85,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
     }, [onClose]);
 
     async function selectModelFn({ name, value }) {
-      if (getModelFamily(value)) {
         ClientChatStore.setModel(value);
-      }
     }
 
     function isSelectedModelFn({ name, value }) {
@@ -144,7 +152,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
         >
           <FlyoutSubMenu
             title="Text Models"
-            flyoutMenuOptions={textModels.map((m) => ({ name: m, value: m }))}
+            flyoutMenuOptions={ClientChatStore.supportedModels.map((m) => ({ name: m, value: m }))}
             onClose={onClose}
             parentIsOpen={isOpen}
             setMenuState={setMenuState}
