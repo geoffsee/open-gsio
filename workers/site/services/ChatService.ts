@@ -74,7 +74,7 @@ const ChatService = types
         };
 
         const getSupportedModels = async () => {
-            if(self.env.OPENAI_API_ENDPOINT.includes("localhost")) {
+            if(self.env.OPENAI_API_ENDPOINT && self.env.OPENAI_API_ENDPOINT.includes("localhost")) {
                 const openaiClient = new OpenAI({baseURL: self.env.OPENAI_API_ENDPOINT})
                 const models = await openaiClient.models.list();
                 return Response.json(models.data.map(model => model.id));
@@ -141,7 +141,7 @@ const ChatService = types
             setEnv(env: Env) {
                 self.env = env;
 
-                if(env.OPENAI_API_ENDPOINT.includes("localhost")) {
+                if(env.OPENAI_API_ENDPOINT && env.OPENAI_API_ENDPOINT.includes("localhost")) {
                     self.openai = new OpenAI({
                         apiKey: self.env.OPENAI_API_KEY,
                         baseURL: self.env.OPENAI_API_ENDPOINT,
@@ -173,9 +173,17 @@ const ChatService = types
             }) {
                 const {streamConfig, streamParams, controller, encoder, streamId} = params;
 
-                const modelFamily = !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? getModelFamily(streamConfig.model) : "openai";
+                const useModelFamily = () => {
+                    return !self.env.OPENAI_API_ENDPOINT || !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? getModelFamily(streamConfig.model) : "openai";
+                }
 
-                const handler = !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? modelHandlers[modelFamily as ModelFamily] : modelHandlers.openai;
+                const modelFamily = useModelFamily();
+
+                const useModelHandler = () => {
+                    return !self.env.OPENAI_API_ENDPOINT || !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? modelHandlers[modelFamily as ModelFamily] : modelHandlers.openai;
+                }
+
+                const handler = useModelHandler();
 
                 if (handler) {
                     try {
