@@ -8,7 +8,7 @@
     "client": "pnpm client:dev",
     "client:build": "vite build",
     "server:build": "WRANGLER_LOG=info wrangler build",
-    "deploy": "CI=true vite build && wrangler deploy --minify",
+    "deploy": "CI=true; NODE_ENV=production vite build && NODE_ENV=production wrangler deploy --minify",
     "deploy:secrets": "wrangler secret bulk secrets.json",
     "deploy:email-service": "wrangler deploy --cwd workers/email",
     "deploy:analytics-service": "wrangler deploy --cwd workers/analytics",
@@ -54,6 +54,7 @@
     "typescript": "^5.7.2",
     "vike": "0.4.193",
     "vite": "^5.4.11",
+    "vite-plugin-pwa": "^1.0.0",
     "wrangler": "^4.18.0",
     "zod": "^3.23.8"
   },
