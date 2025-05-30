@@ -17,6 +17,15 @@
 
 > Note: it should be possible to use pnpm in place of bun
 
+## Testing
+
+The project uses Vitest for testing frontend components and hooks. Tests are located in `__tests__` directories next to the code they test.
+
+To run tests:
+- `bun run test` - Run all tests once
+- `bun run test:watch` - Run tests in watch mode
+- `bun run test:coverage` - Run tests with coverage report
+
 ## Deploying
 1. Setup the KV_STORAGE bindings in `wrangler.jsonc`  
 1.  [Add another `GROQ_API_KEY` in secrets.json](https://console.groq.com/keys)
@@ -142,4 +151,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
