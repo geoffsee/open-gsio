@@ -1,6 +1,6 @@
 # open-gsio
-![Tests](https://github.com/geoffsee/open-gsio/actions/workflows/tests.yml/badge.svg)
-[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0.html)
+[![Tests](https://github.com/geoffsee/open-gsio/actions/workflows/test.yaml/badge.svg)](https://github.com/geoffsee/open-gsio/actions/workflows/test.yaml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 ![image](https://github.com/user-attachments/assets/a323d373-6241-4b76-b564-f0d080ff93f7)
 
 ### Stack:
