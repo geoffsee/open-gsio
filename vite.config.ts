@@ -17,6 +17,9 @@ export default defineConfig(({command}) => {
                     console.log("Generated Sitemap -> public/sitemap.xml");
                     child_process.execSync("./scripts/generate_robots_txt.js " + APP_FQDN);
                     console.log("Generated robots.txt -> public/robots.txt");
+                    child_process.execSync("cp -r node_modules/katex/dist/fonts public/static/fonts");
+                    console.log("Copied KaTeX fonts -> public/static/fonts");
+
                 }
             },
         },

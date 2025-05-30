@@ -4,6 +4,7 @@
 /.idea/
 public/sitemap.xml
 public/robots.txt
+public/static/fonts/*
 .dev.vars
 secrets.json
 wrangler.dev.jsonc
