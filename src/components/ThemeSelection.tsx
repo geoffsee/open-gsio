@@ -15,6 +15,7 @@ export function ThemeSelectionOptions() {
     children.push(
       <IconButton
         as="div"
+        role="button"
         key={theme.name}
         onClick={() => userOptionsStore.selectTheme(theme.name)}
         size="xs"

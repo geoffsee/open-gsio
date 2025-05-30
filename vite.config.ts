@@ -3,6 +3,7 @@ import vike from "vike/plugin";
 import {defineConfig} from "vite";
 import * as child_process from "node:child_process";
 import {VitePWA} from 'vite-plugin-pwa';
+import { configDefaults } from 'vitest/config';
 
 const APP_FQDN = "open-gsio.seemueller.workers.dev";
 
@@ -58,5 +59,16 @@ export default defineConfig(({command}) => {
             target: ["es2020", "edge88", "firefox78", "chrome87", "safari13"],
             cssMinify: true
         },
+        test: {
+            globals: true,
+            environment: 'jsdom',
+            setupFiles: ['./src/test/setup.ts'],
+            exclude: [...configDefaults.exclude, 'workers/**', 'dist/**'],
+            coverage: {
+                provider: 'v8',
+                reporter: ['text', 'json', 'html'],
+                exclude: ['node_modules/', 'src/test/']
+            }
+        }
     };
 });
