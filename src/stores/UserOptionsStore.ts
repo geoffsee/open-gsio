@@ -3,16 +3,21 @@ import ClientChatStore from "./ClientChatStore";
 import { runInAction } from "mobx";
 import Cookies from "js-cookie";
 
-const UserOptionsStore = types
+export const UserOptionsStoreModel = types
   .model("UserOptionsStore", {
     followModeEnabled: types.optional(types.boolean, false),
     theme: types.optional(types.string, "darknight"),
     text_model: types.optional(types.string, "llama-3.3-70b-versatile"),
   })
   .actions((self) => ({
-    getFollowModeEnabled: flow(function* () {
+    getFollowModeEnabled() {
       return self.followModeEnabled;
-    }),
+    },
+    resetStore() {
+      self.followModeEnabled = false;
+      self.theme = "darknight";
+      self.text_model = "llama-3.3-70b-versatile";
+    },
     storeUserOptions() {
       const userOptionsCookie = document.cookie
         .split(";")
@@ -35,7 +40,7 @@ const UserOptionsStore = types
         Cookies.set("user_preferences", encodedUserPreferences);
       });
     },
-    initialize: flow(function* () {
+    initialize() {
       const userPreferencesCoookie = document.cookie
         .split(";")
         .find((row) => row.startsWith("user_preferences"));
@@ -53,48 +58,54 @@ const UserOptionsStore = types
         self.text_model = userPreferences.text_model;
       }
 
-      window.addEventListener("scroll", async () => {
+      window.addEventListener("scroll", () => {
         if (ClientChatStore.isLoading && self.followModeEnabled) {
           console.log("scrolling");
-          await self.setFollowModeEnabled(false);
+          self.setFollowModeEnabled(false);
         }
       });
 
-      window.addEventListener("wheel", async () => {
+      window.addEventListener("wheel", () => {
         if (ClientChatStore.isLoading && self.followModeEnabled) {
           console.log("wheel");
-          await self.setFollowModeEnabled(false);
+          self.setFollowModeEnabled(false);
         }
       });
 
-      window.addEventListener("touchmove", async () => {
+      window.addEventListener("touchmove", () => {
         console.log("touchmove");
         if (ClientChatStore.isLoading && self.followModeEnabled) {
-          await self.setFollowModeEnabled(false);
+          self.setFollowModeEnabled(false);
         }
       });
 
-      window.addEventListener("mousedown", async () => {
+      window.addEventListener("mousedown", () => {
         if (ClientChatStore.isLoading && self.followModeEnabled) {
-          await self.setFollowModeEnabled(false);
+          self.setFollowModeEnabled(false);
         }
       });
-    }),
+    },
     deleteCookie() {
       document.cookie = "user_preferences=; max-age=; path=/;";
     },
-    setFollowModeEnabled: flow(function* (followMode: boolean) {
+    setFollowModeEnabled(followMode: boolean) {
       self.followModeEnabled = followMode;
-    }),
-    toggleFollowMode: flow(function* () {
+    },
+    toggleFollowMode() {
       self.followModeEnabled = !self.followModeEnabled;
-    }),
-    selectTheme: flow(function* (theme: string) {
+    },
+    selectTheme(theme: string) {
       self.theme = theme;
       self.storeUserOptions();
-    }),
+    },
+    setTheme(theme: string) {
+      self.theme = theme;
+    },
+    setTextModel(model: string) {
+      self.text_model = model;
+    },
   }));
 
-const userOptionsStore = UserOptionsStore.create();
+const userOptionsStore = UserOptionsStoreModel.create();
 
 export default userOptionsStore;

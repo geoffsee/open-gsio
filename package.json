@@ -19,9 +19,9 @@
     "tail:analytics-service": "wrangler tail -c workers/analytics/wrangler-analytics.toml",
     "tail:session-proxy": "wrangler tail -c workers/session-proxy/wrangler-session-proxy.toml --env production",
     "openai:local": "./scripts/start_inference_server.sh",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test": "NODE_OPTIONS=--no-experimental-fetch vitest run",
+    "test:watch": "NODE_OPTIONS=--no-experimental-fetch vitest",
+    "test:coverage": "NODE_OPTIONS=--no-experimental-fetch vitest run --coverage"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.32.1",

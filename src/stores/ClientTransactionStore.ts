@@ -72,5 +72,5 @@ export default ClientTransactionStore.create({
   amount: "",
   donerId: "",
   userConfirmed: false,
-  transactionId: "",
+  txId: "",
 });
