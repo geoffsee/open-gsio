@@ -7,32 +7,35 @@ import MessageEditor from "./MessageEditorComponent";
 import UserMessageTools from "./UserMessageTools";
 import clientChatStore from "../../../stores/ClientChatStore";
 import UserOptionsStore from "../../../stores/UserOptionsStore";
+import MotionBox from "./MotionBox";
 
-const MotionBox = motion(Box);
 
-const LoadingDots = () => (
-  <Flex>
-    {[0, 1, 2].map((i) => (
-      <MotionBox
-        key={i}
-        width="8px"
-        height="8px"
-        borderRadius="50%"
-        backgroundColor="text.primary"
-        margin="0 4px"
-        animate={{
-          scale: [1, 1.2, 1],
-          opacity: [0.5, 1, 0.5],
-        }}
-        transition={{
-          duration: 1,
-          repeat: Infinity,
-          delay: i * 0.2,
-        }}
-      />
-    ))}
-  </Flex>
-);
+
+const LoadingDots = () => {
+  return (
+      <Flex>
+        {[0, 1, 2].map((i) => (
+            <MotionBox
+                key={i}
+                width="8px"
+                height="8px"
+                borderRadius="50%"
+                backgroundColor="text.primary"
+                margin="0 4px"
+                animate={{
+                  scale: [1, 1.2, 1],
+                  opacity: [0.5, 1, 0.5],
+                }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  delay: i * 0.2,
+                }}
+            />
+        ))}
+      </Flex>
+  );
+}
 
 function renderMessage(msg: any) {
   if (msg.role === "user") {

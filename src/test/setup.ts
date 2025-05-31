@@ -4,12 +4,10 @@ import { vi } from 'vitest';
 import React from 'react';
 
 // Mock for framer-motion to avoid animation-related issues in tests
-vi.mock('framer-motion', () => ({
-  motion: {
-    div: (props: any) => React.createElement('div', props, props.children),
-  },
-  AnimatePresence: (props: any) => React.createElement(React.Fragment, null, props.children),
-}));
+// vi.mock('framer-motion', () => ({
+//   motion: (Component: React.ElementType) => (props: any) => React.createElement(Component, props, props.children), // Changed this line
+//   AnimatePresence: (props: any) => React.createElement(React.Fragment, null, props.children),
+// }));
 
 // Mock for static data if needed
 vi.mock('../static-data/welcome_home_text', () => ({
