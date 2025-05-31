@@ -71,7 +71,7 @@ export default defineConfig(({command}) => {
             },
         },
         esbuild: {
-            drop: ["console"]
+            // drop: ["console"]
         },
         build: {
             emitAssets: false,

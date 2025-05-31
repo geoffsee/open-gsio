@@ -30,6 +30,22 @@ export const MessagesStore = types
         reset() {
             self.items.clear();
         },
+        editMessage(message: Instance<typeof Message>, newContent: string) {
+            // Find the index of the message in the items array
+            const messageIndex = self.items.indexOf(message);
+            if (messageIndex === -1) {
+                // Message not found in the items array
+                return false;
+            }
+
+            // Update the message content
+            message.setContent(newContent);
+
+            // Remove all messages after the edited message
+            self.removeAfter(messageIndex);
+
+            return true;
+        },
     }));
 
 export interface IMessagesStore extends Instance<typeof MessagesStore> {}
