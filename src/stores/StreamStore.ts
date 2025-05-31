@@ -32,8 +32,11 @@ export const StreamStore = types
         }
 
         function cleanup() {
-            if (self.eventSource) {
+            try {
                 self.eventSource.close();
+            } catch (e) {
+                console.error("error closing event source", e);
+            } finally {
                 setEventSource(null);
             }
         }
@@ -68,11 +71,13 @@ export const StreamStore = types
                 if (response.status === 429) {
                     root.updateLast("Too many requests • please slow down.");
                     cleanup();
+                    UserOptionsStore.setFollowModeEnabled(false);
                     return;
                 }
                 if (response.status > 200) {
                     root.updateLast("Error • something went wrong.");
                     cleanup();
+                    UserOptionsStore.setFollowModeEnabled(false);
                     return;
                 }
 
@@ -86,6 +91,7 @@ export const StreamStore = types
                             root.updateLast(parsed.error);
                             cleanup();
                             root.setIsLoading(false);
+                            UserOptionsStore.setFollowModeEnabled(false);
                             return;
                         }
 
@@ -94,6 +100,7 @@ export const StreamStore = types
                             parsed.data.choices[0]?.finish_reason === "stop"
                         ) {
                             root.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+                            UserOptionsStore.setFollowModeEnabled(false);
                             cleanup();
                             root.setIsLoading(false);
                             return;
@@ -108,7 +115,10 @@ export const StreamStore = types
                 };
 
                 const handleError = () => {
+                    root.updateLast("Error • connection lost.");
+                    UserOptionsStore.setFollowModeEnabled(false);
                     cleanup();
+                    root.setIsLoading(false);
                 };
 
                 self.eventSource.onmessage = handleMessage;
@@ -118,12 +128,14 @@ export const StreamStore = types
                 root.updateLast("Sorry • network error.");
                 cleanup();
                 root.setIsLoading(false);
+                UserOptionsStore.setFollowModeEnabled(false);
             }
         });
 
         const stopIncomingMessage = () => {
             cleanup();
             root.setIsLoading(false);
+            UserOptionsStore.setFollowModeEnabled(false);
         };
 
         const setStreamId = (id: string) => {
