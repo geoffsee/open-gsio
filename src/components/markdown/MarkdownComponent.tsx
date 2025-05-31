@@ -238,7 +238,7 @@ const CustomTable: React.FC<{
 };
 
 const CustomHtmlBlock: React.FC<{ content: string }> = ({content}) => {
-    return <Box dangerouslySetInnerHTML={{__html: content}} mb={2}/>;
+    return <Box as="span" display="inline" dangerouslySetInnerHTML={{__html: content}} mb={2}/>;
 };
 
 const CustomText: React.FC<{ text: React.ReactNode }> = ({text}) => {

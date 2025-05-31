@@ -3,8 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
 import MessageEditor from '../MessageEditorComponent';
 
-// Import the mocked clientChatStore
+// Import the mocked stores
 import clientChatStore from '../../../../stores/ClientChatStore';
+import messageEditorStore from '../../../../stores/MessageEditorStore';
 
 // Mock the Message model
 vi.mock('../../../../models/Message', () => {
@@ -15,17 +16,45 @@ vi.mock('../../../../models/Message', () => {
   };
 });
 
+// Mock fetch globally
+globalThis.fetch = vi.fn(() =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve({})
+    })
+);
+
 // Mock the ClientChatStore
 vi.mock('../../../../stores/ClientChatStore', () => {
   const mockStore = {
     items: [],
     removeAfter: vi.fn(),
     sendMessage: vi.fn(),
-    setIsLoading: vi.fn()
+    setIsLoading: vi.fn(),
+    editMessage: vi.fn().mockReturnValue(true)
   };
 
   // Add the mockUserMessage to the items array
   mockStore.items.indexOf = vi.fn().mockReturnValue(0);
+
+  return {
+    default: mockStore
+  };
+});
+
+// Mock the MessageEditorStore
+vi.mock('../../../../stores/MessageEditorStore', () => {
+  const mockStore = {
+    editedContent: 'Test message', // Set initial value to match the test expectation
+    message: null,
+    setEditedContent: vi.fn(),
+    setMessage: vi.fn((message) => {
+      mockStore.message = message;
+      mockStore.editedContent = message.content;
+    }),
+    onCancel: vi.fn(),
+    handleSave: vi.fn()
+  };
 
   return {
     default: mockStore
@@ -51,6 +80,7 @@ describe('MessageEditor', () => {
     const textarea = screen.getByRole('textbox');
     expect(textarea).toBeInTheDocument();
     expect(textarea).toHaveValue('Test message');
+    expect(messageEditorStore.setMessage).toHaveBeenCalledWith(mockUserMessage);
   });
 
   it('should update the content when typing', () => {
@@ -59,22 +89,16 @@ describe('MessageEditor', () => {
     const textarea = screen.getByRole('textbox');
     fireEvent.change(textarea, { target: { value: 'Updated message' } });
 
-    expect(textarea).toHaveValue('Updated message');
+    expect(messageEditorStore.setEditedContent).toHaveBeenCalledWith('Updated message');
   });
 
-  it('should call setContent, removeAfter, sendMessage, and onCancel when save button is clicked', () => {
-    render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel} />);
-
-    const textarea = screen.getByRole('textbox');
-    fireEvent.change(textarea, { target: { value: 'Updated message' } });
+  it('should call handleSave when save button is clicked', () => {
+    render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel}/>);
 
     const saveButton = screen.getByLabelText('Save edit');
     fireEvent.click(saveButton);
 
-    expect(mockUserMessage.setContent).toHaveBeenCalledWith('Updated message');
-    expect(clientChatStore.removeAfter).toHaveBeenCalledWith(0);
-    expect(clientChatStore.sendMessage).toHaveBeenCalled();
-    expect(mockOnCancel).toHaveBeenCalled();
+    expect(messageEditorStore.handleSave).toHaveBeenCalled();
   });
 
   it('should call onCancel when cancel button is clicked', () => {
@@ -83,43 +107,35 @@ describe('MessageEditor', () => {
     const cancelButton = screen.getByLabelText('Cancel edit');
     fireEvent.click(cancelButton);
 
+    expect(messageEditorStore.onCancel).toHaveBeenCalled();
     expect(mockOnCancel).toHaveBeenCalled();
-    expect(mockUserMessage.setContent).not.toHaveBeenCalled();
   });
 
-  it('should save when Ctrl+Enter is pressed', () => {
+  it('should call handleSave when Ctrl+Enter is pressed', () => {
     render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel} />);
 
     const textarea = screen.getByRole('textbox');
-    fireEvent.change(textarea, { target: { value: 'Updated message' } });
     fireEvent.keyDown(textarea, { key: 'Enter', ctrlKey: true });
 
-    expect(mockUserMessage.setContent).toHaveBeenCalledWith('Updated message');
-    expect(clientChatStore.removeAfter).toHaveBeenCalledWith(0);
-    expect(clientChatStore.sendMessage).toHaveBeenCalled();
-    expect(mockOnCancel).toHaveBeenCalled();
+    expect(messageEditorStore.handleSave).toHaveBeenCalled();
   });
 
-  it('should save when Meta+Enter is pressed', () => {
+  it('should call handleSave when Meta+Enter is pressed', () => {
     render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel} />);
 
     const textarea = screen.getByRole('textbox');
-    fireEvent.change(textarea, { target: { value: 'Updated message' } });
     fireEvent.keyDown(textarea, { key: 'Enter', metaKey: true });
 
-    expect(mockUserMessage.setContent).toHaveBeenCalledWith('Updated message');
-    expect(clientChatStore.removeAfter).toHaveBeenCalledWith(0);
-    expect(clientChatStore.sendMessage).toHaveBeenCalled();
-    expect(mockOnCancel).toHaveBeenCalled();
+    expect(messageEditorStore.handleSave).toHaveBeenCalled();
   });
 
-  it('should cancel when Escape is pressed', () => {
+  it('should call onCancel when Escape is pressed', () => {
     render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel} />);
 
     const textarea = screen.getByRole('textbox');
     fireEvent.keyDown(textarea, { key: 'Escape' });
 
+    expect(messageEditorStore.onCancel).toHaveBeenCalled();
     expect(mockOnCancel).toHaveBeenCalled();
-    expect(mockUserMessage.setContent).not.toHaveBeenCalled();
   });
 });

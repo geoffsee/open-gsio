@@ -3,6 +3,7 @@ import {
     Instance,
     flow,
     types,
+    applyAction,
 } from "mobx-state-tree";
 import type { IMessagesStore } from "./MessagesStore";
 import type { IUIStore } from "./UIStore";
@@ -28,7 +29,7 @@ export const StreamStore = types
         }
 
         function setEventSource(source: EventSource | null) {
-            self.eventSource = source;
+                self.eventSource = source;
         }
 
         function cleanup() {

@@ -121,7 +121,10 @@ const ChatService = types
                     console.log("getting local models")
                     const openaiClient = new OpenAI({baseURL: self.env.OPENAI_API_ENDPOINT})
                     const models = await openaiClient.models.list();
-                    return Response.json(models.data.map(model => model.id));
+                    return Response.json(
+                        models.data
+                            .filter(model => model.id.includes("mlx"))
+                            .map(model => model.id));
                 }
                 return Response.json(SUPPORTED_MODELS);
             },
@@ -186,8 +189,10 @@ const ChatService = types
                 }
 
                 const handler = useModelHandler();
+                
 
                 if (handler) {
+                    console.log(`Using provider: ${modelFamily}`);
                     try {
                         await handler(streamParams, handleStreamData(controller, encoder));
 

@@ -1,7 +1,6 @@
 # open-gsio
 [![Tests](https://github.com/geoffsee/open-gsio/actions/workflows/test.yml/badge.svg)](https://github.com/geoffsee/open-gsio/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-![image](https://github.com/user-attachments/assets/a323d373-6241-4b76-b564-f0d080ff93f7)
 
 ### Stack:
 - vike
@@ -51,6 +50,18 @@ sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo 'OPENAI_API_ENDPOINT=http:/
 ### Restart open-gsio server so it uses the new variables
 bun run server:dev
 ~~~
+## Adding models for local inference
+~~~console
+MODEL_TO_ADD=mlx-community/gemma-3-4b-it-8bit
+# Chat completions endpoint
+curl http://localhost:10240/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model: ,
+    "messages": [{"role": "user", "content": "Hello"}]
+  }'
+~~~  
+
 History
 ---
 
