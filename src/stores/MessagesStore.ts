@@ -32,7 +32,7 @@ export const MessagesStore = types
         },
         editMessage(message: Instance<typeof Message>, newContent: string) {
             // Find the index of the message in the items array
-            const messageIndex = self.items.indexOf(message);
+            const messageIndex = self.items.map(i => i.id).indexOf(message.id);
             if (messageIndex === -1) {
                 // Message not found in the items array
                 return false;
