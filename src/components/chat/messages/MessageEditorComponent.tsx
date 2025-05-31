@@ -5,6 +5,7 @@ import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import Message from "../../../models/Message";
 import clientChatStore from "../../../stores/ClientChatStore";
+import UserOptionsStore from "../../../stores/UserOptionsStore";
 
 interface MessageEditorProps {
   message: Instance<typeof Message>;
@@ -23,8 +24,80 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
       // Remove all messages after the edited message
       clientChatStore.removeAfter(messageIndex);
 
-      // Send the message
-      clientChatStore.sendMessage();
+      // Set follow mode and loading state
+      UserOptionsStore.setFollowModeEnabled(true);
+      clientChatStore.setIsLoading(true);
+
+      try {
+        // Add a small delay before adding the assistant message (for better UX)
+        await new Promise((r) => setTimeout(r, 500));
+
+        // Add an empty assistant message
+        clientChatStore.add(Message.create({ content: "", role: "assistant" }));
+        const payload = { messages: clientChatStore.items.slice(), model: clientChatStore.model };
+
+        // Make API call
+        const response = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        if (response.status === 429) {
+          clientChatStore.updateLast("Too many requests • please slow down.");
+          clientChatStore.setIsLoading(false);
+          UserOptionsStore.setFollowModeEnabled(false);
+          return;
+        }
+        if (response.status > 200) {
+          clientChatStore.updateLast("Error • something went wrong.");
+          clientChatStore.setIsLoading(false);
+          UserOptionsStore.setFollowModeEnabled(false);
+          return;
+        }
+
+        const { streamUrl } = await response.json();
+        const eventSource = new EventSource(streamUrl);
+
+        eventSource.onmessage = (event) => {
+          try {
+            const parsed = JSON.parse(event.data);
+            if (parsed.type === "error") {
+              clientChatStore.updateLast(parsed.error);
+              clientChatStore.setIsLoading(false);
+              UserOptionsStore.setFollowModeEnabled(false);
+              eventSource.close();
+              return;
+            }
+
+            if (parsed.type === "chat" && parsed.data.choices[0]?.finish_reason === "stop") {
+              clientChatStore.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+              clientChatStore.setIsLoading(false);
+              UserOptionsStore.setFollowModeEnabled(false);
+              eventSource.close();
+              return;
+            }
+
+            if (parsed.type === "chat") {
+              clientChatStore.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+            }
+          } catch (err) {
+            console.error("stream parse error", err);
+          }
+        };
+
+        eventSource.onerror = () => {
+          clientChatStore.updateLast("Error • connection lost.");
+          clientChatStore.setIsLoading(false);
+          UserOptionsStore.setFollowModeEnabled(false);
+          eventSource.close();
+        };
+      } catch (err) {
+        console.error("sendMessage", err);
+        clientChatStore.updateLast("Sorry • network error.");
+        clientChatStore.setIsLoading(false);
+        UserOptionsStore.setFollowModeEnabled(false);
+      }
     }
 
     onCancel();
