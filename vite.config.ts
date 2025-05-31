@@ -33,10 +33,28 @@ export default defineConfig(({command}) => {
             }),
             react(),
             // PWA plugin saves money on data transfer by caching assets on the client
+            /*
+                For safari, use this script in the console to unregister the service worker.
+                await navigator.serviceWorker.getRegistrations()
+                   .then(registrations => {
+                    registrations.map(r => {
+                    r.unregister()
+                    })
+                })
+             */
             VitePWA({
                 registerType: 'autoUpdate',
+                devOptions: {
+                    enabled: false,
+                },
+                manifest: {
+                    name: "open-gsio",
+                    short_name: "open-gsio",
+                    description: "Free and open-source platform for conversational AI."
+                },
                 workbox: {
-                    globPatterns: ['**/*.{js,css,html,ico,png,svg}']
+                    globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+                    navigateFallbackDenylist: [/^\/api\//],
                 }
             })
         ],

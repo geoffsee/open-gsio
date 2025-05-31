@@ -2,21 +2,31 @@ import React, { KeyboardEvent, useState } from "react";
 import { Box, Flex, IconButton, Textarea } from "@chakra-ui/react";
 import { Check, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import store, { type IMessage } from "../../../stores/ClientChatStore";
+import { Instance } from "mobx-state-tree";
+import Message from "../../../models/Message";
+import clientChatStore from "../../../stores/ClientChatStore";
 
 interface MessageEditorProps {
-  message: IMessage;
+  message: Instance<typeof Message>;
   onCancel: () => void;
 }
 
 const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
   const [editedContent, setEditedContent] = useState(message.content);
 
-  const handleSave = () => {
-    const messageIndex = store.messages.indexOf(message);
+  const handleSave = async () => {
+    message.setContent(editedContent);
+
+    // Find the index of the edited message
+    const messageIndex = clientChatStore.items.indexOf(message);
     if (messageIndex !== -1) {
-      store.editMessage(messageIndex, editedContent);
+      // Remove all messages after the edited message
+      clientChatStore.removeAfter(messageIndex);
+
+      // Send the message
+      clientChatStore.sendMessage();
     }
+
     onCancel();
   };
 
