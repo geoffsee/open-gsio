@@ -71,7 +71,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
 
     const handleCopyConversation = useCallback(() => {
       navigator.clipboard
-        .writeText(formatConversationMarkdown(ClientChatStore.messages))
+        .writeText(formatConversationMarkdown(ClientchatStore.items))
         .then(() => {
           window.alert(
             "Conversation copied to clipboard. \n\nPaste it somewhere safe!",
