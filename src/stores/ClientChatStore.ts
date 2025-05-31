@@ -1,272 +1,229 @@
-import { applySnapshot, flow, Instance, types } from "mobx-state-tree";
+// ---------------------------
+// stores/MessagesStore.ts
+// ---------------------------
+import { Instance, types } from "mobx-state-tree";
 import Message from "../models/Message";
+
+export const MessagesStore = types
+    .model("MessagesStore", {
+      items: types.optional(types.array(Message), []),
+    })
+    .actions((self) => ({
+      add(message: Instance<typeof Message>) {
+        self.items.push(message);
+      },
+      updateLast(content: string) {
+        if (self.items.length) {
+          self.items[self.items.length - 1].content = content;
+        }
+      },
+      appendLast(content: string) {
+        if (self.items.length) {
+          self.items[self.items.length - 1].content += content;
+        }
+      },
+      removeAfter(index: number) {
+        if (index >= 0 && index < self.items.length) {
+          self.items.splice(index + 1);
+        }
+      },
+      reset() {
+        self.items.clear();
+      },
+    }));
+
+export interface IMessagesStore extends Instance<typeof MessagesStore> {}
+
+// ---------------------------
+// stores/UIStore.ts
+// ---------------------------
+import { Instance, types } from "mobx-state-tree";
+
+export const UIStore = types
+    .model("UIStore", {
+      input: types.optional(types.string, ""),
+      isLoading: types.optional(types.boolean, false),
+    })
+    .actions((self) => ({
+      setInput(value: string) {
+        self.input = value;
+      },
+      setIsLoading(value: boolean) {
+        self.isLoading = value;
+      },
+    }));
+
+export interface IUIStore extends Instance<typeof UIStore> {}
+
+// ---------------------------
+// stores/ModelStore.ts
+// ---------------------------
+import { Instance, types } from "mobx-state-tree";
+
+export const ModelStore = types
+    .model("ModelStore", {
+      model: types.optional(
+          types.string,
+          "meta-llama/llama-4-scout-17b-16e-instruct",
+      ),
+      imageModel: types.optional(types.string, "black-forest-labs/flux-1.1-pro"),
+      supportedModels: types.optional(types.array(types.string), []),
+    })
+    .actions((self) => ({
+      setModel(value: string) {
+        self.model = value;
+        try {
+          localStorage.setItem("recentModel", value);
+        } catch (_) {}
+      },
+      setImageModel(value: string) {
+        self.imageModel = value;
+      },
+      setSupportedModels(list: string[]) {
+        self.supportedModels = list;
+        if (!list.includes(self.model)) {
+          // fall back to last entry (arbitrary but predictable)
+          self.model = list[list.length - 1] ?? self.model;
+        }
+      },
+    }));
+
+export interface IModelStore extends Instance<typeof ModelStore> {}
+
+// ---------------------------
+// stores/StreamStore.ts
+// Handles networking + SSE lifecycle.
+// Depends on MessagesStore, UIStore, and ModelStore via composition.
+// ---------------------------
+import {
+  getParent,
+  Instance,
+  flow,
+  types,
+} from "mobx-state-tree";
+import type { IMessagesStore } from "./MessagesStore";
+import type { IUIStore } from "./UIStore";
+import type { IModelStore } from "./ModelStore";
 import UserOptionsStore from "./UserOptionsStore";
+import Message from "../models/Message";
 
-const ClientChatStore = types
-  .model("ClientChatStore", {
-    messages: types.optional(types.array(Message), []),
-    input: types.optional(types.string, ""),
-    isLoading: types.optional(types.boolean, false),
-    model: types.optional(types.string, "meta-llama/llama-4-scout-17b-16e-instruct"),
-    imageModel: types.optional(types.string, "black-forest-labs/flux-1.1-pro"),
-    supportedModels: types.optional(types.array(types.string), [])
-  })
-  .actions((self) => ({
-    cleanup() {
-      if (self.eventSource) {
-        self.eventSource.close();
-        self.eventSource = null;
+interface RootDeps extends IMessagesStore, IUIStore, IModelStore {}
+
+export const StreamStore = types
+    .model("StreamStore", {})
+    .volatile(() => ({
+      eventSource: null as EventSource | null,
+    }))
+    .actions((self) => {
+      // helpers
+      const root = getParent<RootDeps>(self);
+
+      function cleanup() {
+        if (self.eventSource) {
+          self.eventSource.close();
+          self.eventSource = null;
+        }
       }
-    },
-    setSupportedModels(modelsList: string[]) {
-      self.supportedModels = modelsList;
-      if(!modelsList.includes(self.model)) {
-        self.model = modelsList.pop()
-      }
-    },
-    sendMessage: flow(function* () {
-      if (!self.input.trim() || self.isLoading) return;
 
-      self.cleanup();
+      const sendMessage = flow(function* () {
+        if (!root.input.trim() || root.isLoading) return;
+        cleanup();
+        yield UserOptionsStore.setFollowModeEnabled(true);
+        root.setIsLoading(true);
 
-      yield self.setFollowModeEnabled(true);
-      self.setIsLoading(true);
-
-      const userMessage = Message.create({
-        content: self.input,
-        role: "user" as const,
-      });
-      self.addMessage(userMessage);
-      self.setInput("");
-
-      try {
-        const payload = {
-          messages: self.messages.slice(),
-          model: self.model,
-        };
-
-        yield new Promise((resolve) => setTimeout(resolve, 500));
-        self.addMessage(Message.create({ content: "", role: "assistant" }));
-
-        const response = yield fetch("/api/chat", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+        const userMessage = Message.create({
+          content: root.input,
+          role: "user" as const,
         });
-        if (response.status === 429) {
-          self.updateLastMessage(
-            `Too many requests in the given time. Please wait a few moments and try again.`,
-          );
-          self.cleanup();
-          return;
-        }
-        if (response.status > 200) {
-          self.updateLastMessage(`Error! Something went wrong, try again.`);
-          self.cleanup();
-          return;
-        }
-
-        const { streamUrl } = yield response.json();
-        self.eventSource = new EventSource(streamUrl);
-
-        self.eventSource.onmessage = async (event) => {
-          try {
-            const dataString = event.data;
-            const parsedData = JSON.parse(dataString);
-
-            if (parsedData.type === "error") {
-              self.updateLastMessage(`${parsedData.error}`);
-              self.cleanup();
-              self.setIsLoading(false);
-              return;
-            }
-
-            if (
-              parsedData.type === "chat" &&
-              parsedData.data.choices[0]?.finish_reason === "stop"
-            ) {
-              self.appendToLastMessage(
-                parsedData.data.choices[0]?.delta?.content || "",
-              );
-              self.cleanup();
-              self.setIsLoading(false);
-              return;
-            }
-
-            if (parsedData.type === "chat") {
-              self.appendToLastMessage(
-                parsedData.data.choices[0]?.delta?.content || "",
-              );
-            }
-          } catch (error) {
-            console.error("Error processing stream:", error);
-          }
-        };
-
-        self.eventSource.onerror = (e) => {
-          self.cleanup();
-        };
-      } catch (error) {
-        console.error("Error in sendMessage:", error);
-        if (
-          !self.messages.length ||
-          self.messages[self.messages.length - 1].role !== "assistant"
-        ) {
-          self.addMessage({
-            content: "Sorry, there was an error.",
-            role: "assistant",
-          });
-        } else {
-          self.updateLastMessage("Sorry, there was an error.");
-        }
-        self.cleanup();
-        self.setIsLoading(false);
-      } finally {
-      }
-    }),
-    setFollowModeEnabled: flow(function* (isEnabled: boolean) {
-      yield UserOptionsStore.setFollowModeEnabled(isEnabled);
-    }),
-    setInput(value: string) {
-      self.input = value;
-    },
-    setModel(value: string) {
-      self.model = value;
-      try {
-        localStorage.setItem("recentModel", value);
-      } catch (error) {}
-    },
-    setImageModel(value: string) {
-      self.imageModel = value;
-    },
-    addMessage(message: Instance<typeof Message>) {
-      self.messages.push(message);
-    },
-    editMessage: flow(function* (index: number, content: string) {
-      yield self.setFollowModeEnabled(true);
-      if (index >= 0 && index < self.messages.length) {
-        self.messages[index].setContent(content);
-
-        self.messages.splice(index + 1);
-
-        self.setIsLoading(true);
-
-        yield new Promise((resolve) => setTimeout(resolve, 500));
-
-        self.addMessage(Message.create({ content: "", role: "assistant" }));
+        root.add(userMessage);
+        root.setInput("");
 
         try {
-          const payload = {
-            messages: self.messages.slice(),
-            model: self.model,
-          };
+          const payload = { messages: root.items.slice(), model: root.model };
+          // optimistic UI delay (demo‑purpose)
+          yield new Promise((r) => setTimeout(r, 500));
+          root.add(Message.create({ content: "", role: "assistant" }));
 
-          const response = yield fetch("/api/chat", {
+          const response: Response = yield fetch("/api/chat", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
           });
+
           if (response.status === 429) {
-            self.updateLastMessage(
-              `Too many requests in the given time. Please wait a few moments and try again.`,
-            );
-            self.cleanup();
+            root.updateLast("Too many requests • please slow down.");
+            cleanup();
             return;
           }
           if (response.status > 200) {
-            self.updateLastMessage(`Error! Something went wrong, try again.`);
-            self.cleanup();
+            root.updateLast("Error • something went wrong.");
+            cleanup();
             return;
           }
 
-          const { streamUrl } = yield response.json();
+          const { streamUrl } = (yield response.json()) as { streamUrl: string };
           self.eventSource = new EventSource(streamUrl);
 
           self.eventSource.onmessage = (event) => {
             try {
-              const dataString = event.data;
-              const parsedData = JSON.parse(dataString);
-
-              if (parsedData.type === "error") {
-                self.updateLastMessage(`${parsedData.error}`);
-                self.cleanup();
-                self.setIsLoading(false);
+              const parsed = JSON.parse(event.data);
+              if (parsed.type === "error") {
+                root.updateLast(parsed.error);
+                cleanup();
+                root.setIsLoading(false);
                 return;
               }
 
               if (
-                parsedData.type === "chat" &&
-                parsedData.data.choices[0]?.finish_reason === "stop"
+                  parsed.type === "chat" &&
+                  parsed.data.choices[0]?.finish_reason === "stop"
               ) {
-                self.cleanup();
-                self.setIsLoading(false);
+                root.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+                cleanup();
+                root.setIsLoading(false);
                 return;
               }
 
-              if (parsedData.type === "chat") {
-                self.appendToLastMessage(
-                  parsedData.data.choices[0]?.delta?.content || "",
-                );
+              if (parsed.type === "chat") {
+                root.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
               }
-            } catch (error) {
-              console.error("Error processing stream:", error);
-            } finally {
+            } catch (err) {
+              console.error("stream parse error", err);
             }
           };
 
-          self.eventSource.onerror = (e) => {
-            console.log("EventSource encountered an error", JSON.stringify(e));
-          };
-        } catch (error) {
-          console.error("Error in editMessage:", error);
-          self.addMessage({
-            content: "Sorry, there was an error.",
-            role: "assistant",
-          });
-          self.cleanup();
-        } finally {
+          self.eventSource.onerror = () => cleanup();
+        } catch (err) {
+          console.error("sendMessage", err);
+          root.updateLast("Sorry • network error.");
+          cleanup();
+          root.setIsLoading(false);
         }
-      }
-    }),
-    getIsLoading() {
-      return self.isLoading;
-    },
-    reset() {
-      applySnapshot(self, {});
-    },
-    removeMessagesAfter(index: number) {
-      if (index >= 0 && index < self.messages.length) {
-        self.messages.splice(index + 1);
-      }
-    },
-    updateLastMessage(content: string) {
-      if (self.messages.length > 0) {
-        self.messages[self.messages.length - 1].content = content;
-      }
-    },
-    appendToLastMessage(content: string) {
-      if (self.messages.length > 0) {
-        self.messages[self.messages.length - 1].content += content;
-      }
-    },
-    setIsLoading(value: boolean) {
-      self.isLoading = value;
-    },
-    stopIncomingMessage() {
-      if (self.eventSource) {
-        self.eventSource.close();
-        self.eventSource = null;
-      }
-      self.setIsLoading(false);
-    },
-  }));
+      });
 
-export type IMessage = Instance<typeof Message>;
+      const stopIncomingMessage = () => {
+        cleanup();
+        root.setIsLoading(false);
+      };
 
-export type IClientChatStore = Instance<typeof this>;
+      return { sendMessage, stopIncomingMessage, cleanup };
+    });
 
-export default ClientChatStore.create();
+export interface IStreamStore extends Instance<typeof StreamStore> {}
+
+// ---------------------------
+// stores/ClientChatStore.ts (root)
+// ---------------------------
+import { types } from "mobx-state-tree";
+// import { MessagesStore } from "./MessagesStore";
+// import { UIStore } from "./UIStore";
+// import { ModelStore } from "./ModelStore";
+// import { StreamStore } from "./StreamStore";
+
+export const ClientChatStore = types
+    .compose(MessagesStore, UIStore, ModelStore, StreamStore)
+    .named("ClientChatStore");
+
+export const clientChatStore = ClientChatStore.create();
+
+export type IClientChatStore = Instance<typeof ClientChatStore>;
