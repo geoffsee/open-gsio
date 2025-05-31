@@ -26,7 +26,8 @@ export const MessageEditorStore = types
             self.editedContent = content;
         },
         setMessage(message: Instance<typeof Message>) {
-            self.messageId = message.id;
+            // Handle messages that might not have an id property (for testing)
+            self.messageId = message.id || "";
             self.editedContent = message.content;
         },
         onCancel() {

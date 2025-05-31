@@ -25,12 +25,17 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
     onCancel();
   };
 
+  const handleSave = async () => {
+    await messageEditorStore.handleSave();
+    onCancel();
+  };
+
 
 
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
-      messageEditorStore.handleSave();
+      handleSave();
     }
 
     if (e.key === "Escape") {
@@ -66,7 +71,7 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
         <IconButton
           aria-label="Save edit"
           icon={<Check />}
-          onClick={() => messageEditorStore.handleSave()}
+          onClick={handleSave}
           size="sm"
           variant="ghost"
           color={"accent.confirm"}
