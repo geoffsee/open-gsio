@@ -73,14 +73,6 @@ const ChatService = types
             throw new Error('Unsupported message format');
         };
 
-        const getSupportedModels = async () => {
-            if(self.env.OPENAI_API_ENDPOINT && self.env.OPENAI_API_ENDPOINT.includes("localhost")) {
-                const openaiClient = new OpenAI({baseURL: self.env.OPENAI_API_ENDPOINT})
-                const models = await openaiClient.models.list();
-                return Response.json(models.data.map(model => model.id));
-            }
-            return Response.json(SUPPORTED_MODELS);
-        };
 
         const createStreamParams = async (
             streamConfig: any,
@@ -122,7 +114,17 @@ const ChatService = types
         };
 
         return {
-            getSupportedModels,
+            async getSupportedModels() {
+                const isLocal = self.env.OPENAI_API_ENDPOINT && self.env.OPENAI_API_ENDPOINT.includes("localhost");
+                console.log({isLocal})
+                if(isLocal) {
+                    console.log("getting local models")
+                    const openaiClient = new OpenAI({baseURL: self.env.OPENAI_API_ENDPOINT})
+                    const models = await openaiClient.models.list();
+                    return Response.json(models.data.map(model => model.id));
+                }
+                return Response.json(SUPPORTED_MODELS);
+            },
             setActiveStream(streamId: string, stream: any) {
                 const validStream = {
                     name: stream?.name || "Unnamed Stream",
