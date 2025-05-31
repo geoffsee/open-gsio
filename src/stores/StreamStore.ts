@@ -89,9 +89,9 @@ export const StreamStore = types
                         const parsed = JSON.parse(event.data);
                         if (parsed.type === "error") {
                             root.updateLast(parsed.error);
-                            cleanup();
                             root.setIsLoading(false);
                             UserOptionsStore.setFollowModeEnabled(false);
+                            cleanup();
                             return;
                         }
 
@@ -101,8 +101,8 @@ export const StreamStore = types
                         ) {
                             root.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
                             UserOptionsStore.setFollowModeEnabled(false);
-                            cleanup();
                             root.setIsLoading(false);
+                            cleanup();
                             return;
                         }
 
@@ -116,9 +116,9 @@ export const StreamStore = types
 
                 const handleError = () => {
                     root.updateLast("Error • connection lost.");
+                    root.setIsLoading(false);
                     UserOptionsStore.setFollowModeEnabled(false);
                     cleanup();
-                    root.setIsLoading(false);
                 };
 
                 self.eventSource.onmessage = handleMessage;
@@ -126,9 +126,9 @@ export const StreamStore = types
             } catch (err) {
                 console.error("sendMessage", err);
                 root.updateLast("Sorry • network error.");
-                cleanup();
                 root.setIsLoading(false);
                 UserOptionsStore.setFollowModeEnabled(false);
+                cleanup();
             }
         });
 
