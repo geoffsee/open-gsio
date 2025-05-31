@@ -27,8 +27,8 @@ const ChatMessages: React.FC<ChatMessagesProps> = observer(({ scrollRef }) => {
         boxShadow="md"
         whiteSpace="pre-wrap"
       >
-        {chatStore.messages.map((msg, index) => {
-          if (index < chatStore.messages.length - 1) {
+        {chatStore.items.map((msg, index) => {
+          if (index < chatStore.items.length - 1) {
             return (
               <GridItem key={index}>
                 <MessageBubble x scrollRef={scrollRef} msg={msg} />

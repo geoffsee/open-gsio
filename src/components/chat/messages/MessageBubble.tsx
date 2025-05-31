@@ -63,12 +63,12 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
 
   useEffect(() => {
     if (
-      clientChatStore.messages.length > 0 &&
+      clientChatStore.items.length > 0 &&
       clientChatStore.isLoading &&
       UserOptionsStore.followModeEnabled
     ) {
       console.log(
-        `${clientChatStore.messages.length}/${clientChatStore.isLoading}/${UserOptionsStore.followModeEnabled}`,
+        `${clientChatStore.items.length}/${clientChatStore.isLoading}/${UserOptionsStore.followModeEnabled}`,
       );
       scrollRef.current?.scrollTo({
         top: scrollRef.current.scrollHeight,
