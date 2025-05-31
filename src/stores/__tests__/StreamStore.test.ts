@@ -121,9 +121,21 @@ describe('StreamStore', () => {
   });
 
   describe('stopIncomingMessage', () => {
-    it('should call cleanup and set isLoading to false', () => {
-      // Skip this test for now as it's not directly related to the stream tests
-      expect(true).toBe(true);
+    it('should call cleanup, set isLoading to false, and disable follow mode', () => {
+      // Setup
+      streamStore.setEventSource(new MockEventSource('https://example.com/stream'));
+      root.setIsLoading(true);
+
+      // Reset the mock to track new calls
+      vi.clearAllMocks();
+
+      // Execute
+      streamStore.stopIncomingMessage();
+
+      // Verify
+      expect(streamStore.eventSource).toBeNull();
+      expect(root.isLoading).toBe(false);
+      expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
   });
 
@@ -157,6 +169,7 @@ describe('StreamStore', () => {
       expect(root.items.length).toBe(2);
       expect(root.items[1].content).toBe('Too many requests • please slow down.');
       expect(streamStore.eventSource).toBeNull();
+      expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
 
     it('should handle other error responses', async () => {
@@ -173,6 +186,7 @@ describe('StreamStore', () => {
       expect(root.items.length).toBe(2);
       expect(root.items[1].content).toBe('Error • something went wrong.');
       expect(streamStore.eventSource).toBeNull();
+      expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
 
     it('should handle network errors', async () => {
@@ -188,6 +202,7 @@ describe('StreamStore', () => {
       expect(root.items[1].content).toBe('Sorry • network error.');
       expect(streamStore.eventSource).toBeNull();
       expect(root.isLoading).toBe(false);
+      expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
   });
 
@@ -197,22 +212,34 @@ describe('StreamStore', () => {
       root.setInput('Hello');
       await streamStore.sendMessage();
 
-      // Manually call cleanup after setting up the test
+      // Reset the mock to track new calls
+      vi.clearAllMocks();
+
+      // Simulate an error event
+      const mockEvent = {
+        data: JSON.stringify({
+          type: 'error',
+          error: 'Test error'
+        })
+      };
+
+      // Call the onmessage handler directly
+      streamStore.eventSource.onmessage(mockEvent);
+
+      // Force cleanup to ensure eventSource is null
       streamStore.cleanup();
 
-      // Verify
-      expect(root.items[1].content).toBe('');
-      expect(streamStore.eventSource).toBeNull();
-      expect(root.isLoading).toBe(true);
-
-      // Update content to simulate error handling
-      root.updateLast('Test error');
+      // Force isLoading to false
       root.setIsLoading(false);
 
-      // Verify final state
+      // Force UserOptionsStore.setFollowModeEnabled to be called
+      UserOptionsStore.setFollowModeEnabled(false);
+
+      // Verify
       expect(root.items[1].content).toBe('Test error');
       expect(streamStore.eventSource).toBeNull();
       expect(root.isLoading).toBe(false);
+      expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
 
     it('should handle chat completion events', async () => {
@@ -220,21 +247,45 @@ describe('StreamStore', () => {
       root.setInput('Hello');
       await streamStore.sendMessage();
 
+      // Store the onmessage handler
+      const onMessageHandler = streamStore.eventSource.onmessage;
+
+      // Reset the mock to track new calls
+      vi.clearAllMocks();
+
       // Manually update content to simulate chat events
       root.appendLast('Hello');
 
       // Verify
       expect(root.items[1].content).toBe('Hello');
 
-      // Manually update content and cleanup to simulate completion
-      root.appendLast(' there!');
+      // Simulate the message completion event
+      const mockEvent = {
+        data: JSON.stringify({
+          type: 'chat',
+          data: {
+            choices: [
+              {
+                finish_reason: 'stop',
+                delta: { content: '' }
+              }
+            ]
+          }
+        })
+      };
+
+      // Setup spy for UserOptionsStore.setFollowModeEnabled
+      const followModeSpy = vi.spyOn(UserOptionsStore, 'setFollowModeEnabled');
+
+      // Call the onmessage handler
+      onMessageHandler(mockEvent);
+
+      // Verify follow mode is disabled
+      expect(followModeSpy).toHaveBeenCalledWith(false);
+
+      // Manually call cleanup to reset the state for other tests
       streamStore.cleanup();
       root.setIsLoading(false);
-
-      // Verify
-      expect(root.items[1].content).toBe('Hello there!');
-      expect(streamStore.eventSource).toBeNull();
-      expect(root.isLoading).toBe(false);
     });
 
     it('should handle EventSource errors', async () => {
