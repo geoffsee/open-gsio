@@ -25,8 +25,8 @@ const Chat = observer(({ height, width }) => {
       width={width}
       gap={0}
     >
-      <GridItem alignSelf="center" hidden={!(chatStore.messages.length < 1)}>
-        <WelcomeHome visible={chatStore.messages.length < 1} />
+      <GridItem alignSelf="center" hidden={!(chatStore.items.length < 1)}>
+        <WelcomeHome visible={chatStore.items.length < 1} />
       </GridItem>
 
       <GridItem
