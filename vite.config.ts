@@ -83,6 +83,7 @@ export default defineConfig(({command}) => {
         test: {
             globals: true,
             environment: 'jsdom',
+            registerNodeLoader: false,
             setupFiles: ['./src/test/setup.ts'],
             exclude: [...configDefaults.exclude, 'workers/**', 'dist/**'],
             coverage: {
