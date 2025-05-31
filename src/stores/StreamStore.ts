@@ -13,7 +13,9 @@ import Message from "../models/Message";
 interface RootDeps extends IMessagesStore, IUIStore, IModelStore {}
 
 export const StreamStore = types
-    .model("StreamStore", {})
+    .model("StreamStore", {
+        streamId: types.optional(types.string, ""),
+    })
     .volatile(() => ({
         eventSource: null as EventSource | null,
     }))
@@ -124,7 +126,11 @@ export const StreamStore = types
             root.setIsLoading(false);
         };
 
-        return { sendMessage, stopIncomingMessage, cleanup, setEventSource };
+        const setStreamId = (id: string) => {
+            self.streamId = id;
+        };
+
+        return { sendMessage, stopIncomingMessage, cleanup, setEventSource, setStreamId };
     });
 
 export interface IStreamStore extends Instance<typeof StreamStore> {}
