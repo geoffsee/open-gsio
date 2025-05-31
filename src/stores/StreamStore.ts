@@ -25,10 +25,14 @@ export const StreamStore = types
             root = self as any;
         }
 
+        function setEventSource(source: EventSource | null) {
+            self.eventSource = source;
+        }
+
         function cleanup() {
             if (self.eventSource) {
                 self.eventSource.close();
-                self.eventSource = null;
+                setEventSource(null);
             }
         }
 
@@ -71,9 +75,9 @@ export const StreamStore = types
                 }
 
                 const { streamUrl } = (yield response.json()) as { streamUrl: string };
-                self.eventSource = new EventSource(streamUrl);
+                setEventSource(new EventSource(streamUrl));
 
-                self.eventSource.onmessage = (event: MessageEvent) => {  // ← annotate `event`
+                const handleMessage = (event: MessageEvent) => {
                     try {
                         const parsed = JSON.parse(event.data);
                         if (parsed.type === "error") {
@@ -101,7 +105,12 @@ export const StreamStore = types
                     }
                 };
 
-                self.eventSource.onerror = () => cleanup();
+                const handleError = () => {
+                    cleanup();
+                };
+
+                self.eventSource.onmessage = handleMessage;
+                self.eventSource.onerror = handleError;
             } catch (err) {
                 console.error("sendMessage", err);
                 root.updateLast("Sorry • network error.");
@@ -115,7 +124,7 @@ export const StreamStore = types
             root.setIsLoading(false);
         };
 
-        return { sendMessage, stopIncomingMessage, cleanup };
+        return { sendMessage, stopIncomingMessage, cleanup, setEventSource };
     });
 
 export interface IStreamStore extends Instance<typeof StreamStore> {}
