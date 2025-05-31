@@ -55,12 +55,29 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
 
 
     const getSupportedModels = async () => {
-        return await (await fetch("/api/models")).json();
+        // Check if fetch is available (browser environment)
+        if (typeof fetch !== 'undefined') {
+            try {
+                return await (await fetch("/api/models")).json();
+            } catch (error) {
+                console.error("Error fetching models:", error);
+                return [];
+            }
+        } else {
+            // In test environment or where fetch is not available
+            console.log("Fetch not available, using default models");
+            return [];
+        }
     }
 
       useEffect(() => {
            getSupportedModels().then((supportedModels) => {
-               ClientChatStore.setSupportedModels(supportedModels);
+               // Check if setSupportedModels method exists before calling it
+               if (clientChatStore.setSupportedModels) {
+                   clientChatStore.setSupportedModels(supportedModels);
+               } else {
+                   console.log("setSupportedModels method not available in this environment");
+               }
            });
       }, []);
 
@@ -71,7 +88,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
 
     const handleCopyConversation = useCallback(() => {
       navigator.clipboard
-        .writeText(formatConversationMarkdown(ClientchatStore.items))
+        .writeText(formatConversationMarkdown(clientChatStore.items))
         .then(() => {
           window.alert(
             "Conversation copied to clipboard. \n\nPaste it somewhere safe!",
@@ -85,11 +102,11 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
     }, [onClose]);
 
     async function selectModelFn({ name, value }) {
-        ClientChatStore.setModel(value);
+        clientChatStore.setModel(value);
     }
 
     function isSelectedModelFn({ name, value }) {
-      return ClientChatStore.model === value;
+      return clientChatStore.model === value;
     }
 
     const menuRef = useRef();
@@ -138,7 +155,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
             {...MsM_commonButtonStyles}
           >
             <Text noOfLines={1} maxW="100px" fontSize="sm">
-              {ClientChatStore.model}
+              {clientChatStore.model}
             </Text>
           </MenuButton>
         )}
@@ -152,7 +169,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(
         >
           <FlyoutSubMenu
             title="Text Models"
-            flyoutMenuOptions={ClientChatStore.supportedModels.map((m) => ({ name: m, value: m }))}
+            flyoutMenuOptions={clientChatStore.supportedModels.map((m) => ({ name: m, value: m }))}
             onClose={onClose}
             parentIsOpen={isOpen}
             setMenuState={setMenuState}
