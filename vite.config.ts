@@ -85,7 +85,7 @@ export default defineConfig(({command}) => {
             environment: 'jsdom',
             registerNodeLoader: false,
             setupFiles: ['./src/test/setup.ts'],
-            exclude: [...configDefaults.exclude, 'workers/**', 'dist/**'],
+            exclude: [...configDefaults.exclude, 'dist/**'],
             coverage: {
                 provider: 'v8',
                 reporter: ['text', 'json', 'html'],
