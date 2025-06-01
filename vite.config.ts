@@ -86,10 +86,13 @@ export default defineConfig(({command}) => {
             registerNodeLoader: false,
             setupFiles: ['./src/test/setup.ts'],
             exclude: [...configDefaults.exclude, 'dist/**'],
+            reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions', 'html'] : ['dot', 'html'],
             coverage: {
-                provider: 'v8',
-                reporter: ['text', 'json', 'html'],
-                exclude: ['node_modules/', 'src/test/']
+                // you can include other reporters, but 'json-summary' is required, json is recommended
+                reporter: ['json-summary', 'json', 'html'],
+                reportsDirectory: "coverage",
+                // If you want a coverage reports even if your tests are failing, include the reportOnFailure option
+                reportOnFailure: true,
             }
         }
     };
