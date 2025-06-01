@@ -1,13 +1,5 @@
-import { OpenAI } from "openai";
-import {
-  _NotCustomized,
-  ISimpleType,
-  ModelPropertiesDeclarationToProperties,
-  ModelSnapshotType2,
-  UnionStringArray,
-} from "mobx-state-tree";
-import ChatSdk from "../lib/chat-sdk";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider";
+import {OpenAI} from "openai";
+import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider";
 
 export class CerebrasChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
@@ -18,30 +10,32 @@ export class CerebrasChatProvider extends BaseChatProvider {
   }
 
   getStreamParams(param: CommonProviderParams, safeMessages: any[]): any {
-    const llamaTuningParams = {
-      temperature: 0.86,
-      top_p: 0.98,
-      presence_penalty: 0.1,
-      frequency_penalty: 0.3,
-      max_tokens: param.maxTokens as number,
-    };
+      // models provided by cerebras do not follow standard tune params
+      // they must be individually configured
+    // const tuningParams = {
+    //   temperature: 0.86,
+    //   top_p: 0.98,
+    //   presence_penalty: 0.1,
+    //   frequency_penalty: 0.3,
+    //   max_tokens: param.maxTokens as number,
+    // };
 
     return {
       model: param.model,
       messages: safeMessages,
-      stream: true,
+      stream: true
+        // ...tuningParams
     };
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    // Check if this is the final chunk
     if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
       dataCallback({ type: "chat", data: chunk });
-      return true; // Break the stream
+      return true;
     }
 
     dataCallback({ type: "chat", data: chunk });
-    return false; // Continue the stream
+    return false;
   }
 }
 
@@ -53,13 +47,7 @@ export class CerebrasSdk {
       openai: OpenAI;
       systemPrompt: any;
       disableWebhookGeneration: boolean;
-      preprocessedContext: ModelSnapshotType2<
-        ModelPropertiesDeclarationToProperties<{
-          role: ISimpleType<UnionStringArray<string[]>>;
-          content: ISimpleType<unknown>;
-        }>,
-        _NotCustomized
-      >;
+      preprocessedContext: any;
       maxTokens: unknown | number | undefined;
       messages: any;
       model: string;

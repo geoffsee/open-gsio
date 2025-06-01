@@ -17,7 +17,7 @@ export class GroqChatProvider extends BaseChatProvider {
   }
 
   getStreamParams(param: CommonProviderParams, safeMessages: any[]): any {
-    const llamaTuningParams = {
+    const tuningParams = {
       temperature: 0.86,
       top_p: 0.98,
       presence_penalty: 0.1,
@@ -29,23 +29,21 @@ export class GroqChatProvider extends BaseChatProvider {
       model: param.model,
       messages: safeMessages,
       stream: true,
-      ...llamaTuningParams
+      ...tuningParams
     };
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    // Check if this is the final chunk
     if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
       dataCallback({ type: "chat", data: chunk });
-      return true; // Break the stream
+      return true;
     }
 
     dataCallback({ type: "chat", data: chunk });
-    return false; // Continue the stream
+    return false;
   }
 }
 
-// Legacy class for backward compatibility
 export class GroqChatSdk {
   private static provider = new GroqChatProvider();
 

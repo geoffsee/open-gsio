@@ -34,14 +34,13 @@ export class FireworksAiChatProvider extends BaseChatProvider {
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    // Check if this is the final chunk
     if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
       dataCallback({ type: "chat", data: chunk });
-      return true; // Break the stream
+      return true;
     }
 
     dataCallback({ type: "chat", data: chunk });
-    return false; // Continue the stream
+    return false;
   }
 }
 
@@ -52,13 +51,7 @@ export class FireworksAiChatSdk {
     param: {
       openai: OpenAI;
       systemPrompt: any;
-      preprocessedContext: ModelSnapshotType2<
-        ModelPropertiesDeclarationToProperties<{
-          role: ISimpleType<UnionStringArray<string[]>>;
-          content: ISimpleType<unknown>;
-        }>,
-        _NotCustomized
-      >;
+      preprocessedContext: any;
       maxTokens: number;
       messages: any;
       model: any;
