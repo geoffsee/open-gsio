@@ -20,7 +20,7 @@
 
 ## Testing
 
-The project uses Vitest for testing frontend components and hooks. Tests are located in `__tests__` directories next to the code they test.
+The project uses Vitest. Tests are located in `__tests__` directories next to the code they test.
 
 To run tests:
 - `bun run test` - Run all tests once
