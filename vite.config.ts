@@ -86,7 +86,6 @@ export default defineConfig(({command}) => {
             registerNodeLoader: false,
             setupFiles: ['./src/test/setup.ts'],
             exclude: [...configDefaults.exclude, 'dist/**'],
-
             reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
             coverage: {
                 enabled: true,
