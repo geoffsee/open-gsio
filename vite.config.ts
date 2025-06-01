@@ -86,10 +86,10 @@ export default defineConfig(({command}) => {
             registerNodeLoader: false,
             setupFiles: ['./src/test/setup.ts'],
             exclude: [...configDefaults.exclude, 'dist/**'],
-            reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
+            reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions', 'html'] : ['dot'],
             coverage: {
                 enabled: true,
-                reporter: ["html"]
+                reporter: ['html'],
             },
         }
     };

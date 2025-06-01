@@ -21,7 +21,7 @@
     "openai:local": "./scripts/start_inference_server.sh",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage.enabled=true"
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.32.1",
