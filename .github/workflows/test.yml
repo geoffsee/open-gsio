@@ -37,7 +37,6 @@ jobs:
 
       # Upload coverage as Pages artifact only on push to main
       - name: Upload coverage html
-        if: github.event_name == 'pull_request'
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./coverage
@@ -45,7 +44,6 @@ jobs:
 
 
   deploy_coverage:
-    if: github.event_name == 'pull_request'
     needs: tests
     runs-on: ubuntu-latest
     environment:
