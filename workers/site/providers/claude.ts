@@ -1,5 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
-import { OpenAI } from "openai";
+import {OpenAI} from "openai";
 import {
   _NotCustomized,
   ISimpleType,
@@ -8,7 +8,7 @@ import {
   UnionStringArray,
 } from "mobx-state-tree";
 import ChatSdk from "../lib/chat-sdk";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider";
+import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider";
 
 export class ClaudeChatProvider extends BaseChatProvider {
   private anthropic: Anthropic | null = null;
@@ -51,11 +51,11 @@ export class ClaudeChatProvider extends BaseChatProvider {
           ],
         },
       });
-      return true; // Break the stream
+      return true;
     }
 
     dataCallback({ type: "chat", data: chunk });
-    return false; // Continue the stream
+    return false;
   }
 
   // Override the base handleStream method to use Anthropic client instead of OpenAI

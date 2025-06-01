@@ -12,12 +12,17 @@ export class AssistantSdk {
       userTimezone = "UTC",
       userLocation = "",
     } = params;
-    const selectedFewshots = Utils.selectEquitably?.(few_shots) || few_shots;
-    const sdkDate =
-      typeof Utils.getCurrentDate === "function"
-        ? Utils.getCurrentDate()
-        : new Date().toISOString();
-    const [currentDate] = sdkDate.split("T");
+    // Handle both nested and flat few_shots structures
+    console.log('[DEBUG_LOG] few_shots:', JSON.stringify(few_shots));
+    let selectedFewshots = Utils.selectEquitably?.(few_shots);
+    console.log('[DEBUG_LOG] selectedFewshots after Utils.selectEquitably:', JSON.stringify(selectedFewshots));
+    if (!selectedFewshots) {
+      // If Utils.selectEquitably returns undefined, use few_shots directly
+      selectedFewshots = few_shots;
+      console.log('[DEBUG_LOG] selectedFewshots after fallback:', JSON.stringify(selectedFewshots));
+    }
+    const sdkDate = new Date().toISOString();
+    const [currentDate] = sdkDate.includes("T") ? sdkDate.split("T") : [sdkDate];
     const now = new Date();
     const formattedMinutes = String(now.getMinutes()).padStart(2, "0");
     const currentTime = `${now.getHours()}:${formattedMinutes} ${now.getSeconds()}s`;
@@ -52,8 +57,9 @@ Continuously monitor the evolving conversation. Dynamically adapt your responses
     return Object.entries(fewshots)
       .slice(0, limit)
       .map(
-        ([q, a], i) =>
-          `#### Example ${i + 1}\n**Human**: ${q}\n**Assistant**: ${a}`,
+        ([q, a], i) => {
+          return `#### Example ${i + 1}\n**Human**: ${q}\n**Assistant**: ${a}`
+        }
       )
       .join("\n---\n");
   }

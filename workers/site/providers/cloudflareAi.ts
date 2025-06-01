@@ -1,13 +1,5 @@
-import { OpenAI } from "openai";
-import {
-  _NotCustomized,
-  ISimpleType,
-  ModelPropertiesDeclarationToProperties,
-  ModelSnapshotType2,
-  UnionStringArray,
-} from "mobx-state-tree";
-import ChatSdk from "../lib/chat-sdk";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider";
+import {OpenAI} from "openai";
+import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider";
 
 export class CloudflareAiChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
@@ -109,14 +101,13 @@ export class CloudflareAiChatProvider extends BaseChatProvider {
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    // Check if this is the final chunk
     if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
       dataCallback({ type: "chat", data: chunk });
-      return true; // Break the stream
+      return true;
     }
 
     dataCallback({ type: "chat", data: chunk });
-    return false; // Continue the stream
+    return false;
   }
 }
 
@@ -127,13 +118,7 @@ export class CloudflareAISdk {
     param: {
       openai: OpenAI;
       systemPrompt: any;
-      preprocessedContext: ModelSnapshotType2<
-        ModelPropertiesDeclarationToProperties<{
-          role: ISimpleType<UnionStringArray<string[]>>;
-          content: ISimpleType<unknown>;
-        }>,
-        _NotCustomized
-      >;
+      preprocessedContext: any;
       maxTokens: unknown | number | undefined;
       messages: any;
       model: string;

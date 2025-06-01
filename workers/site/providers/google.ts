@@ -33,7 +33,7 @@ export class GoogleChatProvider extends BaseChatProvider {
           ],
         },
       });
-      return true; // Break the stream
+      return true;
     } else {
       dataCallback({
         type: "chat",
@@ -47,7 +47,7 @@ export class GoogleChatProvider extends BaseChatProvider {
           ],
         },
       });
-      return false; // Continue the stream
+      return false;
     }
   }
 }
@@ -67,7 +67,6 @@ export class GoogleChatSdk {
         messages: param.messages,
         model: param.model,
         env: param.env,
-        disableWebhookGeneration: param.disableWebhookGeneration,
       },
       dataCallback,
     );
