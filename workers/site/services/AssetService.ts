@@ -40,7 +40,7 @@ export default types
     async handleStaticAssets(request: Request, env) {
       console.log("handleStaticAssets");
       try {
-        return env.ASSETS.fetch(request);
+        return await env.ASSETS.fetch(request);
       } catch (error) {
         console.error("Error serving static asset:", error);
         return new Response("Asset not found", { status: 404 });
