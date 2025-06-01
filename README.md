@@ -57,7 +57,7 @@ MODEL_TO_ADD=mlx-community/gemma-3-4b-it-8bit
 curl http://localhost:10240/v1/chat/completions \
   -H "Content-Type: application/json" \
   -d '{
-    "model: ,
+    "model: $MODEL_TO_ADD,
     "messages": [{"role": "user", "content": "Hello"}]
   }'
 ~~~  
