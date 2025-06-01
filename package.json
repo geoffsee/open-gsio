@@ -24,7 +24,7 @@
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
-    "@anthropic-ai/sdk": "^0.32.1",
+    "@anthropic-ai/sdk": "^0.52.0",
     "@chakra-ui/react": "^2.10.6",
     "@cloudflare/workers-types": "^4.20241205.0",
     "@emotion/react": "^11.13.5",
