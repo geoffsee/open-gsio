@@ -85,12 +85,13 @@ export default defineConfig(({command}) => {
             environment: 'jsdom',
             registerNodeLoader: false,
             setupFiles: ['./src/test/setup.ts'],
-            exclude: [...configDefaults.exclude, 'workers/**', 'dist/**'],
+            exclude: [...configDefaults.exclude, 'dist/**'],
+
+            reporters: process.env.GITHUB_ACTIONS ? ['dot', 'github-actions'] : ['dot'],
             coverage: {
-                provider: 'v8',
-                reporter: ['text', 'json', 'html'],
-                exclude: ['node_modules/', 'src/test/']
-            }
+                enabled: true,
+                reporter: ["html"]
+            },
         }
     };
 });

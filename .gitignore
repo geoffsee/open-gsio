@@ -8,3 +8,4 @@ public/static/fonts/*
 .dev.vars
 secrets.json
 wrangler.dev.jsonc
+/coverage/
