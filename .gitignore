@@ -9,3 +9,4 @@ public/static/fonts/*
 secrets.json
 wrangler.dev.jsonc
 /coverage/
+/html
