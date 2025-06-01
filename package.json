@@ -59,7 +59,7 @@
     "react-textarea-autosize": "^8.5.5",
     "shiki": "^1.24.0",
     "typescript": "^5.7.2",
-    "vike": "0.4.193",
+    "vike": "0.4.231",
     "vite": "^5.4.11",
     "vite-plugin-pwa": "^1.0.0",
     "vitest": "^1.2.1",
