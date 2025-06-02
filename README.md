@@ -15,10 +15,10 @@
 - [Installation](#installation)
 - [Deployment](#deployment)
 - [Local Inference](#local-inference)
+    - [mlx-omni-server (default)](#mlx-omni-server)
+        - [Adding models](#adding-models-for-local-inference-apple-silicon)
     - [Ollama](#ollama)
-        - [Adding models for local inference (ollama)](#adding-models-for-local-inference-ollama)
-    - [mlx-omni-server (Apple Silicon Only)](#mlx-omni-server-apple-silicon-only)
-        - [Adding models for local inference (Apple Silicon)](#adding-models-for-local-inference-apple-silicon)
+        - [Adding models](#adding-models-for-local-inference-ollama)
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
 - [History](#history)
@@ -53,20 +53,9 @@
 
 ## Local Inference
 > Local inference is achieved by overriding the `OPENAI_API_KEY` and `OPENAI_API_ENDPOINT` environment variables. See below.
-### Ollama
-~~~bash
-bun run openai:local ollama                  # Start ollama server
-bun run openai:local:enable                  # Configure connection
-bun run server:dev                           # Restart server
-~~~
-#### Adding models for local inference (ollama)
 
-~~~bash
-# See https://ollama.com/library for available models
-MODEL_TO_ADD=gemma3 
-docker exec -it ollama ollama run ${MODEL_TO_ADD}
-~~~  
-### mlx-omni-server (Apple Silicon Only)
+### mlx-omni-server
+(default) (Apple Silicon Only) - Use Ollama for other platforms.
 ~~~bash
 # (prereq) install mlx-omni-server
 brew tap seemueller-io/tap                   
@@ -91,6 +80,21 @@ curl http://localhost:10240/v1/chat/completions \
     \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}]
   }"
 ~~~  
+
+### Ollama
+~~~bash
+bun run openai:local ollama                  # Start ollama server
+bun run openai:local:enable                  # Configure connection
+bun run server:dev                           # Restart server
+~~~
+#### Adding models for local inference (ollama)
+
+~~~bash
+# See https://ollama.com/library for available models
+MODEL_TO_ADD=gemma3 
+docker exec -it ollama ollama run ${MODEL_TO_ADD}
+~~~  
+
 
 ## Testing
 
