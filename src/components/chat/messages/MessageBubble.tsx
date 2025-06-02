@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import MessageRenderer from "./ChatMessageContent";
 import { observer } from "mobx-react-lite";
@@ -65,14 +64,7 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
   };
 
   useEffect(() => {
-    if (
-      clientChatStore.items.length > 0 &&
-      clientChatStore.isLoading &&
-      UserOptionsStore.followModeEnabled
-    ) {
-      console.log(
-        `${clientChatStore.items.length}/${clientChatStore.isLoading}/${UserOptionsStore.followModeEnabled}`,
-      );
+    if (clientChatStore.items.length > 0 && clientChatStore.isLoading && UserOptionsStore.followModeEnabled) { // Refine condition
       scrollRef.current?.scrollTo({
         top: scrollRef.current.scrollHeight,
         behavior: "auto",
