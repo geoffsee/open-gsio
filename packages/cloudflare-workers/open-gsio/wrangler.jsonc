@@ -1,0 +1,48 @@
+{
+  "$schema": "https://workers.cloudflare.com/sites/config-schema.json",
+  "name": "open-gsio",
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "../../../packages/client/dist/client"
+  },
+  "dev": {
+    "ip": "localhost",
+    "port": 3001
+  },
+  "compatibility_date": "2025-05-28",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "main": "main.ts",
+  "preview_urls": false,
+  "workers_dev": true,
+  "kv_namespaces": [
+    {
+      "binding": "KV_STORAGE",
+      // $ npx wrangler kv namespace create open-gsio
+      "id": "placeholderId",
+      // $ npx wrangler kv namespace create open-gsio --preview
+      "preview_id": "placeholderIdPreview"
+    }
+  ],
+  "migrations": [
+    {
+      "new_classes": [
+        "SiteCoordinator"
+      ],
+      "tag": "v1"
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "class_name": "ServerCoordinator",
+        "name": "SERVER_COORDINATOR",
+        "script_name": "open-gsio"
+      }
+    ]
+  },
+  "observability": {
+    "enabled": true
+  }
+}
