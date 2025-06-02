@@ -38,7 +38,7 @@
 ## Installation
 
 1. `bun i && bun test`
-1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys) OR [Setup Local Inference](#local-inference)
+1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys)  
 1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
 
 > Note: it should be possible to use pnpm in place of bun. 
