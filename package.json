@@ -19,6 +19,9 @@
     "tail:analytics-service": "wrangler tail -c workers/analytics/wrangler-analytics.toml",
     "tail:session-proxy": "wrangler tail -c workers/session-proxy/wrangler-session-proxy.toml --env production",
     "openai:local": "./scripts/start_inference_server.sh",
+    "openai:local:mlx": "./scripts/start_inference_server.sh mlx-omni-server",
+    "openai:local:ollama": "./scripts/start_inference_server.sh ollama",
+    "openai:local:configure": "scripts/configure_local_inference.sh",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage.enabled=true"
