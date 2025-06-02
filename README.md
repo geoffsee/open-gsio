@@ -1,6 +1,7 @@
 # open-gsio
 [![Tests](https://github.com/geoffsee/open-gsio/actions/workflows/test.yml/badge.svg)](https://github.com/geoffsee/open-gsio/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+![image](https://github.com/user-attachments/assets/65ca4122-365a-44b8-a71f-fc6d80ec1e13)
 
 ## Table of Contents
 - [Stack](#stack)
