@@ -2,147 +2,94 @@
 [![Tests](https://github.com/geoffsee/open-gsio/actions/workflows/test.yml/badge.svg)](https://github.com/geoffsee/open-gsio/actions/workflows/test.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 
-### Stack:
-- vike
-- react
-- cloudflare workers
-- itty-router
-- mobx-state-tree
-- openai sdk
+## Table of Contents
+- [Stack](#stack)
+- [Installation](#installation)
+- [Deployment](#deployment)
+- [Local Inference](#local-inference)
+    - [Ollama](#ollama)
+    - [mlx-omni-server (Apple Silicon Only)](#mlx-omni-server-apple-silicon-only)
+        - [Adding models for local inference (Apple Silicon)](#adding-models-for-local-inference-apple-silicon)
+- [Testing](#testing)
+- [History](#history)
+- [License](#license)
 
-## Quickstart
+## Stack
+* typescript
+* vike
+* react
+* cloudflare workers
+* itty-router
+* mobx-state-tree
+* openai sdk
+* vitest
 
-1. `bun i`
+
+## Installation
+
+1. `bun i && bun test`
 1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys)  
 1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
 
-> Note: it should be possible to use pnpm in place of bun
+> Note: it should be possible to use pnpm in place of bun. 
 
-## Testing
-
-The project uses Vitest. Tests are located in `__tests__` directories next to the code they test.
-
-To run tests:
-- `bun run test` - Run all tests once
-- `bun run test:watch` - Run tests in watch mode
-- `bun run test:coverage` - Run tests with coverage report
-
-## Deploying
+## Deployment
 1. Setup the KV_STORAGE bindings in `wrangler.jsonc`  
 1.  [Add another `GROQ_API_KEY` in secrets.json](https://console.groq.com/keys)
 1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
 
-## Local Inference (Apple Silicon Only)
+
+## Local Inference
+> Local inference is achieved by overriding the `OPENAI_API_KEY` and `OPENAI_API_ENDPOINT` environment variables. See below.
+### Ollama
 ~~~bash
-##### 
-# install mlx-omni-server (custom homebrew wrapper)
-brew tap seemueller-io/tap
-brew install seemueller-io/tap/mlx-omni-server
-#####
-# Run mlx-omni-server
-bun run openai:local
-####
-# Override OPENAI_* variables in .dev.vars
-sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars; echo 'OPENAI_API_KEY=not-needed' >> .dev.vars
-sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo 'OPENAI_API_ENDPOINT=http://localhost:10240' >> .dev.vars
-### Restart open-gsio server so it uses the new variables
-bun run server:dev
+docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama ## Run Ollama (Can also be installed natively)
+bun run openai:local                         # Start OpenAI-compatible server
+sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_KEY=required-but-not-used' >> .dev.vars # Reset API key
+sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_ENDPOINT=http://localhost:11434' >> .dev.vars # Reset endpoint
+bun run server:dev                           # Start dev server
 ~~~
-## Adding models for local inference
-~~~console
+
+### mlx-omni-server (Apple Silicon Only)
+~~~bash
+brew tap seemueller-io/tap                   # Add seemueller-io tap
+brew install seemueller-io/tap/mlx-omni-server # Install mlx-omni-server
+bun run openai:local                         # Start OpenAI-compatible server
+sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_KEY=required-but-not-used' >> .dev.vars # Reset API key
+sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_ENDPOINT=http://localhost:10240' >> .dev.vars # Reset endpoint
+bun run server:dev                           # Start dev server
+~~~
+#### Adding models for local inference (Apple Silicon)
+
+~~~bash
+# ensure mlx-omni-server is running in the background 
 MODEL_TO_ADD=mlx-community/gemma-3-4b-it-8bit
-# Chat completions endpoint
+
 curl http://localhost:10240/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -d '{
-    "model: $MODEL_TO_ADD,
-    "messages": [{"role": "user", "content": "Hello"}]
-  }'
+  -d "{
+    \"model\": \"$MODEL_TO_ADD\",
+    \"messages\": [{\"role\": \"user\", \"content\": \"Hello\"}]
+  }"
 ~~~  
+
+
+
+
+## Testing
+
+Tests are located in `__tests__` directories next to the code they test. Testing is incomplete at this time.
+
+> `bun run test` will run all tests
 
 History
 ---
-
-### **May 2025**
-
-| Hash    | Change                                                                |
-| ------- |-----------------------------------------------------------------------|
-| 049bf97 | **Add** *seemueller.ai* sidebar link and constrain Hero heading width |
-| 6be5f68 | **Consolidate** configuration files (CI, bundler, environment)        |
-| a047f19 | **Expand** Markdown usage guide for end‑users                         |
-
----
-
-### **April 2025**
-
-| Hash              | Change                                                                     |
-| ----------------- |----------------------------------------------------------------------------|
-| ce3457a           | **Introduce** custom error page and purge dead code                        |
-| 806c933           | **Fix** duplicate`robots.txt` entries (SEO)                                |
-| 4bbe8ea · e909e0b | **Restore** bundle‑size safeguards and **switch** tobun as package manager |
-| 7f1520b·aa71f86 | **Automate** VPN block‑list deployment; retire legacy pull script          |
-| b332c93           | **Repair** CI job for block‑list updates                                   |
-| d506e7d           | **Deprecate** experimental **Mixtral** model                               |
-
----
-
-### **March 2025**
-
-| Hash              | Change                                                                   |
-| ----------------- |--------------------------------------------------------------------------|
-| 8b9e9eb           | **Add** per‑model `max_tokens` limits                                    |
-| cb0d912           | **Expose** Cloudflare AI models for staging                              |
-| 85de6ed·cec4f70 | **Shrink** production bundles: re‑enable minifier and drop unused assets |
-| 4805c7e · 9709f61 | **Refresh** landing‑page copy (“Welcomehome”)                            |
-
----
-
-### **February 2025**
-
-| Hash              | Change                                                                      |
-| ----------------- | --------------------------------------------------------------------------- |
-| 8d70eef·886d45a | **Ship** runtime theme switching with dynamic navigation colors             |
-| 4efaa93/194b168 | **Polish** resume & selector styling (padding, borders)                     |
-| 7f925d1·0b9088a | **Refine** responsive chat: correct breakpoints, input scaling, MobX typing |
-| 0865897           | **Remove** deprecated DocumentAPI                                          |
-| e355540           | **Fix** background rendering issues                                         |
-
----
-
-### **January 2025**
-
-| Hash              | Change                                                                      |
-| ----------------- | --------------------------------------------------------------------------- |
-| d8b47c9 ·361a523 | **Enable** full LaTeX/KaTeX math rendering                                  |
-| 64a0513·6ecc4f5 | **Set** default model to *llama‑v3p1‑70b‑instruct* and **limit** model list |
-| 0ad9dc4           | **Add** rate‑limit middleware                                               |
-| 42f371b·1f526ce | **Launch** VPN blocker with live CIDR validation and CI workflow            |
-| f7464a1           | **Remove** user‑uploaded attachments to cut storage costs                   |
-| e9c3a12           | **Rotate** Fireworks API credentials                                        |
-
----
-
-### **Late 2024 Highlights**
-
-| Area              | Notable Work                                                           |
-| ----------------- | ---------------------------------------------------------------------- |
-| **Generative UX** | Image‑generation pipeline; model‑selection UI; seasonal prompt packs   |
-| **Analytics**     | Worker‑based metrics engine, event capture, tail helpers               |
-| **Model Support** | GROQ & Anthropic streaming integrations with attachment handling       |
-| **Feedback Loop** | Modal‑driven user‑feedback feature with dedicated store                |
-| **Payments**      | On‑chain ETH/DOGE processor with dynamic deposit addresses             |
-| **Performance**   | Tokenizer limits, LightningCSS minifier, esbuild migration             |
-| **Mobile & A11y** | Dynamic textarea sizing, cookie‑consent banner, iMessage‑style bubbles |
-
-
-### August 2024 - December 2024
-History is available by request.
-
+A high-level overview for the development history of the parent repository, [geoff-seemueller-io](https://geoff.seemueller.io), is provided in [LEGACY.md](./LEGACY.md). 
 
 ## License
-
+~~~text
 MIT License
 
 Copyright (c) 2025 Geoff Seemueller
@@ -164,3 +111,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+~~~
+
