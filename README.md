@@ -6,16 +6,18 @@
   <img src="https://github.com/user-attachments/assets/620d2517-e7be-4bb0-b2b7-3aa0cba37ef0" width="250" />
 </p>
 
-
 ## Table of Contents
+
 - [Stack](#stack)
 - [Installation](#installation)
 - [Deployment](#deployment)
 - [Local Inference](#local-inference)
     - [Ollama](#ollama)
+        - [Adding models for local inference (ollama)](#adding-models-for-local-inference-ollama)
     - [mlx-omni-server (Apple Silicon Only)](#mlx-omni-server-apple-silicon-only)
         - [Adding models for local inference (Apple Silicon)](#adding-models-for-local-inference-apple-silicon)
 - [Testing](#testing)
+- [Troubleshooting](#troubleshooting)
 - [History](#history)
 - [License](#license)
 
@@ -50,26 +52,33 @@
 > Local inference is achieved by overriding the `OPENAI_API_KEY` and `OPENAI_API_ENDPOINT` environment variables. See below.
 ### Ollama
 ~~~bash
-docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama ## Run Ollama (Can also be installed natively)
-bun run openai:local                         # Start OpenAI-compatible server
-sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_KEY=required-but-not-used' >> .dev.vars # Reset API key
-sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_ENDPOINT=http://localhost:11434' >> .dev.vars # Reset endpoint
-bun run server:dev                           # Start dev server
+bun run openai:local ollama                  # Start ollama server
+bun run openai:local:enable                  # Configure connection
+bun run server:dev                           # Restart server
 ~~~
+#### Adding models for local inference (ollama)
 
+~~~bash
+# See https://ollama.com/library for available models
+MODEL_TO_ADD=gemma3 
+docker exec -it ollama ollama run ${MODEL_TO_ADD}
+~~~  
 ### mlx-omni-server (Apple Silicon Only)
 ~~~bash
-brew tap seemueller-io/tap                   # Add seemueller-io tap
-brew install seemueller-io/tap/mlx-omni-server # Install mlx-omni-server
-bun run openai:local                         # Start OpenAI-compatible server
-sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_KEY=required-but-not-used' >> .dev.vars # Reset API key
-sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars; echo >> .dev.vars; echo 'OPENAI_API_ENDPOINT=http://localhost:10240' >> .dev.vars # Reset endpoint
-bun run server:dev                           # Start dev server
+# (prereq) install mlx-omni-server
+brew tap seemueller-io/tap                   
+brew install seemueller-io/tap/mlx-omni-server 
+
+bun run openai:local mlx-omni-server         # Start mlx-omni-server
+bun run openai:local:enable                  # Configure connection
+bun run server:dev                           # Restart server
 ~~~
 #### Adding models for local inference (Apple Silicon)
 
 ~~~bash
-# ensure mlx-omni-server is running in the background 
+# ensure mlx-omni-server is running
+
+# See https://huggingface.co/mlx-community for available models
 MODEL_TO_ADD=mlx-community/gemma-3-4b-it-8bit
 
 curl http://localhost:10240/v1/chat/completions \
@@ -80,14 +89,19 @@ curl http://localhost:10240/v1/chat/completions \
   }"
 ~~~  
 
-
-
-
 ## Testing
 
 Tests are located in `__tests__` directories next to the code they test. Testing is incomplete at this time.
 
 > `bun run test` will run all tests
+
+
+## Troubleshooting
+1.  `bun run clean`
+1.  `bun i`
+1.  `bun server:dev` 
+1.  `bun client:dev` 
+1. Submit an issue
 
 History
 ---
