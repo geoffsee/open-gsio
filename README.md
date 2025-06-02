@@ -6,6 +6,7 @@
   <img src="https://github.com/user-attachments/assets/620d2517-e7be-4bb0-b2b7-3aa0cba37ef0" width="250" />
 </p>
 
+## Project Status: Testing
 
 ## Table of Contents
 - [Stack](#stack)
