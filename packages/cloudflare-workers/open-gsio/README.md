@@ -9,8 +9,6 @@
 > **Note**: This project is currently under active development. The styling is a work in progress and some functionality
 > may be broken. Tests are being actively ported and stability will improve over time. Thank you for your patience!
 
-This is a full-stack Conversational AI. It runs on Cloudflare or Bun. 
-
 ## Table of Contents
 
 - [Stack](#stack)
@@ -39,15 +37,15 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 
 ## Installation
 
-1. `bun i && bun test:all`
-1. [Setup Local Inference](#local-inference) OR [Add your own `GROQ_API_KEY` in packages/cloudflare-workers/open-gsio/.dev.vars](https://console.groq.com/keys)
+1. `bun i && bun test`
+1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys)  
 1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
 
-> Note: it should be possible to use pnpm in place of bun.
+> Note: it should be possible to use pnpm in place of bun. 
 
 ## Deployment
-1. Setup KV_STORAGE binding in `packages/server/wrangler.jsonc`
-1.  [Add keys in secrets.json](https://console.groq.com/keys)
+1. Setup the KV_STORAGE bindings in `wrangler.jsonc`  
+1.  [Add another `GROQ_API_KEY` in secrets.json](https://console.groq.com/keys)
 1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
@@ -64,7 +62,7 @@ brew tap seemueller-io/tap
 brew install seemueller-io/tap/mlx-omni-server 
 
 bun run openai:local mlx-omni-server         # Start mlx-omni-server
-bun run openai:local:configure               # Configure connection
+bun run openai:local:enable                  # Configure connection
 bun run server:dev                           # Restart server
 ~~~
 #### Adding models for local inference (Apple Silicon)
@@ -86,7 +84,7 @@ curl http://localhost:10240/v1/chat/completions \
 ### Ollama
 ~~~bash
 bun run openai:local ollama                  # Start ollama server
-bun run openai:local:configure               # Configure connection
+bun run openai:local:enable                  # Configure connection
 bun run server:dev                           # Restart server
 ~~~
 #### Adding models for local inference (ollama)
@@ -102,19 +100,19 @@ docker exec -it ollama ollama run ${MODEL_TO_ADD}
 
 Tests are located in `__tests__` directories next to the code they test. Testing is incomplete at this time.
 
-> `bun test:all` will run all tests
+> `bun run test` will run all tests
 
 
 ## Troubleshooting
-1.  `bun clean`
+1.  `bun run clean`
 1.  `bun i`
-1.  `bun server:dev`
-1.  `bun client:dev`
+1.  `bun server:dev` 
+1.  `bun client:dev` 
 1. Submit an issue
 
 History
 ---
-A high-level overview for the development history of the parent repository, [geoff-seemueller-io](https://geoff.seemueller.io), is provided in [LEGACY.md](./LEGACY.md).
+A high-level overview for the development history of the parent repository, [geoff-seemueller-io](https://geoff.seemueller.io), is provided in [LEGACY.md](../../LEGACY.md). 
 
 ## License
 ~~~text

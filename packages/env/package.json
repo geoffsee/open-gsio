@@ -1,0 +1,4 @@
+{
+  "name": "@open-gsio/env",
+  "module": "env.d.ts"
+}
