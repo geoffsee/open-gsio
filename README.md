@@ -20,14 +20,14 @@
 - [License](#license)
 
 ## Stack
-* typescript
-* vike
-* react
-* cloudflare workers
-* itty-router
-* mobx-state-tree
-* openai sdk
-* vitest
+* [TypeScript](https://www.typescriptlang.org/)
+* [Vike](https://vike.dev/)
+* [React](https://react.dev/)
+* [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+* [itty‑router](https://github.com/kwhitley/itty-router)
+* [MobX‑State‑Tree](https://mobx-state-tree.js.org/)
+* [OpenAI SDK](https://github.com/openai/openai-node)
+* [Vitest](https://vitest.dev/)
 
 
 ## Installation
