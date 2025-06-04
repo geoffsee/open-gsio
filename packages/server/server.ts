@@ -26,7 +26,7 @@ export default {
         env["CEREBRAS_API_KEY"] = process.env.CEREBRAS_API_KEY
         env["CLOUDFLARE_API_KEY"] = process.env.CLOUDFLARE_API_KEY
         env["CLOUDFLARE_ACCOUNT_ID"] = process.env.CLOUDFLARE_ACCOUNT_ID
-        env["KV_STORAGE"] = new BunSqliteKVNamespace("open-gsio")
+        env["KV_STORAGE"] = new BunSqliteKVNamespace({namespace: "open-gsio"})
 
 
         try {
