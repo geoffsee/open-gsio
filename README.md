@@ -38,7 +38,7 @@
 ## Installation
 
 1. `bun i && bun test`
-1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys)  
+1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys) OR [Setup Local Inference](#local-inference)
 1. In isolated shells, run:
    ```bash
    # Start the server
