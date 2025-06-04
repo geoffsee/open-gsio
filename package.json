@@ -14,6 +14,7 @@
     "client:dev": "(cd packages/client && bun run dev)",
     "server:dev": "(cd packages/server && bun run dev)",
     "build": "(cd packages/cloudflare-workers && bun run deploy:dry-run)",
+    "docker:build": "docker build -t open-gsio:latest .",
     "deploy": "(cd packages/cloudflare-workers && bun run deploy)",
     "deploy:secrets": "wrangler secret bulk secrets.json -c packages/cloudflare-workers/open-gsio/wrangler.jsonc",
     "openai:local:mlx": "packages/scripts/start_inference_server.sh mlx-omni-server",
