@@ -13,6 +13,7 @@
     "test:all": "bun run --filter='*' tests",
     "client:dev": "(cd packages/client; bun run dev)",
     "server:dev": "(cd packages/server; bun run dev)",
+    "worker:preview": "(cd packages/cloudflare-workers/open-gsio && bun dev)",
     "build": "(cd packages/cloudflare-workers; bun run deploy:dry-run)",
     "build:docker": "docker build -t open-gsio:latest .",
     "deploy": "(cd packages/cloudflare-workers; bun run deploy)",
