@@ -9,7 +9,7 @@
 > **Note**: This project is currently under active development. The styling is a work in progress and some functionality
 > may be broken. Tests are being actively ported and stability will improve over time. Thank you for your patience!
 
-This is my full-stack Conversational AI. It runs on Cloudflare or Bun. 
+This is a full-stack Conversational AI. It runs on Cloudflare or Bun. 
 
 ## Table of Contents
 
