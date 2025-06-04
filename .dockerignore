@@ -1,0 +1,9 @@
+*
+!packages
+!bun.lock
+!bun.lockb
+!LICENSE
+!package.json
+!secrets.json
+!README.md
+!tsconfig.json
