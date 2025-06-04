@@ -14,7 +14,7 @@
     "client:dev": "(cd packages/client && bun run dev)",
     "server:dev": "(cd packages/server && bun run dev)",
     "build": "(cd packages/cloudflare-workers && bun run deploy:dry-run)",
-    "docker:build": "docker build -t open-gsio:latest .",
+    "build:docker": "docker build -t open-gsio:latest .",
     "deploy": "(cd packages/cloudflare-workers && bun run deploy)",
     "deploy:secrets": "wrangler secret bulk secrets.json -c packages/cloudflare-workers/open-gsio/wrangler.jsonc",
     "openai:local:mlx": "packages/scripts/start_inference_server.sh mlx-omni-server",
@@ -26,6 +26,5 @@
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
+  }
 }

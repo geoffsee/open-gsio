@@ -16,6 +16,8 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 - [Stack](#stack)
 - [Installation](#installation)
 - [Deployment](#deployment)
+    - [Cloudflare Workers](#cloudflare-workers)
+    - [Docker](#docker)
 - [Local Inference](#local-inference)
     - [mlx-omni-server (default)](#mlx-omni-server)
         - [Adding models](#adding-models-for-local-inference-apple-silicon)
@@ -46,11 +48,18 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 > Note: it should be possible to use pnpm in place of bun.
 
 ## Deployment
+
+### Cloudflare Workers
 1. Setup KV_STORAGE binding in `packages/server/wrangler.jsonc`
 1.  [Add keys in secrets.json](https://console.groq.com/keys)
 1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
+
+### Docker
+1. Run `bun build:docker`
+1. Configure Keys: Mount an .env file into `/app` or specify environment variables. 
+1. Deploy to any container hosting service (e.g., Kubernetes)
 
 
 ## Local Inference
