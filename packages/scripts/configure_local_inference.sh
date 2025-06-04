@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
 
 
-# Ensure .dev.vars file exists.
-# This prevents errors if sed tries to edit a non-existent file and ensures '>>' appends.
+# Set REPO_ROOT to the directory containing this script, then go up two levels to repo root
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+
+WRANGLER_SERVER_PATH=packages/cloudflare-workers/open-gsio
+BUN_SERVER_PATH=packages/server
+
+# Set path to .dev.vars file in server directory
+DEV_VARS_PATH="${REPO_ROOT}/${WRANGLER_SERVER_PATH}/.dev.vars"
+ENV_LOCAL_PATH="${REPO_ROOT}/${BUN_SERVER_PATH}/.env"
+
 # Function to configure .dev.vars with the specified API key and endpoint
 configure_dev_vars() {
   local endpoint_url=$1
@@ -12,16 +20,20 @@ configure_dev_vars() {
 
   # Configure OPENAI_API_KEY
   # 1. Remove any existing OPENAI_API_KEY line
-  sed -i '' '/^OPENAI_API_KEY=/d' .dev.vars
+  sed -i '' '/^OPENAI_API_KEY=/d' "${DEV_VARS_PATH}"
+  sed -i '' '/^OPENAI_API_KEY=/d' "${ENV_LOCAL_PATH}"
   # 2. Append a blank line (ensures the new variable is on a new line and adds spacing)
   # 3. Append the new OPENAI_API_KEY line
-  echo "OPENAI_API_KEY=${api_key}" >> .dev.vars
+  echo "OPENAI_API_KEY=${api_key}" >> "${DEV_VARS_PATH}"
+  echo "OPENAI_API_KEY=${api_key}" >> "${ENV_LOCAL_PATH}"
 
   # Configure OPENAI_API_ENDPOINT
   # 1. Remove any existing OPENAI_API_ENDPOINT line
-  sed -i '' '/^OPENAI_API_ENDPOINT=/d' .dev.vars
+  sed -i '' '/^OPENAI_API_ENDPOINT=/d' "${DEV_VARS_PATH}"
+  sed -i '' '/^OPENAI_API_ENDPOINT=/d' "${ENV_LOCAL_PATH}"
   # 3. Append the new OPENAI_API_ENDPOINT line
-  echo "OPENAI_API_ENDPOINT=${endpoint_url}" >> .dev.vars
+  echo "OPENAI_API_ENDPOINT=${endpoint_url}" >> "${DEV_VARS_PATH}"
+  echo "OPENAI_API_ENDPOINT=${endpoint_url}" >> "${ENV_LOCAL_PATH}"
 
   echo "Local inference is configured for $endpoint_url"
 }

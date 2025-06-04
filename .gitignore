@@ -6,6 +6,7 @@
 **/.wrangler/
 **/.idea/
 **/html/
+**/.env
 packages/client/public/static/fonts/*
 
 **/secrets.json
