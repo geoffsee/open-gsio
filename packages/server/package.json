@@ -4,14 +4,15 @@
   "scripts": {
     "clean": "rm -rf ../../node_modules && rm -rf .wrangler && rm -rf dist && rm -rf coverage && rm -rf html",
     "dev": "bun ./server.ts",
-    "build": "bun wrangler build",
     "tests": "vitest run",
+    "build": "bun run build.ts",
     "tests:coverage": "vitest run --coverage.enabled=true"
   },
   "devDependencies": {
     "@open-gsio/env": "workspace:*",
     "@anthropic-ai/sdk": "^0.32.1",
     "@chakra-ui/react": "^2.10.6",
+    "bun-sqlite-key-value": "^1.13.1",
     "@cloudflare/workers-types": "^4.20241205.0",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",

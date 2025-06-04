@@ -9,9 +9,12 @@
     "packages/cloudflare-workers/*"
   ],
   "scripts": {
+    "clean": "packages/scripts/cleanup.sh",
     "test:all": "bun run --filter='*' tests",
-    "dev": "echo 'not implemented'",
-    "build": "echo 'not implemented'"
+    "dev:client": "(cd packages/client && bun run dev)",
+    "dev:server": "(cd packages/server && bun run dev)",
+    "build": "(cd packages/cloudflare-workers && bun run deploy:dry-run)",
+    "deploy": "(cd packages/cloudflare-workers && bun run deploy)"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -19,8 +22,5 @@
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "dependencies": {
-    "bun-sqlite-key-value": "^1.13.1"
   }
 }

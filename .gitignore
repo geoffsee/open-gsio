@@ -1,6 +1,7 @@
 **/.open-gsio/
 **/node_modules/
 **/dist/
+**/build/
 **/coverage/
 **/.wrangler/
 **/.idea/

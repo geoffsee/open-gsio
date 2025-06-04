@@ -4,7 +4,6 @@
   "scripts": {
     "dev": "bun vite dev",
     "build": "bun vite build",
-    "postbuild": "cp -R ./dist ../server/dist",
     "tests": "vitest run",
     "tests:coverage": "vitest run --coverage.enabled=true"
   },
