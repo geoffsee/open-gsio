@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "bun vite dev",
     "build": "bun vite build",
-    "postbuild": "cp -R ./dist ../server/dist"
+    "postbuild": "cp -R ./dist ../server/dist",
+    "test": "vitest"
   },
   "dependencies": {
     "@open-gsio/env": "workspace:*",

@@ -39,7 +39,7 @@ export class ChatSdk {
         console.log(ctx.env.SERVER_COORDINATOR);
 
         const objectId = ctx.env.SERVER_COORDINATOR.idFromName("stream-index");
-        const durableObject = ctx.env.SERVER_COORDINATOR.get(objectId, ctx.env);
+        const durableObject = ctx.env.SERVER_COORDINATOR.get(objectId);
 
 
         await durableObject.saveStreamData(

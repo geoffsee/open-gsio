@@ -4,7 +4,7 @@ import ChatService, { ClientError } from '../ChatService.ts';
 import OpenAI from 'openai';
 import ChatSdk from '../../lib/chat-sdk.ts';
 import Message from '../../models/Message.ts';
-import { SUPPORTED_MODELS } from '../../../../client/src/components/chat/lib/SupportedModels.ts';
+import { SUPPORTED_MODELS } from '@open-gsio/ai/supported-models';
 import handleStreamData from '../../lib/handleStreamData.ts';
 
 // Create mock OpenAI instance
@@ -62,7 +62,7 @@ describe('ChatService', () => {
     mockEnv = {
       OPENAI_API_KEY: 'test-api-key',
       OPENAI_API_ENDPOINT: 'https://api.openai.com/v1',
-      SITE_COORDINATOR: {
+      SERVER_COORDINATOR: {
         idFromName: vi.fn().mockReturnValue('test-id'),
         get: vi.fn().mockReturnValue({
           getStreamData: vi.fn().mockResolvedValue(JSON.stringify({
@@ -291,7 +291,7 @@ describe('ChatService', () => {
       // Update the mockEnv to use our mock
       const updatedEnv = {
         ...mockEnv,
-        SITE_COORDINATOR: {
+        SERVER_COORDINATOR: {
           idFromName: vi.fn().mockReturnValue('test-id'),
           get: vi.fn().mockReturnValue(mockDurableObject)
         }

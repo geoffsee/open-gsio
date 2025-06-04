@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ChatSdk } from '../chat-sdk.ts';
 import { AssistantSdk } from '../assistant-sdk.ts';
 import Message from '../../models/Message.ts';
-import { getModelFamily } from '../../../../client/src/components/chat/lib/SupportedModels.ts';
+import { getModelFamily } from '@open-gsio/ai/supported-models';
 
 // Mock dependencies
 vi.mock('../assistant-sdk', () => ({
@@ -17,7 +17,7 @@ vi.mock('../../models/Message', () => ({
   }
 }));
 
-vi.mock('../../../../src/components/chat/lib/SupportedModels', () => ({
+vi.mock('@open-gsio/ai/supported-models', () => ({
   getModelFamily: vi.fn()
 }));
 
@@ -54,7 +54,7 @@ describe('ChatSdk', () => {
         systemPrompt: 'System prompt',
         maxTokens: 1000,
         env: {
-          SITE_COORDINATOR: {
+          SERVER_COORDINATOR: {
             idFromName: vi.fn(),
             get: vi.fn()
           }
@@ -91,7 +91,7 @@ describe('ChatSdk', () => {
         systemPrompt: 'System prompt',
         maxTokens: 1000,
         env: {
-          SITE_COORDINATOR: {
+          SERVER_COORDINATOR: {
             idFromName: vi.fn().mockReturnValue('object-id'),
             get: vi.fn().mockReturnValue(durableObject)
           }
@@ -101,8 +101,8 @@ describe('ChatSdk', () => {
       const response = await ChatSdk.handleChatRequest(request as any, ctx as any);
       const responseBody = await response.json();
       
-      expect(ctx.env.SITE_COORDINATOR.idFromName).toHaveBeenCalledWith('stream-index');
-      expect(ctx.env.SITE_COORDINATOR.get).toHaveBeenCalledWith('object-id');
+      expect(ctx.env.SERVER_COORDINATOR.idFromName).toHaveBeenCalledWith('stream-index');
+      expect(ctx.env.SERVER_COORDINATOR.get).toHaveBeenCalledWith('object-id');
       expect(saveStreamData).toHaveBeenCalledWith(
         streamId,
         expect.stringContaining(model)
@@ -124,7 +124,7 @@ describe('ChatSdk', () => {
       const ctx = {
         maxTokens: 1000,
         env: {
-          SITE_COORDINATOR: {
+          SERVER_COORDINATOR: {
             idFromName: vi.fn().mockReturnValue('object-id'),
             get: vi.fn().mockReturnValue(durableObject)
           }
@@ -133,8 +133,8 @@ describe('ChatSdk', () => {
 
       await ChatSdk.calculateMaxTokens(messages, ctx as any);
       
-      expect(ctx.env.SITE_COORDINATOR.idFromName).toHaveBeenCalledWith('dynamic-token-counter');
-      expect(ctx.env.SITE_COORDINATOR.get).toHaveBeenCalledWith('object-id');
+      expect(ctx.env.SERVER_COORDINATOR.idFromName).toHaveBeenCalledWith('dynamic-token-counter');
+      expect(ctx.env.SERVER_COORDINATOR.get).toHaveBeenCalledWith('object-id');
       expect(dynamicMaxTokens).toHaveBeenCalledWith(messages, 1000);
     });
   });
