@@ -15,6 +15,7 @@
     "server:dev": "(cd packages/server && bun run dev)",
     "build": "(cd packages/cloudflare-workers && bun run deploy:dry-run)",
     "deploy": "(cd packages/cloudflare-workers && bun run deploy)",
+    "deploy:secrets": "wrangler secret bulk secrets.json -c packages/cloudflare-workers/open-gsio/wrangler.jsonc",
     "openai:local:mlx": "packages/scripts/start_inference_server.sh mlx-omni-server",
     "openai:local:ollama": "packages/scripts/start_inference_server.sh ollama",
     "openai:local:configure": "packages/scripts/configure_local_inference.sh"

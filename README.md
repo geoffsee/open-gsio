@@ -47,7 +47,7 @@ This is my full-stack Conversational AI. It runs on Cloudflare or Bun.
 
 ## Deployment
 1. Setup KV_STORAGE binding in `packages/server/wrangler.jsonc`
-1.  [Add another `GROQ_API_KEY` in secrets.json](https://console.groq.com/keys)
+1.  [Add keys in secrets.json](https://console.groq.com/keys)
 1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
