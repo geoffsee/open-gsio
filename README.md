@@ -39,9 +39,24 @@
 
 1. `bun i && bun test`
 1. [Add your own `GROQ_API_KEY` in .dev.vars](https://console.groq.com/keys) OR [Setup Local Inference](#local-inference)
-1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
+1. In isolated shells, run:
+   ```bash
+   # Start the server
+   bun run --cwd packages/server dev
+   
+   # Start the client
+   bun run --cwd packages/client dev
+   ```
 
-> Note: it should be possible to use pnpm in place of bun. 
+> Note: This project uses Bun workspaces to manage the monorepo structure. The workspaces are configured in the root package.json file:
+> ```json
+> "workspaces": [
+>   "packages/*",
+>   "packages/cloudflare-workers/*"
+> ]
+> ```
+> 
+> It should be possible to use pnpm in place of bun.
 
 ## Deployment
 1. Setup the KV_STORAGE bindings in `wrangler.jsonc`  
@@ -61,9 +76,12 @@
 brew tap seemueller-io/tap                   
 brew install seemueller-io/tap/mlx-omni-server 
 
-bun run openai:local mlx-omni-server         # Start mlx-omni-server
-bun run openai:local:enable                  # Configure connection
-bun run server:dev                           # Restart server
+# Start mlx-omni-server
+bun run --cwd packages/scripts openai:local mlx-omni-server
+# Configure connection
+bun run --cwd packages/scripts openai:local:enable
+# Restart server
+bun run --cwd packages/server dev
 ~~~
 #### Adding models for local inference (Apple Silicon)
 
@@ -83,9 +101,12 @@ curl http://localhost:10240/v1/chat/completions \
 
 ### Ollama
 ~~~bash
-bun run openai:local ollama                  # Start ollama server
-bun run openai:local:enable                  # Configure connection
-bun run server:dev                           # Restart server
+# Start ollama server
+bun run --cwd packages/scripts openai:local ollama
+# Configure connection
+bun run --cwd packages/scripts openai:local:enable
+# Restart server
+bun run --cwd packages/server dev
 ~~~
 #### Adding models for local inference (ollama)
 
@@ -104,10 +125,10 @@ Tests are located in `__tests__` directories next to the code they test. Testing
 
 
 ## Troubleshooting
-1.  `bun run clean`
+1.  `bun run --cwd packages/server clean`
 1.  `bun i`
-1.  `bun server:dev` 
-1.  `bun client:dev` 
+1.  `bun run --cwd packages/server dev` 
+1.  `bun run --cwd packages/client dev` 
 1. Submit an issue
 
 History
@@ -138,4 +159,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ~~~
-
