@@ -6,6 +6,8 @@
     "dev": "bun ./server.ts",
     "tests": "vitest run",
     "build": "bun run build.ts",
+    "build:native": "bun build --compile ./server.ts ../client/dist/client/index.html --outfile ./build/open-gsio-server",
+    "run:native": "chmod +x ./build/open-gsio-server && ./build/open-gsio-server",
     "tests:coverage": "vitest run --coverage.enabled=true"
   },
   "devDependencies": {

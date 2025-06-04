@@ -7,5 +7,4 @@ await Bun.build({
     minify: true,
     target: 'node',
     splitting: true,
-    throw: true
 });

@@ -46,7 +46,7 @@ export default {
             console.error("Error handling request:", e);
             return new Response("Server Error", { status: 500 });
         }
-        
+
     }
 }
 
@@ -65,7 +65,7 @@ const assetHandler = {
             const url = new URL(request.url);
 
             // List all files in the public directory
-            const PUBLIC_DIR = '../client/public/';
+            const PUBLIC_DIR = new URL('../client/public/', import.meta.url).pathname;
             const publicFiles = await readdir(PUBLIC_DIR, {recursive: true});
 
             // Get the filename from pathname and remove any path traversal attempts
@@ -79,14 +79,14 @@ const assetHandler = {
                 url.pathname = `/static${url.pathname}`;
             }
 
-            const dist = "../client/dist/client"
+            const dist = new URL('../client/dist/client', import.meta.url).pathname;
 
             try {
                 return new Response(Bun.file(`${dist}${url.pathname}`));
             } catch (error) {
                 // Log the error with the original requested path
                 console.error(`Error reading asset from path ${originalUrl.pathname}:`, error);
-                return new Response('Asset not found on disk', { status: 404 });
+                return new Response(null, { status: 404 });
             }
         }
     }
