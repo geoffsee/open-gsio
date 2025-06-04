@@ -16,7 +16,7 @@ export default {
     fetch: async (request: RequestLike, env: { [key: string]: any; }, ctx: any) =>{
         console.log("[trace] request: ", request.method, request.url, "headers: ", request.headers.get("referer"), "body: ", request.body, "env: ", env, "ctx: ", ctx, "")
 
-        env["SITE_COORDINATOR"] = DurableObjectLocal
+        env["SERVER_COORDINATOR"] = DurableObjectLocal
         env["ASSETS"] = assetHandler.ASSETS
         env["EVENTSOURCE_HOST"] = process.env.EVENTSOURCE_HOST
         env["GROQ_API_KEY"] = process.env.GROQ_API_KEY
