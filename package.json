@@ -17,8 +17,7 @@
     "deploy": "(cd packages/cloudflare-workers && bun run deploy)"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "dotenv": "^16.5.0"
+    "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
