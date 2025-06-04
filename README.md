@@ -93,8 +93,7 @@ bun run server:dev                           # Restart server
 
 ~~~bash
 # See https://ollama.com/library for available models
-MODEL_TO_ADD=gemma3 
-docker exec -it ollama ollama run ${MODEL_TO_ADD}
+use the ollama web ui @ http://localhost:8080
 ~~~  
 
 
@@ -140,4 +139,6 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ~~~
+
+
 

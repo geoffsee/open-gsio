@@ -5,8 +5,9 @@ if [ "$1" = "mlx-omni-server" ]; then
     mlx-omni-server --log-level debug
 elif [ "$1" = "ollama" ]; then
     echo "starting ollama"
-    docker run -d -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
+    SCRIPT_DIR=$(dirname $(realpath "$0"))
+    docker-compose -f "${SCRIPT_DIR}/ollama-compose.yml" up -d
 else
-    printf "Error: First argument must be 'mlx-omni-server'\n"
+    printf "Error: First argument must be 'mlx-omni-server' or 'ollama'\n"
     exit 1
 fi
