@@ -4,14 +4,15 @@
   "type": "module",
   "version": "2.0.0",
   "private": true,
-  "scripts": {
-    "dev": "bun run ./server.ts",
-    "test": "bun --filter '*' vitest"
-  },
   "workspaces": [
     "packages/*",
     "packages/cloudflare-workers/*"
   ],
+  "scripts": {
+    "test:all": "bun run --filter='*' tests",
+    "dev": "echo 'not implemented'",
+    "build": "echo 'not implemented'"
+  },
   "devDependencies": {
     "@types/bun": "latest",
     "dotenv": "^16.5.0"

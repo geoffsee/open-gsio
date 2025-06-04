@@ -3,8 +3,10 @@
   "type": "module",
   "scripts": {
     "clean": "rm -rf ../../node_modules && rm -rf .wrangler && rm -rf dist && rm -rf coverage && rm -rf html",
+    "dev": "bun ./server.ts",
     "build": "bun wrangler build",
-    "dev": "bun ./server.ts"
+    "tests": "vitest run",
+    "tests:coverage": "vitest run --coverage.enabled=true"
   },
   "devDependencies": {
     "@open-gsio/env": "workspace:*",

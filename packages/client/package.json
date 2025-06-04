@@ -5,7 +5,8 @@
     "dev": "bun vite dev",
     "build": "bun vite build",
     "postbuild": "cp -R ./dist ../server/dist",
-    "test": "vitest"
+    "tests": "vitest run",
+    "tests:coverage": "vitest run --coverage.enabled=true"
   },
   "dependencies": {
     "@open-gsio/env": "workspace:*",
