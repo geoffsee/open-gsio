@@ -6,10 +6,10 @@ import type { RequestLike } from "itty-router";
 import {config} from "dotenv";
 import Server from ".";
 import DurableObjectLocal from "./ServerCoordinatorBun";
-
+import { file } from "bun";
 const router = Server.Router();
 
-config({ path: ['../../.dev.vars'] })
+config({ path: ['.env'] })
 
 export default {
     port: 3003,
@@ -26,7 +26,9 @@ export default {
         env["CEREBRAS_API_KEY"] = process.env.CEREBRAS_API_KEY
         env["CLOUDFLARE_API_KEY"] = process.env.CLOUDFLARE_API_KEY
         env["CLOUDFLARE_ACCOUNT_ID"] = process.env.CLOUDFLARE_ACCOUNT_ID
-        env["KV_STORAGE"] = new BunSqliteKVNamespace("open-gsio")
+        env["KV_STORAGE"] = new BunSqliteKVNamespace({
+            namespace: "open-gsio"
+        })
 
 
         try {
@@ -49,6 +51,9 @@ export default {
 
     }
 }
+import html from "../client/dist/client/index.html" with { type: "file" };
+
+
 
 const assetHandler = {
     ASSETS: {
@@ -64,25 +69,27 @@ const assetHandler = {
             const originalUrl = new URL(request.url);
             const url = new URL(request.url);
 
-            // List all files in the public directory
-            const PUBLIC_DIR = new URL('../client/public/', import.meta.url).pathname;
-            const publicFiles = await readdir(PUBLIC_DIR, {recursive: true});
-
-            // Get the filename from pathname and remove any path traversal attempts
-            const filename = url.pathname.split('/').pop()?.replace(/\.\./g, '') || '';
-
-            const isStatic = publicFiles.some(file => file === filename);
-
-            if (url.pathname === "/") {
-                url.pathname = "/index.html";
-            } else if (isStatic) {
-                url.pathname = `/static${url.pathname}`;
-            }
-
-            const dist = new URL('../client/dist/client', import.meta.url).pathname;
+            //
+            //
+            // // List all files in the public directory
+            // const PUBLIC_DIR = new URL('../client/public/', import.meta.url).pathname;
+            // const publicFiles = await readdir(PUBLIC_DIR, {recursive: true});
+            //
+            // // Get the filename from pathname and remove any path traversal attempts
+            // const filename = url.pathname.split('/').pop()?.replace(/\.\./g, '') || '';
+            //
+            // const isStatic = publicFiles.some(file => file === filename);
+            //
+            // if (url.pathname === "/") {
+            //     url.pathname = "/index.html";
+            // } else if (isStatic) {
+            //     url.pathname = `/static${url.pathname}`;
+            // }
+            //
+            // const dist = new URL('../client/dist/client', import.meta.url).pathname;
 
             try {
-                return new Response(Bun.file(`${dist}${url.pathname}`));
+                return new Response(file(html));
             } catch (error) {
                 // Log the error with the original requested path
                 console.error(`Error reading asset from path ${originalUrl.pathname}:`, error);
