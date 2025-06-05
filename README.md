@@ -107,9 +107,9 @@ A high-level overview for the development history of the parent repository, [geo
 
 ## Acknowledgments
 
-I would like to express our gratitude to the following projects, libraries, and individuals that have contributed to making open-gsio possible:
+I would like to express gratitude to the following projects, libraries, and individuals that have contributed to making open-gsio possible:
 
-  - [TypeScript](https://www.typescriptlang.org/) - Our primary programming language
+  - [TypeScript](https://www.typescriptlang.org/) - Primary programming language
   - [React](https://react.dev/) - UI library for building the frontend
   - [Vike](https://vike.dev/) - Framework for server-side rendering and routing
   - [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Serverless execution environment
