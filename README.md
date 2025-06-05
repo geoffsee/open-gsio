@@ -6,8 +6,8 @@
   <img src="https://github.com/user-attachments/assets/620d2517-e7be-4bb0-b2b7-3aa0cba37ef0" width="250" />
 </p>
 
-> **Note**: This project is currently under active development. The styling is a work in progress and some functionality
-> may be broken. Tests are being actively ported and stability will improve over time. Thank you for your patience!
+> **Note**: I am porting logic from 3 projects back into this one. The styling is a work in progress and some functionality
+> may be broken. Tests are being actively ported and stability will improve over time. Thank you for your patience.
 
 This is a full-stack Conversational AI. It runs on Cloudflare or Bun. 
 
