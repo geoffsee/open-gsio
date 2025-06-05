@@ -109,24 +109,24 @@ A high-level overview for the development history of the parent repository, [geo
 
 I would like to express our gratitude to the following projects, libraries, and individuals that have contributed to making open-gsio possible:
 
-- **Core Technologies**
   - [TypeScript](https://www.typescriptlang.org/) - Our primary programming language
   - [React](https://react.dev/) - UI library for building the frontend
   - [Vike](https://vike.dev/) - Framework for server-side rendering and routing
   - [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Serverless execution environment
   - [Bun](https://bun.sh/) - JavaScript runtime and toolkit
-
-- **Libraries & Tools**
   - [itty-router](https://github.com/kwhitley/itty-router) - Lightweight router for serverless environments
   - [MobX-State-Tree](https://mobx-state-tree.js.org/) - State management solution
   - [OpenAI SDK](https://github.com/openai/openai-node) - Client for AI model integration
   - [Vitest](https://vitest.dev/) - Testing framework
   - [mlx-omni-server](https://github.com/seemueller-io/mlx-omni-server) - Local inference server for Apple Silicon
-
-- **AI Model Providers**
+  - [OpenAI](https://github.com/openai) 
   - [Groq](https://console.groq.com/) - Fast inference API
-  - [Ollama](https://ollama.com/) - Local model running
-  - [MLX Community](https://huggingface.co/mlx-community) - Open-source models for Apple Silicon
+  - [Anthropic](https://www.anthropic.com/) - Creator of Claude models
+  - [Fireworks](https://fireworks.ai/) - AI inference platform
+  - [XAI](https://x.ai/) - Creator of Grok models
+  - [Cerebras](https://www.cerebras.net/) - AI compute and models
+  - [Ollama](https://github.com/ollama/ollama) - Local model running
+  - [(madroidmaq) MLX Omni Server](https://github.com/madroidmaq/mlx-omni-server) - Open-source high-performance inference for Apple Silicon
 
 - **Contributors**
   - All the developers who have contributed code, reported issues, or provided feedback
