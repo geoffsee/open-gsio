@@ -13,7 +13,6 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 
 ## Table of Contents
 
-- [Stack](#stack)
 - [Installation](#installation)
 - [Deployment](#deployment)
 - [Local Inference](#local-inference)
@@ -24,17 +23,8 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
 - [History](#history)
+- [Acknowledgments](#acknowledgments)
 - [License](#license)
-
-## Stack
-* [TypeScript](https://www.typescriptlang.org/)
-* [Vike](https://vike.dev/)
-* [React](https://react.dev/)
-* [Cloudflare Workers](https://developers.cloudflare.com/workers/)
-* [itty‑router](https://github.com/kwhitley/itty-router)
-* [MobX‑State‑Tree](https://mobx-state-tree.js.org/)
-* [OpenAI SDK](https://github.com/openai/openai-node)
-* [Vitest](https://vitest.dev/)
 
 
 ## Installation
@@ -115,6 +105,35 @@ History
 ---
 A high-level overview for the development history of the parent repository, [geoff-seemueller-io](https://geoff.seemueller.io), is provided in [LEGACY.md](./LEGACY.md).
 
+## Acknowledgments
+
+I would like to express our gratitude to the following projects, libraries, and individuals that have contributed to making open-gsio possible:
+
+- **Core Technologies**
+  - [TypeScript](https://www.typescriptlang.org/) - Our primary programming language
+  - [React](https://react.dev/) - UI library for building the frontend
+  - [Vike](https://vike.dev/) - Framework for server-side rendering and routing
+  - [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Serverless execution environment
+  - [Bun](https://bun.sh/) - JavaScript runtime and toolkit
+
+- **Libraries & Tools**
+  - [itty-router](https://github.com/kwhitley/itty-router) - Lightweight router for serverless environments
+  - [MobX-State-Tree](https://mobx-state-tree.js.org/) - State management solution
+  - [OpenAI SDK](https://github.com/openai/openai-node) - Client for AI model integration
+  - [Vitest](https://vitest.dev/) - Testing framework
+  - [mlx-omni-server](https://github.com/seemueller-io/mlx-omni-server) - Local inference server for Apple Silicon
+
+- **AI Model Providers**
+  - [Groq](https://console.groq.com/) - Fast inference API
+  - [Ollama](https://ollama.com/) - Local model running
+  - [MLX Community](https://huggingface.co/mlx-community) - Open-source models for Apple Silicon
+
+- **Contributors**
+  - All the developers who have contributed code, reported issues, or provided feedback
+
+- **Open Source Community**
+  - The broader open-source community for creating and maintaining the tools and libraries that make this project possible
+
 ## License
 ~~~text
 MIT License
@@ -139,6 +158,3 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ~~~
-
-
-
