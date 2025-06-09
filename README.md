@@ -118,21 +118,16 @@ I would like to express gratitude to the following projects, libraries, and indi
   - [MobX-State-Tree](https://mobx-state-tree.js.org/) - State management solution
   - [OpenAI SDK](https://github.com/openai/openai-node) - Client for AI model integration
   - [Vitest](https://vitest.dev/) - Testing framework
-  - [mlx-omni-server](https://github.com/seemueller-io/mlx-omni-server) - Local inference server for Apple Silicon
   - [OpenAI](https://github.com/openai) 
   - [Groq](https://console.groq.com/) - Fast inference API
   - [Anthropic](https://www.anthropic.com/) - Creator of Claude models
   - [Fireworks](https://fireworks.ai/) - AI inference platform
   - [XAI](https://x.ai/) - Creator of Grok models
   - [Cerebras](https://www.cerebras.net/) - AI compute and models
-  - [Ollama](https://github.com/ollama/ollama) - Local model running
   - [(madroidmaq) MLX Omni Server](https://github.com/madroidmaq/mlx-omni-server) - Open-source high-performance inference for Apple Silicon
+  - [MLX](https://github.com/ml-explore/mlx) - An array framework for Apple silicon
+  - [Ollama](https://github.com/ollama/ollama) - Versatile solution for self-hosting models 
 
-- **Contributors**
-  - All the developers who have contributed code, reported issues, or provided feedback
-
-- **Open Source Community**
-  - The broader open-source community for creating and maintaining the tools and libraries that make this project possible
 
 ## License
 ~~~text
