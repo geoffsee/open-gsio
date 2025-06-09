@@ -1,39 +1,29 @@
 #!/usr/bin/env bash
 
-
-# Set REPO_ROOT to the directory containing this script, then go up two levels to repo root
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 WRANGLER_SERVER_PATH=packages/cloudflare-workers/open-gsio
 BUN_SERVER_PATH=packages/server
 
-# Set path to .dev.vars file in server directory
+
 DEV_VARS_PATH="${REPO_ROOT}/${WRANGLER_SERVER_PATH}/.dev.vars"
 ENV_LOCAL_PATH="${REPO_ROOT}/${BUN_SERVER_PATH}/.env"
 
-# Function to configure .dev.vars with the specified API key and endpoint
 configure_dev_vars() {
   local endpoint_url=$1
   local api_key="required-but-not-used"
 
-  echo "Configuring .dev.vars for endpoint: ${endpoint_url}"
+  echo "Configuring: packages/cloudflare-workers/open-gsio/.dev.vars AND packages/server/.env"
 
-  # Configure OPENAI_API_KEY
-  # 1. Remove any existing OPENAI_API_KEY line
-  sed -i '' '/^OPENAI_API_KEY=/d' "${DEV_VARS_PATH}"
-  sed -i '' '/^OPENAI_API_KEY=/d' "${ENV_LOCAL_PATH}"
-  # 2. Append a blank line (ensures the new variable is on a new line and adds spacing)
-  # 3. Append the new OPENAI_API_KEY line
-  echo "OPENAI_API_KEY=${api_key}" >> "${DEV_VARS_PATH}"
-  echo "OPENAI_API_KEY=${api_key}" >> "${ENV_LOCAL_PATH}"
-
-  # Configure OPENAI_API_ENDPOINT
-  # 1. Remove any existing OPENAI_API_ENDPOINT line
-  sed -i '' '/^OPENAI_API_ENDPOINT=/d' "${DEV_VARS_PATH}"
-  sed -i '' '/^OPENAI_API_ENDPOINT=/d' "${ENV_LOCAL_PATH}"
-  # 3. Append the new OPENAI_API_ENDPOINT line
-  echo "OPENAI_API_ENDPOINT=${endpoint_url}" >> "${DEV_VARS_PATH}"
-  echo "OPENAI_API_ENDPOINT=${endpoint_url}" >> "${ENV_LOCAL_PATH}"
+  # Default URL is automatic but can be overridden for remote deployments
+  if [[ "$endpoint_url" == *"11434"* ]]; then
+    echo "OLLAMA_API_KEY=active" >> "${ENV_LOCAL_PATH}"
+    echo "OLLAMA_API_KEY=active" >> "${DEV_VARS_PATH}"
+  fi
+  if [[ "$endpoint_url" == *"10240"* ]]; then
+  echo "MLX_API_KEY=active" >> "${ENV_LOCAL_PATH}"
+  echo "MLX_API_KEY=active" >> "${DEV_VARS_PATH}"
+  fi
 
   echo "Local inference is configured for $endpoint_url"
 }
@@ -45,11 +35,12 @@ echo "Checking for local inference services..."
 #   -z: Zero-I/O mode (port scanning)
 #   -w1: Timeout after 1 second
 #   >/dev/null 2>&1: Suppress output from nc
+# check for ollama
 if nc -z -w1 localhost 11434 >/dev/null 2>&1; then
   echo "Ollama service detected on port 11434."
   configure_dev_vars "http://localhost:11434"
-# Else, check for mlx-omni-server on port 10240
-elif nc -z -w1 localhost 10240 >/dev/null 2>&1; then
+# check for mlx-omni-server
+if nc -z -w1 localhost 10240 >/dev/null 2>&1; then
   echo "mlx-omni-server service detected on port 10240."
   configure_dev_vars "http://localhost:10240"
 else
