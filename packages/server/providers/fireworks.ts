@@ -11,12 +11,13 @@ import {
 import Message from "../models/Message.ts";
 import ChatSdk from "../lib/chat-sdk.ts";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
+import {ProviderRepository} from "./_ProviderRepository";
 
 export class FireworksAiChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return new OpenAI({
       apiKey: param.env.FIREWORKS_API_KEY,
-      baseURL: "https://api.fireworks.ai/inference/v1",
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.fireworks,
     });
   }
 

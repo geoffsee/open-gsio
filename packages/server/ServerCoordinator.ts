@@ -1,6 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
+import {ProviderRepository} from "./providers/_ProviderRepository";
 
 export default class ServerCoordinator extends DurableObject {
+  env;
+  state;
   constructor(state, env) {
     super(state, env);
     this.state = state;
@@ -8,20 +11,24 @@ export default class ServerCoordinator extends DurableObject {
   }
 
   // Public method to calculate dynamic max tokens
-  async dynamicMaxTokens(input, maxOuputTokens) {
-    return 2000;
-    // const baseTokenLimit = 1024;
-    //
-    //
-    // const { encode } = await import("gpt-tokenizer/esm/model/gpt-4o");
-    //
-    // const inputTokens = Array.isArray(input)
-    //     ? encode(input.map(i => i.content).join(' '))
-    //     : encode(input);
-    //
-    // const scalingFactor = inputTokens.length > 300 ? 1.5 : 1;
-    //
-    // return Math.min(baseTokenLimit + Math.floor(inputTokens.length * scalingFactor^2), maxOuputTokens);
+  async dynamicMaxTokens(model, input, maxOuputTokens) {
+
+    const modelMeta = ProviderRepository.getModelMeta(model, this.env);
+
+    // The token‑limit information is stored in three different keys:
+    // max_completion_tokens
+    // context_window
+    // context_length
+
+    if('max_completion_tokens' in modelMeta) {
+      return modelMeta.max_completion_tokens;
+    } else if('context_window' in modelMeta) {
+      return modelMeta.context_window;
+    } else if('context_length' in modelMeta) {
+      return modelMeta.context_length;
+    } else {
+      return 8096;
+    }
   }
 
   // Public method to retrieve conversation history

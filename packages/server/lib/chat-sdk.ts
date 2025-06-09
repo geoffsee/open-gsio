@@ -1,8 +1,8 @@
 import {OpenAI} from "openai";
 import Message from "../models/Message.ts";
 import {AssistantSdk} from "./assistant-sdk.ts";
-import {getModelFamily} from "@open-gsio/ai/supported-models.ts";
 import type {Instance} from "mobx-state-tree";
+import {ProviderRepository} from "../providers/_ProviderRepository";
 
 export class ChatSdk {
     static async preprocess({
@@ -95,9 +95,10 @@ export class ChatSdk {
             assistantPrompt: string;
             toolResults: Instance<typeof Message>;
             model: any;
+            env: Env;
         },
     ) {
-        const modelFamily = getModelFamily(opts.model);
+        const modelFamily = ProviderRepository.getModelFamily(opts.model, opts.env)
 
         const messagesToSend = [];
 

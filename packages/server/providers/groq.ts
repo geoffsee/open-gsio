@@ -7,11 +7,12 @@ import {
   UnionStringArray,
 } from "mobx-state-tree";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
+import {ProviderRepository} from "./_ProviderRepository";
 
 export class GroqChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return new OpenAI({
-      baseURL: "https://api.groq.com/openai/v1",
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.groq,
       apiKey: param.env.GROQ_API_KEY,
     });
   }

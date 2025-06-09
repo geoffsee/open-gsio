@@ -69,6 +69,7 @@ export class ClaudeChatProvider extends BaseChatProvider {
       model: param.model,
       assistantPrompt,
       toolResults: param.preprocessedContext,
+      env: param.env,
     });
 
     const streamParams = this.getStreamParams(param, safeMessages);

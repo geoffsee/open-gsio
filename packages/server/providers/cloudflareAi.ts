@@ -1,13 +1,12 @@
 import {OpenAI} from "openai";
 import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider.ts";
+import {ProviderRepository} from "./_ProviderRepository";
 
 export class CloudflareAiChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
-    const cfAiURL = `https://api.cloudflare.com/client/v4/accounts/${param.env.CLOUDFLARE_ACCOUNT_ID}/ai/v1`;
-
     return new OpenAI({
       apiKey: param.env.CLOUDFLARE_API_KEY,
-      baseURL: cfAiURL,
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.cloudflare.replace("{CLOUDFLARE_ACCOUNT_ID}", param.env.CLOUDFLARE_ACCOUNT_ID),
     });
   }
 
