@@ -3,7 +3,6 @@ import OpenAI from 'openai';
 import ChatSdk from '../lib/chat-sdk.ts';
 import Message from "../models/Message.ts";
 import O1Message from "../models/O1Message.ts";
-import {getModelFamily, ModelFamily, SUPPORTED_MODELS} from "@open-gsio/ai/supported-models";
 import {OpenAiChatSdk} from "../providers/openai.ts";
 import {GroqChatSdk} from "../providers/groq.ts";
 import {ClaudeChatSdk} from "../providers/claude.ts";
@@ -13,6 +12,9 @@ import {GoogleChatSdk} from "../providers/google.ts";
 import {XaiChatSdk} from "../providers/xai.ts";
 import {CerebrasSdk} from "../providers/cerebras.ts";
 import {CloudflareAISdk} from "../providers/cloudflareAi.ts";
+import {OllamaChatSdk} from "../providers/ollama";
+import {MlxOmniChatSdk} from "../providers/mlx-omni";
+import {ProviderRepository} from "../providers/_ProviderRepository";
 
 export interface StreamParams {
     env: Env;
@@ -110,24 +112,97 @@ const ChatService = types
             cerebras: (params: StreamParams, dataHandler: Function) =>
                 CerebrasSdk.handleCerebrasStream(params, dataHandler),
             cloudflareAI: (params: StreamParams, dataHandler: Function) =>
-                CloudflareAISdk.handleCloudflareAIStream(params, dataHandler)
+                CloudflareAISdk.handleCloudflareAIStream(params, dataHandler),
+            ollama: (params: StreamParams, dataHandler: Function) =>
+                OllamaChatSdk.handleOllamaStream(params, dataHandler),
+            mlx: (params: StreamParams, dataHandler: Function) =>
+                MlxOmniChatSdk.handleMlxOmniStream(params, dataHandler),
         };
 
         return {
-            async getSupportedModels() {
-                const isLocal = self.env.OPENAI_API_ENDPOINT && self.env.OPENAI_API_ENDPOINT.includes("localhost");
-                console.log({isLocal})
-                if(isLocal) {
-                    console.log("getting local models")
-                    const openaiClient = new OpenAI({baseURL: self.env.OPENAI_API_ENDPOINT})
-                    const models = await openaiClient.models.list();
-                    return Response.json(
-                        models.data
-                            .filter(model => model.id.includes("mlx"))
-                            .map(model => model.id));
+            getSupportedModels: flow(function* ():
+                Generator<Promise<unknown>, Response, unknown> {
+
+                // ----- Helpers ----------------------------------------------------------
+                const logger = console;
+
+                // ----- 1. Try cached value ---------------------------------------------
+                try {
+                    const cached = yield self.env.KV_STORAGE.get('supportedModels');
+                    if (cached) {
+                        const parsed = JSON.parse(cached as string);
+                        if (Array.isArray(parsed)) {
+                            logger.info('Cache hit – returning supportedModels from KV');
+                            return new Response(JSON.stringify(parsed), { status: 200 });
+                        }
+                        logger.warn('Cache entry malformed – refreshing');
+                    }
+                } catch (err) {
+                    logger.error('Error reading/parsing supportedModels cache', err);
                 }
-                return Response.json(SUPPORTED_MODELS);
-            },
+
+                // ----- 2. Build fresh list ---------------------------------------------
+                const providerRepo   = new ProviderRepository(self.env);
+                const providers      = providerRepo.getProviders();
+                const providerModels = new Map<string, any[]>();
+                const modelMeta      = new Map<string, any>();
+
+                for (const provider of providers) {
+                    if (!provider.key) continue;
+
+                    logger.info(`Fetching models for provider «${provider.name}»`);
+
+                    const openai = new OpenAI({ apiKey: provider.key, baseURL: provider.endpoint });
+
+                    // 2‑a. List models
+                    try {
+                        const listResp = yield openai.models.list();          // <‑‑ async
+                        const models   = ('data' in listResp) ? listResp.data : listResp;
+                        providerModels.set(provider.name, models);
+
+                        // 2‑b. Retrieve metadata
+                        for (const mdl of models) {
+                            try {
+                                const meta = yield openai.models.retrieve(mdl.id); // <‑‑ async
+                                modelMeta.set(mdl.id, { ...mdl, ...meta });
+                            } catch (err) {
+                                // logger.error(`Metadata fetch failed for ${mdl.id}`, err);
+                                modelMeta.set(mdl.id, {provider: provider.name, mdl});
+                            }
+                        }
+                    } catch (err) {
+                        logger.error(`Model list failed for provider «${provider.name}»`, err);
+                    }
+                }
+
+                // ----- 3. Merge results -------------------------------------------------
+                const resultMap = new Map<string, any>();
+                for (const [provName, models] of providerModels) {
+                    for (const mdl of models) {
+                        resultMap.set(mdl.id, {
+                            id: mdl.id,
+                            provider: provName,
+                            ...(modelMeta.get(mdl.id) ?? mdl),
+                        });
+                    }
+                }
+                const resultArr = Array.from(resultMap.values());
+
+                // ----- 4. Cache fresh list ---------------------------------------------
+                try {
+                    yield self.env.KV_STORAGE.put(
+                        'supportedModels',
+                        JSON.stringify(resultArr),
+                        { expirationTtl: 60 * 60 * 24 },   // 24 h
+                    );
+                    logger.info('supportedModels cache refreshed');
+                } catch (err) {
+                    logger.error('KV put failed for supportedModels', err);
+                }
+
+                // ----- 5. Return --------------------------------------------------------
+                return new Response(JSON.stringify(resultArr), { status: 200 });
+            }),
             setActiveStream(streamId: string, stream: any) {
                 const validStream = {
                     name: stream?.name || "Unnamed Stream",
@@ -179,13 +254,13 @@ const ChatService = types
                 const {streamConfig, streamParams, controller, encoder, streamId} = params;
 
                 const useModelFamily = () => {
-                    return !self.env.OPENAI_API_ENDPOINT || !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? getModelFamily(streamConfig.model) : "openai";
+                    return ProviderRepository.getModelFamily(streamConfig.model, self.env)
                 }
 
-                const modelFamily = useModelFamily();
+                const modelFamily = await useModelFamily();
 
                 const useModelHandler = () => {
-                    return !self.env.OPENAI_API_ENDPOINT || !self.env.OPENAI_API_ENDPOINT.includes("localhost") ? modelHandlers[modelFamily as ModelFamily] : modelHandlers.openai;
+                    return modelHandlers[modelFamily]
                 }
 
                 const handler = useModelHandler();

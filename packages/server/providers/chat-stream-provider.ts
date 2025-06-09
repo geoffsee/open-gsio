@@ -35,6 +35,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
       model: param.model,
       assistantPrompt,
       toolResults: param.preprocessedContext,
+      env: param.env
     });
 
     const client = this.getOpenAIClient(param);

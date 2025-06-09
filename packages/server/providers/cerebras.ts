@@ -1,10 +1,11 @@
 import {OpenAI} from "openai";
 import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider.ts";
+import {ProviderRepository} from "./_ProviderRepository";
 
 export class CerebrasChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return new OpenAI({
-      baseURL: "https://api.cerebras.ai/v1",
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.cerebras,
       apiKey: param.env.CEREBRAS_API_KEY,
     });
   }

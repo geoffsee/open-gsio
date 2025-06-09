@@ -2,11 +2,12 @@ import { OpenAI } from "openai";
 import ChatSdk from "../lib/chat-sdk.ts";
 import { StreamParams } from "../services/ChatService.ts";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
+import {ProviderRepository} from "./_ProviderRepository";
 
 export class GoogleChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return new OpenAI({
-      baseURL: "https://generativelanguage.googleapis.com/v1beta/openai",
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.google,
       apiKey: param.env.GEMINI_API_KEY,
     });
   }
