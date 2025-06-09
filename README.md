@@ -44,10 +44,10 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 
 
 ## Local Inference
-> Local inference is achieved by overriding the `OPENAI_API_KEY` and `OPENAI_API_ENDPOINT` environment variables. See below.
+> Local inference is supported for Ollama and mlx-omni-server. OpenAI compatible servers can be used by overriding OPENAI_API_KEY and OPENAI_API_ENDPOINT. 
 
 ### mlx-omni-server
-(default) (Apple Silicon Only) - Use Ollama for other platforms.
+(default) (Apple Silicon Only)
 ~~~bash
 # (prereq) install mlx-omni-server
 brew tap seemueller-io/tap                   
