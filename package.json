@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "clean": "packages/scripts/cleanup.sh",
-    "test:all": "bun run --filter='*' tests",
+    "test:all": "bunx vitest",
     "client:dev": "(cd packages/client && bun run dev)",
     "server:dev": "bun build:client && (cd packages/server && bun run dev)",
     "build": "(cd packages/cloudflare-workers && bun run deploy:dry-run)",
