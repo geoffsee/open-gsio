@@ -3,7 +3,7 @@ import { Box, Flex, IconButton, Textarea } from "@chakra-ui/react";
 import { Check, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
-import Message from "../../../models/Message";
+import Message from "@open-gsio/schema/client/Message";
 import messageEditorStore from "../../../stores/MessageEditorStore";
 
 interface MessageEditorProps {

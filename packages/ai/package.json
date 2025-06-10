@@ -1,4 +1,8 @@
 {
   "name": "@open-gsio/ai",
-  "module": "index.ts"
+  "module": "index.ts",
+  "dependencies": {
+    "openai": "^5.2.0",
+    "@anthropic-ai/sdk": "^0.32.1"
+  }
 }

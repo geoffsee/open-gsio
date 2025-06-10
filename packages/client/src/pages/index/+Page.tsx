@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { Stack } from "@chakra-ui/react";
 import Chat from "../../components/chat/Chat";
 import clientChatStore from "../../stores/ClientChatStore";
-import { getModelFamily } from "../../components/chat/lib/SupportedModels";
 
 // renders "/"
 export default function IndexPage() {
@@ -10,9 +9,8 @@ export default function IndexPage() {
     try {
       let model = localStorage.getItem("recentModel");
 
-      if (getModelFamily(model as string)) {
         clientChatStore.setModel(model as string);
-      }
+
     } catch (_) {
       console.log("using default model");
     }

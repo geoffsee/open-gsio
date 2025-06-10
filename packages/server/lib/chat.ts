@@ -1,10 +1,9 @@
 import {OpenAI} from "openai";
-import Message from "../models/Message.ts";
-import {AssistantSdk} from "./assistant-sdk.ts";
+import Message from "@open-gsio/schema/server/Message";
 import type {Instance} from "mobx-state-tree";
-import {ProviderRepository} from "../providers/_ProviderRepository";
+import ProviderRepository from "@open-gsio/ai/providers/_ProviderRepository";
 
-export class ChatSdk {
+export class Chat {
     static async preprocess({
                                 messages,
                             }) {
@@ -32,7 +31,7 @@ export class ChatSdk {
             return new Response("No messages provided", {status: 400});
         }
 
-        const preprocessedContext = await ChatSdk.preprocess({
+        const preprocessedContext = await Chat.preprocess({
             messages,
         });
         console.log(ctx.env)
@@ -66,29 +65,7 @@ export class ChatSdk {
         );
     }
 
-    static async calculateMaxTokens(
-        messages: any[],
-        ctx: Record<string, any> & {
-            env: Env;
-            maxTokens: number;
-        },
-    ) {
-        const objectId = ctx.env.SERVER_COORDINATOR.idFromName(
-            "dynamic-token-counter",
-        );
-        const durableObject = ctx.env.SERVER_COORDINATOR.get(objectId);
-        return durableObject.dynamicMaxTokens(messages, ctx.maxTokens);
-    }
-
-    static buildAssistantPrompt({maxTokens}) {
-        return AssistantSdk.getAssistantPrompt({
-            maxTokens,
-            userTimezone: "UTC",
-            userLocation: "USA/unknown",
-        });
-    }
-
-    static buildMessageChain(
+    static async buildMessageChain(
         messages: any[],
         opts: {
             systemPrompt: any;
@@ -98,7 +75,7 @@ export class ChatSdk {
             env: Env;
         },
     ) {
-        const modelFamily = ProviderRepository.getModelFamily(opts.model, opts.env)
+        const modelFamily = await ProviderRepository.getModelFamily(opts.model, opts.env)
 
         const messagesToSend = [];
 
@@ -107,8 +84,8 @@ export class ChatSdk {
                 role:
                     opts.model.includes("o1") ||
                     opts.model.includes("gemma") ||
-                    modelFamily === "claude" ||
-                    modelFamily === "google"
+                   ( modelFamily === "claude" ||
+                    modelFamily === "google")
                         ? "assistant"
                         : "system",
                 content: opts.systemPrompt.trim(),
@@ -132,4 +109,4 @@ export class ChatSdk {
     }
 }
 
-export default ChatSdk;
+export default Chat;

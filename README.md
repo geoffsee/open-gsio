@@ -31,7 +31,8 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 
 1. `bun i && bun test:all`
 1. [Setup Local Inference](#local-inference) OR [Add your own `GROQ_API_KEY` in packages/cloudflare-workers/open-gsio/.dev.vars](https://console.groq.com/keys)
-1. In isolated shells, run `bun run server:dev` and `bun run client:dev`
+1. Run `bun run server:dev`
+1. Open localhost:3001 in your browser
 
 > Note: it should be possible to use pnpm in place of bun.
 

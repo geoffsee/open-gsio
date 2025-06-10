@@ -1,12 +1,29 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ChatSdk } from '../chat-sdk.ts';
-import { AssistantSdk } from '../assistant-sdk.ts';
+import { Chat } from '../chat.ts';
 import Message from '../../models/Message.ts';
-import { getModelFamily } from '@open-gsio/ai/supported-models';
+import ProviderRepository from "@open-gsio/ai/providers/_ProviderRepository";
 
+
+const mockEnv = {
+  OPENAI_API_KEY: 'test-api-key',
+  OPENAI_API_ENDPOINT: 'https://api.openai.com/v1',
+  SERVER_COORDINATOR: {
+    idFromName: vi.fn().mockReturnValue('test-id'),
+    get: vi.fn().mockReturnValue({
+      getStreamData: vi.fn().mockResolvedValue(JSON.stringify([]))
+    })
+  },
+  KV_STORAGE: {
+    get: vi.fn().mockResolvedValue(JSON.stringify({
+      maxTokens: 1000,
+      systemPrompt: 'some System prompt',
+      assistantPrompt: 'some Assistant prompt'
+    }))
+  }
+}
 // Mock dependencies
-vi.mock('../assistant-sdk', () => ({
-  AssistantSdk: {
+vi.mock('@open-gsio/ai/prompting/assistant-prompt', () => ({
+  AssistantPrompt: {
     getAssistantPrompt: vi.fn()
   }
 }));
@@ -17,21 +34,24 @@ vi.mock('../../models/Message', () => ({
   }
 }));
 
-vi.mock('@open-gsio/ai/supported-models', () => ({
-  getModelFamily: vi.fn()
+vi.mock('@open-gsio/ai/prompting/providers/_ProviderRepository', () => ({
+  default: {
+    getModelFamily: vi.fn()
+  },
 }));
 
-describe('ChatSdk', () => {
-  beforeEach(() => {
-    // Reset mocks
-    vi.resetAllMocks();
-  });
+
+describe('Chat', () => {
+  // beforeEach(() => {
+  //   // Reset mocks
+  //   vi.resetAllMocks();
+  // });
 
   describe('preprocess', () => {
     it('should return an assistant message with empty content', async () => {
       const messages = [{ role: 'user', content: 'Hello' }];
       
-      const result = await ChatSdk.preprocess({ messages });
+      const result = await Chat.preprocess({ messages });
       
       expect(Message.create).toHaveBeenCalledWith({
         role: 'assistant',
@@ -61,7 +81,7 @@ describe('ChatSdk', () => {
         }
       };
 
-      const response = await ChatSdk.handleChatRequest(request as any, ctx as any);
+      const response = await Chat.handleChatRequest(request as any, ctx as any);
       
       expect(response.status).toBe(400);
       expect(await response.text()).toBe('No messages provided');
@@ -98,7 +118,7 @@ describe('ChatSdk', () => {
         }
       };
 
-      const response = await ChatSdk.handleChatRequest(request as any, ctx as any);
+      const response = await Chat.handleChatRequest(request as any, ctx as any);
       const responseBody = await response.json();
       
       expect(ctx.env.SERVER_COORDINATOR.idFromName).toHaveBeenCalledWith('stream-index');
@@ -113,51 +133,13 @@ describe('ChatSdk', () => {
     });
   });
 
-  describe('calculateMaxTokens', () => {
-    it('should call the durable object to calculate max tokens', async () => {
-      const messages = [{ role: 'user', content: 'Hello' }];
-      const dynamicMaxTokens = vi.fn().mockResolvedValue(500);
-      const durableObject = {
-        dynamicMaxTokens
-      };
-      
-      const ctx = {
-        maxTokens: 1000,
-        env: {
-          SERVER_COORDINATOR: {
-            idFromName: vi.fn().mockReturnValue('object-id'),
-            get: vi.fn().mockReturnValue(durableObject)
-          }
-        }
-      };
-
-      await ChatSdk.calculateMaxTokens(messages, ctx as any);
-      
-      expect(ctx.env.SERVER_COORDINATOR.idFromName).toHaveBeenCalledWith('dynamic-token-counter');
-      expect(ctx.env.SERVER_COORDINATOR.get).toHaveBeenCalledWith('object-id');
-      expect(dynamicMaxTokens).toHaveBeenCalledWith(messages, 1000);
-    });
-  });
-
-  describe('buildAssistantPrompt', () => {
-    it('should call AssistantSdk.getAssistantPrompt with the correct parameters', () => {
-      vi.mocked(AssistantSdk.getAssistantPrompt).mockReturnValue('Assistant prompt');
-      
-      const result = ChatSdk.buildAssistantPrompt({ maxTokens: 1000 });
-      
-      expect(AssistantSdk.getAssistantPrompt).toHaveBeenCalledWith({
-        maxTokens: 1000,
-        userTimezone: 'UTC',
-        userLocation: 'USA/unknown'
-      });
-      expect(result).toBe('Assistant prompt');
-    });
-  });
 
   describe('buildMessageChain', () => {
-    it('should build a message chain with system role for most models', () => {
-      vi.mocked(getModelFamily).mockReturnValue('openai');
-      
+    it('should build a message chain with system role for most models', async () => {
+      // vi.mocked(ProviderRepository.getModelFamily).mockReturnValue('openai');
+      vi.spyOn(ProviderRepository, 'getModelFamily').mockResolvedValue('openai');
+
+
       const messages = [
         { role: 'user', content: 'Hello' }
       ];
@@ -169,9 +151,10 @@ describe('ChatSdk', () => {
         model: 'gpt-4'
       };
       
-      const result = ChatSdk.buildMessageChain(messages, opts as any);
-      
-      expect(getModelFamily).toHaveBeenCalledWith('gpt-4');
+      const result = await Chat.buildMessageChain(messages, opts as any);
+
+
+      expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('gpt-4', undefined);
       expect(Message.create).toHaveBeenCalledTimes(3);
       expect(Message.create).toHaveBeenNthCalledWith(1, {
         role: 'system',
@@ -187,8 +170,8 @@ describe('ChatSdk', () => {
       });
     });
 
-    it('should build a message chain with assistant role for o1, gemma, claude, or google models', () => {
-      vi.mocked(getModelFamily).mockReturnValue('claude');
+    it('should build a message chain with assistant role for o1, gemma, claude, or google models', async () => {
+      vi.mocked(ProviderRepository.getModelFamily).mockReturnValue('claude');
       
       const messages = [
         { role: 'user', content: 'Hello' }
@@ -201,18 +184,26 @@ describe('ChatSdk', () => {
         model: 'claude-3'
       };
       
-      const result = ChatSdk.buildMessageChain(messages, opts as any);
-      
-      expect(getModelFamily).toHaveBeenCalledWith('claude-3');
+      const result = await Chat.buildMessageChain(messages, opts as any);
+
+      expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('claude-3', undefined);
       expect(Message.create).toHaveBeenCalledTimes(3);
       expect(Message.create).toHaveBeenNthCalledWith(1, {
         role: 'assistant',
         content: 'System prompt'
       });
+      expect(Message.create).toHaveBeenNthCalledWith(2, {
+        role: 'assistant',
+        content: 'Assistant prompt'
+      });
+      expect(Message.create).toHaveBeenNthCalledWith(3, {
+        role: 'user',
+        content: 'Hello'
+      });
     });
 
-    it('should filter out messages with empty content', () => {
-      vi.mocked(getModelFamily).mockReturnValue('openai');
+    it('should filter out messages with empty content', async () => {
+      vi.mocked(ProviderRepository.getModelFamily).mockReturnValue('openai');
       
       const messages = [
         { role: 'user', content: 'Hello' },
@@ -228,7 +219,7 @@ describe('ChatSdk', () => {
         model: 'gpt-4'
       };
       
-      const result = ChatSdk.buildMessageChain(messages, opts as any);
+      const result = await Chat.buildMessageChain(messages, opts as any);
       
       // 2 system/assistant messages + 2 user messages (Hello and World)
       expect(Message.create).toHaveBeenCalledTimes(4);

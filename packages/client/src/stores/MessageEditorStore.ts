@@ -1,7 +1,7 @@
 import {types, Instance} from "mobx-state-tree";
 import clientChatStore from "./ClientChatStore";
 import UserOptionsStore from "./UserOptionsStore";
-import Message from "../models/Message";
+import Message from "@open-gsio/schema/client/Message";
 import {MessagesStore} from "./MessagesStore";
 
 export const MessageEditorStore = types

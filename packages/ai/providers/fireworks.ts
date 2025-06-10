@@ -1,36 +1,25 @@
 import { OpenAI } from "openai";
-import {
-  _NotCustomized,
-  ISimpleType,
-  ModelPropertiesDeclarationToProperties,
-  ModelSnapshotType2,
-  UnionStringArray,
-} from "mobx-state-tree";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+import ProviderRepository from "./_ProviderRepository";
 
-export class GroqChatProvider extends BaseChatProvider {
+export class FireworksAiChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return new OpenAI({
-      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.groq,
-      apiKey: param.env.GROQ_API_KEY,
+      apiKey: param.env.FIREWORKS_API_KEY,
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.fireworks,
     });
   }
 
   getStreamParams(param: CommonProviderParams, safeMessages: any[]): any {
-    const tuningParams = {
-      temperature: 0.86,
-      top_p: 0.98,
-      presence_penalty: 0.1,
-      frequency_penalty: 0.3,
-      max_tokens: param.maxTokens as number,
-    };
+    let modelPrefix = "accounts/fireworks/models/";
+    if (param.model.toLowerCase().includes("yi-")) {
+      modelPrefix = "accounts/yi-01-ai/models/";
+    }
 
     return {
-      model: param.model,
+      model: `${modelPrefix}${param.model}`,
       messages: safeMessages,
       stream: true,
-      ...tuningParams
     };
   }
 
@@ -45,23 +34,17 @@ export class GroqChatProvider extends BaseChatProvider {
   }
 }
 
-export class GroqChatSdk {
-  private static provider = new GroqChatProvider();
+export class FireworksAiChatSdk {
+  private static provider = new FireworksAiChatProvider();
 
-  static async handleGroqStream(
+  static async handleFireworksStream(
     param: {
       openai: OpenAI;
       systemPrompt: any;
-      preprocessedContext: ModelSnapshotType2<
-        ModelPropertiesDeclarationToProperties<{
-          role: ISimpleType<UnionStringArray<string[]>>;
-          content: ISimpleType<unknown>;
-        }>,
-        _NotCustomized
-      >;
-      maxTokens: unknown | number | undefined;
+      preprocessedContext: any;
+      maxTokens: number;
       messages: any;
-      model: string;
+      model: any;
       env: Env;
     },
     dataCallback: (data) => void,

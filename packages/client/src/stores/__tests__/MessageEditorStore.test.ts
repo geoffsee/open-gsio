@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getSnapshot } from 'mobx-state-tree';
-import Message from '../../models/Message';
+import Message from '@open-gsio/schema/client/Message.ts';
 import messageEditorStore from '../MessageEditorStore';
 import clientChatStore from '../ClientChatStore';
 

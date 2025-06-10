@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { ClientChatStore } from '../ClientChatStore';
-import Message from '../../models/Message';
+import Message from '@open-gsio/schema/client/Message';
 import { getSnapshot } from 'mobx-state-tree';
 
 describe('ClientChatStore', () => {

@@ -1,0 +1,6 @@
+{
+  "name": "@open-gsio/schema",
+  "dependencies": {
+    "mobx-state-tree": "^6.0.1"
+  }
+}

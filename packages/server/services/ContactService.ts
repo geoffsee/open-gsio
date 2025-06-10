@@ -1,6 +1,6 @@
 // ContactService.ts
 import { types, flow, getSnapshot } from "mobx-state-tree";
-import ContactRecord from "../models/ContactRecord.ts";
+import ContactRecord from "@open-gsio/schema/server/ContactRecord";
 
 export default types
   .model("ContactStore", {})

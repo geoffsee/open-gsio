@@ -1,8 +1,5 @@
-// ---------------------------
-// stores/MessagesStore.ts
-// ---------------------------
 import { Instance, types } from "mobx-state-tree";
-import Message from "../models/Message";
+import Message from "@open-gsio/schema/server/Message";
 
 export const MessagesStore = types
     .model("MessagesStore", {

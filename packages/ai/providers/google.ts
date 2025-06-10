@@ -1,8 +1,8 @@
 import { OpenAI } from "openai";
-import ChatSdk from "../lib/chat-sdk.ts";
+import ChatSdk from "../lib/chat.ts";
 import { StreamParams } from "../services/ChatService.ts";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+import ProviderRepository from "./_ProviderRepository";
 
 export class GoogleChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {

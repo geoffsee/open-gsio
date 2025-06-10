@@ -3,13 +3,12 @@ import {
     Instance,
     flow,
     types,
-    applyAction,
 } from "mobx-state-tree";
 import type { IMessagesStore } from "./MessagesStore";
 import type { IUIStore } from "./UIStore";
 import type { IModelStore } from "./ModelStore";
 import UserOptionsStore from "./UserOptionsStore";
-import Message from "../models/Message";
+import Message from "@open-gsio/schema/client/Message";
 
 interface RootDeps extends IMessagesStore, IUIStore, IModelStore {}
 

@@ -1,5 +1,5 @@
 import { OpenAI } from "openai";
-import { Utils } from "../lib/utils.ts";
+import { Utils } from "../utils.ts";
 import { ChatCompletionCreateParamsStreaming } from "openai/resources/chat/completions/completions";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
 

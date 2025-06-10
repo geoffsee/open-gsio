@@ -1,36 +1,36 @@
 import { OpenAI } from "openai";
 import {
   _NotCustomized,
-  castToSnapshot,
-  getSnapshot,
   ISimpleType,
   ModelPropertiesDeclarationToProperties,
   ModelSnapshotType2,
   UnionStringArray,
 } from "mobx-state-tree";
-import Message from "../models/Message.ts";
-import ChatSdk from "../lib/chat-sdk.ts";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+import ProviderRepository from "./_ProviderRepository";
 
-export class FireworksAiChatProvider extends BaseChatProvider {
+export class GroqChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return new OpenAI({
-      apiKey: param.env.FIREWORKS_API_KEY,
-      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.fireworks,
+      baseURL: ProviderRepository.OPENAI_COMPAT_ENDPOINTS.groq,
+      apiKey: param.env.GROQ_API_KEY,
     });
   }
 
   getStreamParams(param: CommonProviderParams, safeMessages: any[]): any {
-    let modelPrefix = "accounts/fireworks/models/";
-    if (param.model.toLowerCase().includes("yi-")) {
-      modelPrefix = "accounts/yi-01-ai/models/";
-    }
+    const tuningParams = {
+      temperature: 0.86,
+      top_p: 0.98,
+      presence_penalty: 0.1,
+      frequency_penalty: 0.3,
+      max_tokens: param.maxTokens as number,
+    };
 
     return {
-      model: `${modelPrefix}${param.model}`,
+      model: param.model,
       messages: safeMessages,
       stream: true,
+      ...tuningParams
     };
   }
 
@@ -45,17 +45,23 @@ export class FireworksAiChatProvider extends BaseChatProvider {
   }
 }
 
-export class FireworksAiChatSdk {
-  private static provider = new FireworksAiChatProvider();
+export class GroqChatSdk {
+  private static provider = new GroqChatProvider();
 
-  static async handleFireworksStream(
+  static async handleGroqStream(
     param: {
       openai: OpenAI;
       systemPrompt: any;
-      preprocessedContext: any;
-      maxTokens: number;
+      preprocessedContext: ModelSnapshotType2<
+        ModelPropertiesDeclarationToProperties<{
+          role: ISimpleType<UnionStringArray<string[]>>;
+          content: ISimpleType<unknown>;
+        }>,
+        _NotCustomized
+      >;
+      maxTokens: unknown | number | undefined;
       messages: any;
-      model: any;
+      model: string;
       env: Env;
     },
     dataCallback: (data) => void,

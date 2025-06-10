@@ -11,6 +11,10 @@
     },
     "packages/ai": {
       "name": "@open-gsio/ai",
+      "dependencies": {
+        "@anthropic-ai/sdk": "^0.32.1",
+        "openai": "^5.2.0",
+      },
     },
     "packages/client": {
       "name": "@open-gsio/client",
@@ -21,6 +25,7 @@
         "@emotion/react": "^11.13.5",
         "@emotion/styled": "^11.13.5",
         "@open-gsio/env": "workspace:*",
+        "@open-gsio/schema": "workspace:*",
         "@open-gsio/scripts": "workspace:*",
         "@testing-library/jest-dom": "^6.4.2",
         "@testing-library/react": "^14.2.1",
@@ -32,7 +37,6 @@
         "chokidar": "^4.0.1",
         "framer-motion": "^11.13.1",
         "isomorphic-dompurify": "^2.19.0",
-        "itty-router": "^5.0.18",
         "js-cookie": "^3.0.5",
         "jsdom": "^24.0.0",
         "katex": "^0.16.20",
@@ -43,9 +47,7 @@
         "marked-katex-extension": "^5.1.4",
         "mobx": "^6.13.5",
         "mobx-react-lite": "^4.0.7",
-        "mobx-state-tree": "^6.0.1",
         "moo": "^0.5.2",
-        "openai": "^5.0.1",
         "qrcode.react": "^4.1.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
@@ -58,8 +60,6 @@
         "vite": "^6.3.5",
         "vite-plugin-pwa": "^1.0.0",
         "vitest": "^3.1.4",
-        "wrangler": "^4.18.0",
-        "zod": "^3.23.8",
       },
     },
     "packages/cloudflare-workers/open-gsio": {
@@ -72,6 +72,12 @@
     },
     "packages/env": {
       "name": "@open-gsio/env",
+    },
+    "packages/schema": {
+      "name": "@open-gsio/schema",
+      "dependencies": {
+        "mobx-state-tree": "^6.0.1",
+      },
     },
     "packages/scripts": {
       "name": "@open-gsio/scripts",
@@ -86,48 +92,26 @@
       "name": "@open-gsio/server",
       "devDependencies": {
         "@anthropic-ai/sdk": "^0.32.1",
-        "@chakra-ui/react": "^2.10.6",
         "@cloudflare/workers-types": "^4.20241205.0",
-        "@emotion/react": "^11.13.5",
-        "@emotion/styled": "^11.13.5",
+        "@open-gsio/ai": "workspace:*",
         "@open-gsio/env": "workspace:*",
+        "@open-gsio/schema": "workspace:*",
         "@testing-library/jest-dom": "^6.4.2",
-        "@testing-library/react": "^14.2.1",
         "@testing-library/user-event": "^14.5.2",
-        "@types/marked": "^6.0.0",
-        "@vitejs/plugin-react": "^4.3.4",
         "@vitest/coverage-v8": "^3.1.4",
         "@vitest/ui": "^3.1.4",
         "bun-sqlite-key-value": "^1.13.1",
         "chokidar": "^4.0.1",
         "dotenv": "^16.5.0",
-        "framer-motion": "^11.13.1",
-        "isomorphic-dompurify": "^2.19.0",
         "itty-router": "^5.0.18",
-        "js-cookie": "^3.0.5",
         "jsdom": "^24.0.0",
-        "katex": "^0.16.20",
-        "lucide-react": "^0.436.0",
-        "marked": "^15.0.4",
-        "marked-extended-latex": "^1.1.0",
-        "marked-footnote": "^1.2.4",
-        "marked-katex-extension": "^5.1.4",
         "mobx": "^6.13.5",
-        "mobx-react-lite": "^4.0.7",
         "mobx-state-tree": "^6.0.1",
         "moo": "^0.5.2",
         "openai": "^5.0.1",
-        "qrcode.react": "^4.1.0",
-        "react": "^18.3.1",
-        "react-dom": "^18.3.1",
-        "react-icons": "^5.4.0",
-        "react-streaming": "^0.3.44",
-        "react-textarea-autosize": "^8.5.5",
-        "shiki": "^1.24.0",
         "typescript": "^5.7.2",
         "vike": "0.4.193",
         "vite": "^6.3.5",
-        "vite-plugin-pwa": "^1.0.0",
         "vitest": "^3.1.4",
         "wrangler": "^4.18.0",
         "zod": "^3.23.8",
@@ -528,6 +512,8 @@
     "@open-gsio/client": ["@open-gsio/client@workspace:packages/client"],
 
     "@open-gsio/env": ["@open-gsio/env@workspace:packages/env"],
+
+    "@open-gsio/schema": ["@open-gsio/schema@workspace:packages/schema"],
 
     "@open-gsio/scripts": ["@open-gsio/scripts@workspace:packages/scripts"],
 
@@ -1251,7 +1237,7 @@
 
     "oniguruma-to-es": ["oniguruma-to-es@2.3.0", "", { "dependencies": { "emoji-regex-xs": "^1.0.0", "regex": "^5.1.1", "regex-recursion": "^5.1.1" } }, "sha512-bwALDxriqfKGfUufKGGepCzu9x7nJQuoRoAFp4AnwehhC2crqrDIAP/uN2qdlsAvSMpeRC3+Yzhqc7hLmle5+g=="],
 
-    "openai": ["openai@5.0.1", "", { "peerDependencies": { "ws": "^8.18.0", "zod": "^3.23.8" }, "optionalPeers": ["ws", "zod"], "bin": { "openai": "bin/cli" } }, "sha512-Do6vxhbDv7cXhji/4ct1lrpZYMAOmjYbhyA9LJTuG7OfpbWMpuS+EIXkRT7R+XxpRB1OZhU/op4FU3p3uxU6gw=="],
+    "openai": ["openai@5.2.0", "", { "peerDependencies": { "ws": "^8.18.0", "zod": "^3.23.8" }, "optionalPeers": ["ws", "zod"], "bin": { "openai": "bin/cli" } }, "sha512-b+Sf2Yk2eApDkhqHr7C4d5hux9gkHUvyqQ7RrdSfLsjrXkCZpJPqkME0u5Py7RPB28Ozz+RkJZpW7YPTOoChew=="],
 
     "own-keys": ["own-keys@1.0.1", "", { "dependencies": { "get-intrinsic": "^1.2.6", "object-keys": "^1.1.1", "safe-push-apply": "^1.0.0" } }, "sha512-qFOyK5PjiWZd+QQIh+1jhdb9LpxTF0qs7Pm8o5QHYZ0M3vKqSqzsZaEB6oWlxZ+q2sJBMI/Ktgd2N5ZwQoRHfg=="],
 

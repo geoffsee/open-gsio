@@ -1,5 +1,5 @@
 
-export class ProviderRepository {
+export default class ProviderRepository {
     #providers: {name: string, key: string, endpoint: string}[] = [];
     constructor(env: Record<string, any>) {
         this.setProviders(env);
@@ -23,7 +23,7 @@ export class ProviderRepository {
         const allModels = await env.KV_STORAGE.get("supportedModels");
         const models = JSON.parse(allModels);
         const modelData = models.filter(m => m.id === model)
-        console.log({modelData})
+        // console.log({modelData})
         return modelData[0].provider;
     }
 
@@ -47,27 +47,27 @@ export class ProviderRepository {
                         this.#providers.push({
                             name: 'anthropic',
                             key: env.ANTHROPIC_API_KEY,
-                            endpoint: OPENAI_COMPAT_ENDPOINTS['anthropic']
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['anthropic']
                         });
                         break;
                     case 'gemini':
                         this.#providers.push({
                             name: 'google',
                             key: env.GEMINI_API_KEY,
-                            endpoint: OPENAI_COMPAT_ENDPOINTS['google']
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['google']
                         });
                         break;
                     case 'cloudflare':
                         this.#providers.push({
                             name: 'cloudflare',
                             key: env.CLOUDFLARE_API_KEY,
-                            endpoint: OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
                         })
                     default:
                         this.#providers.push({
                             name: detectedProvider,
                             key: env[envKeys[i]],
-                            endpoint: OPENAI_COMPAT_ENDPOINTS[detectedProvider]
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider]
                         });
                 }
             }

@@ -1,6 +1,6 @@
 import {OpenAI} from "openai";
 import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+import ProviderRepository from "./_ProviderRepository";
 
 export class CerebrasChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {

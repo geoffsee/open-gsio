@@ -1,7 +1,7 @@
-import { Utils } from "./utils.ts";
-import few_shots from "../prompts/few_shots.ts";
+import { Utils } from "../utils.ts";
+import few_shots from "../prompting/few_shots.ts";
 
-export class AssistantSdk {
+export class AssistantPrompt {
   static getAssistantPrompt(params: {
     maxTokens?: number;
     userTimezone?: string;
@@ -47,7 +47,7 @@ ${maxTokens ? `- **Response Limit**: ${maxTokens} tokens (maximum)` : ""}
 **Human**: What is this?
 **Assistant**: This is a conversational AI system.
 ---
-${AssistantSdk.useFewshots(selectedFewshots, 5)}
+${AssistantPrompt.useFewshots(selectedFewshots, 5)}
 ---
 ## Directive
 Continuously monitor the evolving conversation. Dynamically adapt your responses to meet needs.`;

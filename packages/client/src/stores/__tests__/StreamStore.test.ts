@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import { StreamStore } from '../StreamStore';
 import UserOptionsStore from '../UserOptionsStore';
 import { types } from 'mobx-state-tree';
-import Message from '../../models/Message';
+import Message from '@open-gsio/schema/client/Message';
 
 // Mock UserOptionsStore
 vi.mock('../UserOptionsStore', () => ({

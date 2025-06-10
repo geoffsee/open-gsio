@@ -1,5 +1,5 @@
 import { types, flow, getSnapshot } from "mobx-state-tree";
-import FeedbackRecord from "../models/FeedbackRecord.ts";
+import FeedbackRecord from "@open-gsio/schema/server/FeedbackRecord";
 
 export default types
   .model("FeedbackStore", {})

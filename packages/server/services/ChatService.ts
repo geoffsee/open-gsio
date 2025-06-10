@@ -1,20 +1,20 @@
 import {flow, getSnapshot, types} from 'mobx-state-tree';
 import OpenAI from 'openai';
-import ChatSdk from '../lib/chat-sdk.ts';
-import Message from "../models/Message.ts";
-import O1Message from "../models/O1Message.ts";
-import {OpenAiChatSdk} from "../providers/openai.ts";
-import {GroqChatSdk} from "../providers/groq.ts";
-import {ClaudeChatSdk} from "../providers/claude.ts";
-import {FireworksAiChatSdk} from "../providers/fireworks.ts";
+import ChatLib from '../lib/chat.ts';
+import Message from "@open-gsio/schema/server/Message";
+import O1Message from "@open-gsio/schema/server/O1Message";
+import ProviderRepository from "@open-gsio/ai/providers/_ProviderRepository";
+import {OpenAiChatSdk} from "@open-gsio/ai/providers/openai";
+import {GroqChatSdk} from "@open-gsio/ai/providers/groq";
+import {ClaudeChatSdk} from "@open-gsio/ai/providers/claude";
+import {FireworksAiChatSdk} from "@open-gsio/ai/providers/fireworks";
+import {GoogleChatSdk} from "@open-gsio/ai/providers/google";
+import {XaiChatSdk} from  "@open-gsio/ai/providers/xai";
+import {CerebrasSdk} from "@open-gsio/ai/providers/cerebras";
+import {CloudflareAISdk} from "@open-gsio/ai/providers/cloudflareAi";
+import {OllamaChatSdk} from "@open-gsio/ai/providers/ollama";
+import {MlxOmniChatSdk} from "@open-gsio/ai/providers/mlx-omni";
 import handleStreamData from "../lib/handleStreamData.ts";
-import {GoogleChatSdk} from "../providers/google.ts";
-import {XaiChatSdk} from "../providers/xai.ts";
-import {CerebrasSdk} from "../providers/cerebras.ts";
-import {CloudflareAISdk} from "../providers/cloudflareAi.ts";
-import {OllamaChatSdk} from "../providers/ollama";
-import {MlxOmniChatSdk} from "../providers/mlx-omni";
-import {ProviderRepository} from "../providers/_ProviderRepository";
 
 export interface StreamParams {
     env: Env;
@@ -123,10 +123,8 @@ const ChatService = types
             getSupportedModels: flow(function* ():
                 Generator<Promise<unknown>, Response, unknown> {
 
-                // ----- Helpers ----------------------------------------------------------
                 const logger = console;
 
-                // ----- 1. Try cached value ---------------------------------------------
                 try {
                     const cached = yield self.env.KV_STORAGE.get('supportedModels');
                     if (cached) {
@@ -141,7 +139,6 @@ const ChatService = types
                     logger.error('Error reading/parsing supportedModels cache', err);
                 }
 
-                // ----- 2. Build fresh list ---------------------------------------------
                 const providerRepo   = new ProviderRepository(self.env);
                 const providers      = providerRepo.getProviders();
                 const providerModels = new Map<string, any[]>();
@@ -154,19 +151,16 @@ const ChatService = types
 
                     const openai = new OpenAI({ apiKey: provider.key, baseURL: provider.endpoint });
 
-                    // 2‑a. List models
                     try {
-                        const listResp = yield openai.models.list();          // <‑‑ async
+                        const listResp = yield openai.models.list();
                         const models   = ('data' in listResp) ? listResp.data : listResp;
                         providerModels.set(provider.name, models);
 
-                        // 2‑b. Retrieve metadata
                         for (const mdl of models) {
                             try {
-                                const meta = yield openai.models.retrieve(mdl.id); // <‑‑ async
+                                const meta = yield openai.models.retrieve(mdl.id);
                                 modelMeta.set(mdl.id, { ...mdl, ...meta });
                             } catch (err) {
-                                // logger.error(`Metadata fetch failed for ${mdl.id}`, err);
                                 modelMeta.set(mdl.id, {provider: provider.name, mdl});
                             }
                         }
@@ -188,19 +182,17 @@ const ChatService = types
                 }
                 const resultArr = Array.from(resultMap.values());
 
-                // ----- 4. Cache fresh list ---------------------------------------------
                 try {
                     yield self.env.KV_STORAGE.put(
                         'supportedModels',
                         JSON.stringify(resultArr),
-                        { expirationTtl: 60 * 60 * 24 },   // 24 h
+                        { expirationTtl: 60 * 60 * 24 },
                     );
                     logger.info('supportedModels cache refreshed');
                 } catch (err) {
                     logger.error('KV put failed for supportedModels', err);
                 }
 
-                // ----- 5. Return --------------------------------------------------------
                 return new Response(JSON.stringify(resultArr), { status: 200 });
             }),
             setActiveStream(streamId: string, stream: any) {
@@ -235,7 +227,7 @@ const ChatService = types
             },
 
             handleChatRequest: async (request: Request) => {
-                return ChatSdk.handleChatRequest(request, {
+                return ChatLib.handleChatRequest(request, {
                     openai: self.openai,
                     env: self.env,
                     systemPrompt: self.systemPrompt,

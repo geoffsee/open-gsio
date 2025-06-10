@@ -1,11 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getSnapshot, applySnapshot } from 'mobx-state-tree';
+import { getSnapshot } from 'mobx-state-tree';
 import ChatService, { ClientError } from '../ChatService.ts';
 import OpenAI from 'openai';
-import ChatSdk from '../../lib/chat-sdk.ts';
-import Message from '../../models/Message.ts';
-import { SUPPORTED_MODELS } from '@open-gsio/ai/supported-models';
-import handleStreamData from '../../lib/handleStreamData.ts';
+import ChatLib from '../../lib/chat.ts';
 
 // Create mock OpenAI instance
 const mockOpenAIInstance = {
@@ -62,6 +59,11 @@ describe('ChatService', () => {
     mockEnv = {
       OPENAI_API_KEY: 'test-api-key',
       OPENAI_API_ENDPOINT: 'https://api.openai.com/v1',
+      KV_STORAGE: {
+        get: vi.fn(),
+        put: vi.fn(),
+        list: vi.fn(),
+      },
       SERVER_COORDINATOR: {
         idFromName: vi.fn().mockReturnValue('test-id'),
         get: vi.fn().mockReturnValue({
@@ -229,6 +231,18 @@ describe('ChatService', () => {
     });
 
     it('should return supported models when not using localhost endpoint', async () => {
+      // Mock KV_STORAGE.get
+      mockEnv.KV_STORAGE.get.mockResolvedValueOnce( JSON.stringify(["meta-llama/llama-4-scout-17b-16e-instruct",
+          "gemma2-9b-it",
+          "mistral-saba-24b",
+          "llama-3.3-70b-versatile"]));
+      // mockEnv.KV_STORAGE.list.mockReturnValue([]);
+
+      // Mock OpenAI models.list response
+      mockOpenAIInstance.models.list.mockResolvedValue({
+        data: SUPPORTED_MODELS.map(model => ({id: model}))
+      });
+
       // Mock Response.json
       const originalResponseJson = Response.json;
       Response.json = vi.fn().mockImplementation((data) => {
@@ -252,11 +266,11 @@ describe('ChatService', () => {
       const mockRequest = new Request('https://example.com/chat');
       const mockResponse = new Response('Test response');
 
-      ChatSdk.handleChatRequest.mockResolvedValue(mockResponse);
+      ChatLib.handleChatRequest.mockResolvedValue(mockResponse);
 
       const result = await chatService.handleChatRequest(mockRequest);
 
-      expect(ChatSdk.handleChatRequest).toHaveBeenCalledWith(mockRequest, {
+      expect(ChatLib.handleChatRequest).toHaveBeenCalledWith(mockRequest, {
         openai: chatService.openai,
         env: mockEnv,
         systemPrompt: chatService.systemPrompt,

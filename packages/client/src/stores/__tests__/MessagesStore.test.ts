@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { MessagesStore } from '../MessagesStore';
-import Message from '../../models/Message';
+import Message from '@open-gsio/schema/client/Message';
 import { getSnapshot } from 'mobx-state-tree';
 
 describe('MessagesStore', () => {

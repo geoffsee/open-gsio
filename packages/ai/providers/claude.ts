@@ -7,8 +7,8 @@ import {
   ModelSnapshotType2,
   UnionStringArray,
 } from "mobx-state-tree";
-import ChatSdk from "../lib/chat-sdk.ts";
 import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider.ts";
+import {AssistantPrompt} from "../prompting/assistant-prompt.ts";
 
 export class ClaudeChatProvider extends BaseChatProvider {
   private anthropic: Anthropic | null = null;
@@ -63,8 +63,8 @@ export class ClaudeChatProvider extends BaseChatProvider {
     param: CommonProviderParams,
     dataCallback: (data: any) => void,
   ) {
-    const assistantPrompt = ChatSdk.buildAssistantPrompt({ maxTokens: param.maxTokens });
-    const safeMessages = ChatSdk.buildMessageChain(param.messages, {
+    const assistantPrompt = AssistantPrompt.getAssistantPrompt({ maxTokens: param.maxTokens });
+    const safeMessages = await buildMessageChain(param.messages, {
       systemPrompt: param.systemPrompt,
       model: param.model,
       assistantPrompt,

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { AssistantSdk } from '../assistant-sdk.ts';
+import { AssistantPrompt } from '../prompting/assistant-prompt.ts';
 import { Utils } from '../utils.ts';
 
 // Mock dependencies
@@ -42,7 +42,7 @@ describe('AssistantSdk', () => {
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
-      const prompt = AssistantSdk.getAssistantPrompt({});
+      const prompt = AssistantPrompt.getAssistantPrompt({});
 
       expect(prompt).toContain('# Assistant Knowledge');
       expect(prompt).toContain('2023-01-01');
@@ -60,7 +60,7 @@ describe('AssistantSdk', () => {
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
-      const prompt = AssistantSdk.getAssistantPrompt({ maxTokens: 1000 });
+      const prompt = AssistantPrompt.getAssistantPrompt({ maxTokens: 1000 });
 
       expect(prompt).toContain('- **Response Limit**: 1000 tokens (maximum)');
     });
@@ -73,7 +73,7 @@ describe('AssistantSdk', () => {
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
-      const prompt = AssistantSdk.getAssistantPrompt({
+      const prompt = AssistantPrompt.getAssistantPrompt({
         userTimezone: 'America/New_York',
         userLocation: 'New York, USA'
       });
@@ -90,7 +90,7 @@ describe('AssistantSdk', () => {
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue(undefined);
 
-      const prompt = AssistantSdk.getAssistantPrompt({});
+      const prompt = AssistantPrompt.getAssistantPrompt({});
 
       // Instead of checking for a specific date, just verify that a date is included
       expect(prompt).toMatch(/- \*\*Date\*\*: \d{4}-\d{2}-\d{2} \d{1,2}:\d{2} \d{1,2}s/);
@@ -101,7 +101,7 @@ describe('AssistantSdk', () => {
       vi.mocked(Utils.selectEquitably).mockReturnValue(undefined);
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
-      const prompt = AssistantSdk.getAssistantPrompt({});
+      const prompt = AssistantPrompt.getAssistantPrompt({});
 
       // The prompt should still contain examples
       expect(prompt).toContain('#### Example 1');
@@ -117,7 +117,7 @@ describe('AssistantSdk', () => {
         'How do I make pasta?': 'Boil water, add pasta, cook until al dente.'
       };
 
-      const result = AssistantSdk.useFewshots(fewshots);
+      const result = AssistantPrompt.useFewshots(fewshots);
 
       expect(result).toContain('#### Example 1');
       expect(result).toContain('**Human**: What is the capital of France?');
@@ -137,7 +137,7 @@ describe('AssistantSdk', () => {
         'Q6': 'A6'
       };
 
-      const result = AssistantSdk.useFewshots(fewshots, 3);
+      const result = AssistantPrompt.useFewshots(fewshots, 3);
 
       expect(result).toContain('#### Example 1');
       expect(result).toContain('**Human**: Q1');
