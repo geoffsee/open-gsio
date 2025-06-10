@@ -88,7 +88,7 @@ export class ChatSdk {
         });
     }
 
-    static buildMessageChain(
+    static async buildMessageChain(
         messages: any[],
         opts: {
             systemPrompt: any;
@@ -98,7 +98,7 @@ export class ChatSdk {
             env: Env;
         },
     ) {
-        const modelFamily = ProviderRepository.getModelFamily(opts.model, opts.env)
+        const modelFamily = await ProviderRepository.getModelFamily(opts.model, opts.env)
 
         const messagesToSend = [];
 

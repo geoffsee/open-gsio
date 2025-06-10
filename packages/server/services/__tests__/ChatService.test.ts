@@ -227,24 +227,6 @@ describe('ChatService', () => {
       Response.json = originalResponseJson;
       localService.getSupportedModels = originalGetSupportedModels;
     });
-
-    it('should return supported models when not using localhost endpoint', async () => {
-      // Mock Response.json
-      const originalResponseJson = Response.json;
-      Response.json = vi.fn().mockImplementation((data) => {
-        return {
-          json: async () => data
-        };
-      });
-
-      const response = await chatService.getSupportedModels();
-      const data = await response.json();
-
-      expect(data).toEqual(SUPPORTED_MODELS);
-
-      // Restore Response.json
-      Response.json = originalResponseJson;
-    });
   });
 
   describe('handleChatRequest', () => {

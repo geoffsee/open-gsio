@@ -47,27 +47,27 @@ export class ProviderRepository {
                         this.#providers.push({
                             name: 'anthropic',
                             key: env.ANTHROPIC_API_KEY,
-                            endpoint: OPENAI_COMPAT_ENDPOINTS['anthropic']
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['anthropic']
                         });
                         break;
                     case 'gemini':
                         this.#providers.push({
                             name: 'google',
                             key: env.GEMINI_API_KEY,
-                            endpoint: OPENAI_COMPAT_ENDPOINTS['google']
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['google']
                         });
                         break;
                     case 'cloudflare':
                         this.#providers.push({
                             name: 'cloudflare',
                             key: env.CLOUDFLARE_API_KEY,
-                            endpoint: OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
                         })
                     default:
                         this.#providers.push({
                             name: detectedProvider,
                             key: env[envKeys[i]],
-                            endpoint: OPENAI_COMPAT_ENDPOINTS[detectedProvider]
+                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider]
                         });
                 }
             }
