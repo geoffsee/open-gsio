@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ChatSdk } from '../chat-sdk.ts';
 import { AssistantSdk } from '../assistant-sdk.ts';
 import Message from '../../models/Message.ts';
-import { getModelFamily } from '@open-gsio/ai/supported-models';
+import { ProviderRepository } from '../../providers/_ProviderRepository';
 
 // Mock dependencies
 vi.mock('../assistant-sdk', () => ({
@@ -17,8 +17,10 @@ vi.mock('../../models/Message', () => ({
   }
 }));
 
-vi.mock('@open-gsio/ai/supported-models', () => ({
-  getModelFamily: vi.fn()
+vi.mock('../../providers/_ProviderRepository', () => ({
+  ProviderRepository: {
+    getModelFamily: vi.fn()
+  }
 }));
 
 describe('ChatSdk', () => {
@@ -30,9 +32,9 @@ describe('ChatSdk', () => {
   describe('preprocess', () => {
     it('should return an assistant message with empty content', async () => {
       const messages = [{ role: 'user', content: 'Hello' }];
-      
+
       const result = await ChatSdk.preprocess({ messages });
-      
+
       expect(Message.create).toHaveBeenCalledWith({
         role: 'assistant',
         content: ''
@@ -62,7 +64,7 @@ describe('ChatSdk', () => {
       };
 
       const response = await ChatSdk.handleChatRequest(request as any, ctx as any);
-      
+
       expect(response.status).toBe(400);
       expect(await response.text()).toBe('No messages provided');
     });
@@ -76,16 +78,16 @@ describe('ChatSdk', () => {
       const messages = [{ role: 'user', content: 'Hello' }];
       const model = 'gpt-4';
       const conversationId = 'conv-123';
-      
+
       const request = {
         json: vi.fn().mockResolvedValue({ messages, model, conversationId })
       };
-      
+
       const saveStreamData = vi.fn();
       const durableObject = {
         saveStreamData
       };
-      
+
       const ctx = {
         openai: {},
         systemPrompt: 'System prompt',
@@ -100,7 +102,7 @@ describe('ChatSdk', () => {
 
       const response = await ChatSdk.handleChatRequest(request as any, ctx as any);
       const responseBody = await response.json();
-      
+
       expect(ctx.env.SERVER_COORDINATOR.idFromName).toHaveBeenCalledWith('stream-index');
       expect(ctx.env.SERVER_COORDINATOR.get).toHaveBeenCalledWith('object-id');
       expect(saveStreamData).toHaveBeenCalledWith(
@@ -120,7 +122,7 @@ describe('ChatSdk', () => {
       const durableObject = {
         dynamicMaxTokens
       };
-      
+
       const ctx = {
         maxTokens: 1000,
         env: {
@@ -132,7 +134,7 @@ describe('ChatSdk', () => {
       };
 
       await ChatSdk.calculateMaxTokens(messages, ctx as any);
-      
+
       expect(ctx.env.SERVER_COORDINATOR.idFromName).toHaveBeenCalledWith('dynamic-token-counter');
       expect(ctx.env.SERVER_COORDINATOR.get).toHaveBeenCalledWith('object-id');
       expect(dynamicMaxTokens).toHaveBeenCalledWith(messages, 1000);
@@ -142,9 +144,9 @@ describe('ChatSdk', () => {
   describe('buildAssistantPrompt', () => {
     it('should call AssistantSdk.getAssistantPrompt with the correct parameters', () => {
       vi.mocked(AssistantSdk.getAssistantPrompt).mockReturnValue('Assistant prompt');
-      
+
       const result = ChatSdk.buildAssistantPrompt({ maxTokens: 1000 });
-      
+
       expect(AssistantSdk.getAssistantPrompt).toHaveBeenCalledWith({
         maxTokens: 1000,
         userTimezone: 'UTC',
@@ -155,23 +157,23 @@ describe('ChatSdk', () => {
   });
 
   describe('buildMessageChain', () => {
-    it('should build a message chain with system role for most models', () => {
-      vi.mocked(getModelFamily).mockReturnValue('openai');
-      
+    it('should build a message chain with system role for most models', async () => {
+      vi.mocked(ProviderRepository.getModelFamily).mockResolvedValue('openai');
+
       const messages = [
-        { role: 'user', content: 'Hello' }
+        {role: 'user', content: 'Hello'}
       ];
-      
+
       const opts = {
         systemPrompt: 'System prompt',
         assistantPrompt: 'Assistant prompt',
-        toolResults: { role: 'tool', content: 'Tool result' },
+        toolResults: {role: 'tool', content: 'Tool result'},
         model: 'gpt-4'
       };
-      
-      const result = ChatSdk.buildMessageChain(messages, opts as any);
-      
-      expect(getModelFamily).toHaveBeenCalledWith('gpt-4');
+
+      const result = await ChatSdk.buildMessageChain(messages, opts as any);
+
+      expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('gpt-4', undefined);
       expect(Message.create).toHaveBeenCalledTimes(3);
       expect(Message.create).toHaveBeenNthCalledWith(1, {
         role: 'system',
@@ -187,23 +189,23 @@ describe('ChatSdk', () => {
       });
     });
 
-    it('should build a message chain with assistant role for o1, gemma, claude, or google models', () => {
-      vi.mocked(getModelFamily).mockReturnValue('claude');
-      
+    it('should build a message chain with assistant role for o1, gemma, claude, or google models', async () => {
+      vi.mocked(ProviderRepository.getModelFamily).mockResolvedValue('claude');
+
       const messages = [
         { role: 'user', content: 'Hello' }
       ];
-      
+
       const opts = {
         systemPrompt: 'System prompt',
         assistantPrompt: 'Assistant prompt',
         toolResults: { role: 'tool', content: 'Tool result' },
         model: 'claude-3'
       };
-      
-      const result = ChatSdk.buildMessageChain(messages, opts as any);
-      
-      expect(getModelFamily).toHaveBeenCalledWith('claude-3');
+
+      const result = await ChatSdk.buildMessageChain(messages, opts as any);
+
+      expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('claude-3', undefined);
       expect(Message.create).toHaveBeenCalledTimes(3);
       expect(Message.create).toHaveBeenNthCalledWith(1, {
         role: 'assistant',
@@ -211,25 +213,25 @@ describe('ChatSdk', () => {
       });
     });
 
-    it('should filter out messages with empty content', () => {
-      vi.mocked(getModelFamily).mockReturnValue('openai');
-      
+    it('should filter out messages with empty content', async () => {
+      vi.mocked(ProviderRepository.getModelFamily).mockResolvedValue('openai');
+
       const messages = [
         { role: 'user', content: 'Hello' },
         { role: 'user', content: '' },
         { role: 'user', content: '  ' },
         { role: 'user', content: 'World' }
       ];
-      
+
       const opts = {
         systemPrompt: 'System prompt',
         assistantPrompt: 'Assistant prompt',
         toolResults: { role: 'tool', content: 'Tool result' },
         model: 'gpt-4'
       };
-      
-      const result = ChatSdk.buildMessageChain(messages, opts as any);
-      
+
+      const result = await ChatSdk.buildMessageChain(messages, opts as any);
+
       // 2 system/assistant messages + 2 user messages (Hello and World)
       expect(Message.create).toHaveBeenCalledTimes(4);
     });

@@ -30,7 +30,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
     dataCallback: (data: any) => void,
   ) {
     const assistantPrompt = ChatSdk.buildAssistantPrompt({ maxTokens: param.maxTokens });
-    const safeMessages = ChatSdk.buildMessageChain(param.messages, {
+    const safeMessages = await ChatSdk.buildMessageChain(param.messages, {
       systemPrompt: param.systemPrompt,
       model: param.model,
       assistantPrompt,

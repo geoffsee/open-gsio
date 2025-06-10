@@ -1,10 +1,11 @@
 import { OpenAI } from "openai";
 import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
+import {ProviderRepository} from "./_ProviderRepository";
 
 export class OllamaChatProvider extends BaseChatProvider {
     getOpenAIClient(param: CommonProviderParams): OpenAI {
         return new OpenAI({
-            baseURL: param.env.OLLAMA_API_ENDPOINT ?? ,
+            baseURL: param.env.OLLAMA_API_ENDPOINT ??  ProviderRepository.OPENAI_COMPAT_ENDPOINTS.ollama ,
             apiKey: param.env.OLLAMA_API_KEY,
         });
     }
