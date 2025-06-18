@@ -58,7 +58,7 @@ export default defineConfig(({command}) => {
         server: {
             port: 3000,
             proxy: {
-                // proxies requests to worker backend
+                // proxies requests to server
                 "/api": {
                     target: "http://localhost:3003",
                 },

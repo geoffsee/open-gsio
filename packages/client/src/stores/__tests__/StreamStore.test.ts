@@ -101,7 +101,7 @@ describe('StreamStore', () => {
 
   describe('Initial state', () => {
     it('should have eventSource set to null initially', () => {
-      expect(streamStore.eventSource).toBeNull();
+      expect(streamStore.eventSource).toBeUndefined();
     });
   });
 

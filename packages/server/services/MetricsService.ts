@@ -42,7 +42,11 @@ const MetricsService = types
           headers: request.headers,
           body: ["GET", "HEAD"].includes(request.method) ? null : request.body,
         }
-        self.env.KV_STORAGE.put(`metrics_events::${crypto.randomUUID()}`, JSON.stringify(event));
+        if(self.env?.KV_STORAGE?.put) {
+          self.env.KV_STORAGE.put(`metrics_events::${crypto.randomUUID()}`, JSON.stringify(event));
+        } else {
+          console.log("Detected metrics misconfiguration...not storing")
+        }
       }
     }),
   }));

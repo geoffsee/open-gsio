@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-
+import renderPage from "@open-gsio/client/server";
 
 export default types
   .model("StaticAssetStore", {})

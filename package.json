@@ -22,7 +22,8 @@
     "openai:local:configure": "packages/scripts/configure_local_inference.sh"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "happy-dom": "^18.0.1"
   },
   "peerDependencies": {
     "typescript": "^5"
