@@ -8,24 +8,32 @@ import DurableObjectLocal from "./ServerCoordinatorBun";
 
 const router = Server.Router();
 
-config({ path: ['./.env'] })
+config({
+    path: ".env",
+    debug: true,
+    // defaults: {
+    //     EVENTSOURCE_HOST: "https://eventsource.seemueller.io",
+    // }
+})
 
 export default {
     port: 3003,
     fetch: async (request: RequestLike, env: { [key: string]: any; }, ctx: any) =>{
-        console.log("[trace] request: ", request.method, request.url, "headers: ", request.headers.get("referer"), "body: ", request.body, "env: ", env, "ctx: ", ctx, "")
+        // console.log("[trace] request: ", request.method, request.url, "headers: ", request.headers.get("referer"), "body: ", request.body, "env: ", env, "ctx: ", ctx, "")
 
-        env["SERVER_COORDINATOR"] = DurableObjectLocal
-        env["ASSETS"] = assetHandler.ASSETS
-        env["EVENTSOURCE_HOST"] = process.env.EVENTSOURCE_HOST
-        env["GROQ_API_KEY"] = process.env.GROQ_API_KEY
-        env["ANTHROPIC_API_KEY"] = process.env.ANTHROPIC_API_KEY
-        env["FIREWORKS_API_KEY"] = process.env.FIREWORKS_API_KEY
-        env["XAI_API_KEY"] = process.env.XAI_API_KEY
-        env["CEREBRAS_API_KEY"] = process.env.CEREBRAS_API_KEY
-        env["CLOUDFLARE_API_KEY"] = process.env.CLOUDFLARE_API_KEY
-        env["CLOUDFLARE_ACCOUNT_ID"] = process.env.CLOUDFLARE_ACCOUNT_ID
-        env["KV_STORAGE"] = new BunSqliteKVNamespace({namespace: "open-gsio"})
+        env["SERVER_COORDINATOR"] = DurableObjectLocal;
+        env["ASSETS"] = assetHandler.ASSETS;
+        env["EVENTSOURCE_HOST"] = process.env.EVENTSOURCE_HOST;
+        env["GROQ_API_KEY"] = process.env.GROQ_API_KEY;
+        env["ANTHROPIC_API_KEY"] = process.env.ANTHROPIC_API_KEY;
+        env["FIREWORKS_API_KEY"] = process.env.FIREWORKS_API_KEY;
+        env["XAI_API_KEY"] = process.env.XAI_API_KEY;
+        env["CEREBRAS_API_KEY"] = process.env.CEREBRAS_API_KEY;
+        env["CLOUDFLARE_API_KEY"] = process.env.CLOUDFLARE_API_KEY;
+        env["CLOUDFLARE_ACCOUNT_ID"] = process.env.CLOUDFLARE_ACCOUNT_ID;
+        env["MLX_API_KEY"] = process.env.MLX_API_KEY;
+        env["OLLAMA_API_KEY"] = process.env.OLLAMA_API_KEY;
+        env["KV_STORAGE"] = new BunSqliteKVNamespace({namespace: "open-gsio"});
 
 
         try {

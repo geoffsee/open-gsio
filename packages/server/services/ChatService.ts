@@ -126,31 +126,38 @@ const ChatService = types
                 // ----- Helpers ----------------------------------------------------------
                 const logger = console;
 
-                // ----- 1. Try cached value ---------------------------------------------
-                try {
-                    const cached = yield self.env.KV_STORAGE.get('supportedModels');
-                    if (cached) {
-                        const parsed = JSON.parse(cached as string);
-                        if (Array.isArray(parsed)) {
-                            logger.info('Cache hit – returning supportedModels from KV');
-                            return new Response(JSON.stringify(parsed), { status: 200 });
+                const useCache = false;
+
+                if(useCache) {
+                    // ----- 1. Try cached value ---------------------------------------------
+                    try {
+                        const cached = yield self.env.KV_STORAGE.get('supportedModels');
+                        if (cached) {
+                            const parsed = JSON.parse(cached as string);
+                            if (Array.isArray(parsed) && parsed.length > 0) {
+                                logger.info('Cache hit – returning supportedModels from KV');
+                                return new Response(JSON.stringify(parsed), { status: 200 });
+                            }
+                            logger.warn('Cache entry malformed – refreshing');
                         }
-                        logger.warn('Cache entry malformed – refreshing');
+                    } catch (err) {
+                        logger.error('Error reading/parsing supportedModels cache', err);
                     }
-                } catch (err) {
-                    logger.error('Error reading/parsing supportedModels cache', err);
                 }
+
 
                 // ----- 2. Build fresh list ---------------------------------------------
                 const providerRepo   = new ProviderRepository(self.env);
                 const providers      = providerRepo.getProviders();
+
+                console.log({ providers })
                 const providerModels = new Map<string, any[]>();
                 const modelMeta      = new Map<string, any>();
 
                 for (const provider of providers) {
                     if (!provider.key) continue;
 
-                    logger.info(`Fetching models for provider «${provider.name}»`);
+                    logger.info(`Fetching models from «${provider.endpoint}»`);
 
                     const openai = new OpenAI({ apiKey: provider.key, baseURL: provider.endpoint });
 

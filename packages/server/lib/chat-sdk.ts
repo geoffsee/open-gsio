@@ -35,8 +35,8 @@ export class ChatSdk {
         const preprocessedContext = await ChatSdk.preprocess({
             messages,
         });
-        console.log(ctx.env)
-        console.log(ctx.env.SERVER_COORDINATOR);
+        // console.log(ctx.env)
+        // console.log(ctx.env.SERVER_COORDINATOR);
 
         const objectId = ctx.env.SERVER_COORDINATOR.idFromName("stream-index");
         const durableObject = ctx.env.SERVER_COORDINATOR.get(objectId);

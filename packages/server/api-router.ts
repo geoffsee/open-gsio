@@ -57,14 +57,15 @@ export function createRouter() {
       //     return documentService.handleGetDocument(r)
       // })
 
-      .all("/api/metrics/*", async (r, e, c) => {
+      .all("/api/metrics*", async (r, e, c) => {
         const { metricsService } = createRequestContext(e, c);
         return metricsService.handleMetricsRequest(r);
       })
 
       // renders the app
-      .get('*', async (r, e, c) => {
-          const { assetService } = createRequestContext(e, c);
+        .get("^(?!/api/).*$", async (r, e, c) => {
+
+            const { assetService } = createRequestContext(e, c);
 
           console.log('Request received:', { url: r.url, headers: r.headers });
 

@@ -17,20 +17,32 @@ const MetricsService = types
     },
     handleMetricsRequest: flow(function* (request: Request) {
       const url = new URL(request.url);
-      const proxyUrl = `https://metrics.seemueller.io${url.pathname}${url.search}`;
+      let proxyUrl = "";
+      if(self.env.METRICS_HOST) {
+        proxyUrl = new URL(`${self.env.METRICS_HOST}${url.pathname}${url.search}`).toString();
+      }
 
-      try {
-        const response = yield fetch(proxyUrl, {
+      if(proxyUrl) {
+        try {
+          const response = yield fetch(proxyUrl, {
+            method: request.method,
+            headers: request.headers,
+            body: ["GET", "HEAD"].includes(request.method) ? null : request.body,
+            redirect: "follow",
+          });
+
+          return response;
+        } catch (error) {
+          console.error("Failed to proxy metrics request:", error);
+          return new Response("metrics misconfigured", { status: 200 });
+        }
+      } else {
+        const event = {
           method: request.method,
           headers: request.headers,
           body: ["GET", "HEAD"].includes(request.method) ? null : request.body,
-          redirect: "follow",
-        });
-
-        return response;
-      } catch (error) {
-        console.error("Failed to proxy metrics request:", error);
-        return new Response("Failed to fetch metrics", { status: 500 });
+        }
+        self.env.KV_STORAGE.put(`metrics_events::${crypto.randomUUID()}`, JSON.stringify(event));
       }
     }),
   }));

@@ -17,11 +17,18 @@ configure_dev_vars() {
 
   # Default URL is automatic but can be overridden for remote deployments
   if [[ "$endpoint_url" == *"11434"* ]]; then
+    echo "OPENAI_API_ENDPOINT=http://localhost:11434" >> "${ENV_LOCAL_PATH}"
     echo "OLLAMA_API_KEY=active" >> "${ENV_LOCAL_PATH}"
+
+    echo "OPENAI_API_ENDPOINT=http://localhost:11434" >> "${DEV_VARS_PATH}"
     echo "OLLAMA_API_KEY=active" >> "${DEV_VARS_PATH}"
   fi
   if [[ "$endpoint_url" == *"10240"* ]]; then
+
+    echo "OPENAI_API_ENDPOINT=http://localhost:10240/v1" >> "${ENV_LOCAL_PATH}"
     echo "MLX_API_KEY=active" >> "${ENV_LOCAL_PATH}"
+
+    echo "OPENAI_API_ENDPOINT=http://localhost:10240/v1" >> "${DEV_VARS_PATH}"
     echo "MLX_API_KEY=active" >> "${DEV_VARS_PATH}"
   fi
 

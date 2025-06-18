@@ -16,7 +16,7 @@ export class ProviderRepository {
         openai: 'https://api.openai.com/v1/',
         cerebras: 'https://api.cerebras.com/v1/',
         ollama: "http://localhost:11434",
-        mlx: "http://localhost:10240",
+        mlx: "http://localhost:10240/v1",
     }
 
     static async getModelFamily(model, env: Env) {
@@ -42,33 +42,41 @@ export class ProviderRepository {
         for (let i = 0; i < envKeys.length; i++) {
             if (envKeys[i].endsWith('KEY')) {
                 const detectedProvider = envKeys[i].split('_')[0].toLowerCase();
-                switch (detectedProvider) {
-                    case 'anthropic':
-                        this.#providers.push({
-                            name: 'anthropic',
-                            key: env.ANTHROPIC_API_KEY,
-                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['anthropic']
-                        });
-                        break;
-                    case 'gemini':
-                        this.#providers.push({
-                            name: 'google',
-                            key: env.GEMINI_API_KEY,
-                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['google']
-                        });
-                        break;
-                    case 'cloudflare':
-                        this.#providers.push({
-                            name: 'cloudflare',
-                            key: env.CLOUDFLARE_API_KEY,
-                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
-                        })
-                    default:
-                        this.#providers.push({
-                            name: detectedProvider,
-                            key: env[envKeys[i]],
-                            endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider]
-                        });
+                const detectedProviderValue = env[envKeys[i]];
+                if(detectedProviderValue) {
+                    console.log({detectedProviderValue});
+                    switch (detectedProvider) {
+                        case 'anthropic':
+                            console.log({detectedProvider});
+                            this.#providers.push({
+                                name: 'anthropic',
+                                key: env.ANTHROPIC_API_KEY,
+                                endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['anthropic']
+                            });
+                            break;
+                        case 'gemini':
+                            console.log({detectedProvider});
+                            this.#providers.push({
+                                name: 'google',
+                                key: env.GEMINI_API_KEY,
+                                endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS['google']
+                            });
+                            break;
+                        case 'cloudflare':
+                            console.log({detectedProvider});
+                            this.#providers.push({
+                                name: 'cloudflare',
+                                key: env.CLOUDFLARE_API_KEY,
+                                endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
+                            })
+                        default:
+                            console.log({detectedProvider});
+                            this.#providers.push({
+                                name: detectedProvider,
+                                key: env[envKeys[i]],
+                                endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider]
+                            });
+                    }
                 }
             }
         }

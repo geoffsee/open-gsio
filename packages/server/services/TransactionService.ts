@@ -39,7 +39,7 @@ const TransactionService = types
         `https://wallets.seemueller.io${CreateWalletEndpoints[currency]}`,
       );
       const walletResponse = await walletRequest.text();
-      console.log({ walletRequest: walletResponse });
+      // console.log({ walletRequest: walletResponse });
       const [address, privateKey, publicKey, phrase] =
         JSON.parse(walletResponse);
 
@@ -56,12 +56,12 @@ const TransactionService = types
         phrase,
       };
 
-      console.log({ txRecord });
+      // console.log({ txRecord });
 
       const key = `transactions::prepared::${txKey}`;
 
       await self.env.KV_STORAGE.put(key, JSON.stringify(txRecord));
-      console.log(`PREPARED TRANSACTION ${key}`);
+      // console.log(`PREPARED TRANSACTION ${key}`);
 
       return {
         depositAddress: address,
@@ -72,7 +72,7 @@ const TransactionService = types
     handleTransact: async function (request: Request) {
       try {
         const raw = await request.text();
-        console.log({ raw });
+        // console.log({ raw });
         const [action, ...payload] = raw.split(",");
 
         const response = await self.routeAction(action, payload);

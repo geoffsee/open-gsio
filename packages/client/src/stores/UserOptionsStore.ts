@@ -23,7 +23,7 @@ export const UserOptionsStoreModel = types
         .split(";")
         .find((row) => row.startsWith("user_preferences"));
 
-      console.log(document.cookie.split(";"));
+      // console.log(document.cookie.split(";"));
 
       const newUserOptions = JSON.stringify({
         theme: self.theme,
@@ -46,7 +46,7 @@ export const UserOptionsStoreModel = types
         .find((row) => row.startsWith("user_preferences"));
 
       if (!userPreferencesCoookie) {
-        console.log("No user preferences cookie found, creating one");
+        // console.log("No user preferences cookie found, creating one");
         self.storeUserOptions();
       }
 
@@ -60,20 +60,20 @@ export const UserOptionsStoreModel = types
 
       window.addEventListener("scroll", () => {
         if (ClientChatStore.isLoading && self.followModeEnabled) {
-          console.log("scrolling");
+          // console.log("scrolling");
           self.setFollowModeEnabled(false);
         }
       });
 
       window.addEventListener("wheel", () => {
         if (ClientChatStore.isLoading && self.followModeEnabled) {
-          console.log("wheel");
+          // console.log("wheel");
           self.setFollowModeEnabled(false);
         }
       });
 
       window.addEventListener("touchmove", () => {
-        console.log("touchmove");
+        // console.log("touchmove");
         if (ClientChatStore.isLoading && self.followModeEnabled) {
           self.setFollowModeEnabled(false);
         }

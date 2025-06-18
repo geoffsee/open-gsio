@@ -13,13 +13,13 @@ export class AssistantSdk {
       userLocation = "",
     } = params;
     // Handle both nested and flat few_shots structures
-    console.log('[DEBUG_LOG] few_shots:', JSON.stringify(few_shots));
+    // console.log('[DEBUG_LOG] few_shots:', JSON.stringify(few_shots));
     let selectedFewshots = Utils.selectEquitably?.(few_shots);
-    console.log('[DEBUG_LOG] selectedFewshots after Utils.selectEquitably:', JSON.stringify(selectedFewshots));
+    // console.log('[DEBUG_LOG] selectedFewshots after Utils.selectEquitably:', JSON.stringify(selectedFewshots));
     if (!selectedFewshots) {
       // If Utils.selectEquitably returns undefined, use few_shots directly
       selectedFewshots = few_shots;
-      console.log('[DEBUG_LOG] selectedFewshots after fallback:', JSON.stringify(selectedFewshots));
+      // console.log('[DEBUG_LOG] selectedFewshots after fallback:', JSON.stringify(selectedFewshots));
     }
     const sdkDate = new Date().toISOString();
     const [currentDate] = sdkDate.includes("T") ? sdkDate.split("T") : [sdkDate];
