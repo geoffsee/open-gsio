@@ -1,5 +1,5 @@
 // Base Message
-import { Instance, types } from "mobx-state-tree";
+import { type Instance, types } from "mobx-state-tree";
 
 export default types
   .model("Message", {

@@ -1,8 +1,8 @@
-import React, { KeyboardEvent, useEffect } from "react";
+import React, {type KeyboardEvent, useEffect } from "react";
 import { Box, Flex, IconButton, Textarea } from "@chakra-ui/react";
 import { Check, X } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { Instance } from "mobx-state-tree";
+import { type Instance } from "mobx-state-tree";
 import Message from "../../../models/Message";
 import messageEditorStore from "../../../stores/MessageEditorStore";
 

@@ -39,31 +39,31 @@ export default defineConfig(({command}) => {
                     })
                 })
              */
-            VitePWA({
-                registerType: 'autoUpdate',
-                devOptions: {
-                    enabled: false,
-                },
-                manifest: {
-                    name: "open-gsio",
-                    short_name: "open-gsio",
-                    description: "Assistant"
-                },
-                workbox: {
-                    globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-                    navigateFallbackDenylist: [/^\/api\//],
-                }
-            })
+            // VitePWA({
+            //     registerType: 'autoUpdate',
+            //     devOptions: {
+            //         enabled: false,
+            //     },
+            //     manifest: {
+            //         name: "open-gsio",
+            //         short_name: "open-gsio",
+            //         description: "Assistant"
+            //     },
+            //     workbox: {
+            //         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
+            //         navigateFallbackDenylist: [/^\/api\//],
+            //     }
+            // })
         ],
         server: {
             port: 3000,
             proxy: {
                 // proxies requests to worker backend
                 "/api": {
-                    target: "http://localhost:3001",
+                    target: "http://localhost:3003",
                 },
                 "/fonts": {
-                    target: "http://localhost:3001/fonts",
+                    target: "http://localhost:3003/fonts",
                 },
             },
         },

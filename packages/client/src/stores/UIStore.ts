@@ -2,7 +2,7 @@
 // ---------------------------
 // stores/UIStore.ts
 // ---------------------------
-import { Instance, types } from "mobx-state-tree";
+import { type Instance, types } from "mobx-state-tree";
 
 export const UIStore = types
     .model("UIStore", {

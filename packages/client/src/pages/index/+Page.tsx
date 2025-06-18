@@ -8,11 +8,9 @@ import { getModelFamily } from "../../components/chat/lib/SupportedModels";
 export default function IndexPage() {
   useEffect(() => {
     try {
-      let model = localStorage.getItem("recentModel");
+      const model = localStorage.getItem("recentModel");
 
-      if (getModelFamily(model as string)) {
-        clientChatStore.setModel(model as string);
-      }
+      clientChatStore.setModel(model as string);
     } catch (_) {
       console.log("using default model");
     }

@@ -1,4 +1,4 @@
-import {types, Instance} from "mobx-state-tree";
+import {types, type Instance} from "mobx-state-tree";
 import clientChatStore from "./ClientChatStore";
 import UserOptionsStore from "./UserOptionsStore";
 import Message from "../models/Message";

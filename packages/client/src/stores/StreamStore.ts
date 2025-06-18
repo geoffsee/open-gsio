@@ -1,24 +1,14 @@
-import {
-    getParent,
-    Instance,
-    flow,
-    types,
-    applyAction,
-} from "mobx-state-tree";
-import type { IMessagesStore } from "./MessagesStore";
-import type { IUIStore } from "./UIStore";
-import type { IModelStore } from "./ModelStore";
+import {flow, getParent, type Instance, types} from "mobx-state-tree";
 import UserOptionsStore from "./UserOptionsStore";
 import Message from "../models/Message";
-
-interface RootDeps extends IMessagesStore, IUIStore, IModelStore {}
+import type {RootDeps} from "./RootDeps.ts";
 
 export const StreamStore = types
     .model("StreamStore", {
         streamId: types.optional(types.string, ""),
     })
     .volatile(() => ({
-        eventSource: null as EventSource | null,
+        eventSource: undefined as unknown as EventSource,
     }))
     .actions((self: any) => {                  // ← annotate `self` so it isn’t implicitly `any`
         let root: RootDeps;
@@ -83,6 +73,7 @@ export const StreamStore = types
                 }
 
                 const { streamUrl } = (yield response.json()) as { streamUrl: string };
+
                 setEventSource(new EventSource(streamUrl));
 
                 const handleMessage = (event: MessageEvent) => {

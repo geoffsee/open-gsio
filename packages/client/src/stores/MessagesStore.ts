@@ -1,7 +1,7 @@
 // ---------------------------
 // stores/MessagesStore.ts
 // ---------------------------
-import { Instance, types } from "mobx-state-tree";
+import { type Instance, types } from "mobx-state-tree";
 import Message from "../models/Message";
 
 export const MessagesStore = types
