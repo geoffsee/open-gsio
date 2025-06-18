@@ -5,20 +5,18 @@ import * as child_process from "node:child_process";
 import {VitePWA} from 'vite-plugin-pwa';
 import { configDefaults } from 'vitest/config';
 
-const APP_FQDN = "open-gsio.seemueller.workers.dev";
-
 export default defineConfig(({command}) => {
     const customPlugins = [
         {
             name: "sitemap-generator",
             buildStart(options) {
                 if (command === "build") {
-                    child_process.execSync("./scripts/generate_sitemap.js " + APP_FQDN);
+                    child_process.execSync("bun run generate:sitemap");
                     console.log("Generated Sitemap -> public/sitemap.xml");
-                    child_process.execSync("./scripts/generate_robots_txt.js " + APP_FQDN);
+                    child_process.execSync("bun run generate:robotstxt");
                     console.log("Generated robots.txt -> public/robots.txt");
-                    child_process.execSync("cp -r ../../node_modules/katex/dist/fonts public/static");
-                    console.log("Copied KaTeX fonts -> public/static/fonts");
+                    child_process.execSync("bun run generate:fonts");
+                    console.log("Copied fonts -> public/static/fonts");
                 }
             },
         },

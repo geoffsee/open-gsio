@@ -14,3 +14,4 @@ packages/client/public/static/fonts/*
 packages/client/public/sitemap.xml
 packages/client/public/robots.txt
 wrangler.dev.jsonc
+/packages/client/public/static/fonts/

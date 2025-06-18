@@ -5,7 +5,10 @@
     "dev": "bun vite dev",
     "build": "bun vite build",
     "tests": "vitest run",
-    "tests:coverage": "vitest run --coverage.enabled=true"
+    "tests:coverage": "vitest run --coverage.enabled=true",
+    "generate:sitemap": "bun ./scripts/generate_sitemap.js open-gsio.seemueller.workers.dev",
+    "generate:robotstxt": "bun ./scripts/generate_robots_txt.js open-gsio.seemueller.workers.dev",
+    "generate:fonts": "cp -r ../../node_modules/katex/dist/fonts public/static"
   },
   "dependencies": {
     "@open-gsio/env": "workspace:*",
@@ -48,6 +51,8 @@
     "vike": "0.4.193",
     "vite": "^6.3.5",
     "vite-plugin-pwa": "^1.0.0",
-    "vitest": "^3.1.4"
+    "vitest": "^3.1.4",
+    "bun": "*",
+    "@types/bun": "*"
   }
 }

@@ -17,6 +17,8 @@ find . -name ".wrangler" -type d -prune -exec rm -rf {} \;
 find . -name "dist" -type d -prune -exec rm -rf {} \;
 find . -name "build" -type d -prune -exec rm -rf {} \;
 
+find . -name "fonts" -type d -prune -exec rm -rf {} \;
+
 # Remove coverage directories
 find . -name "coverage" -type d -prune -exec rm -rf {} \;
 find . -name "html" -type d -prune -exec rm -rf {} \;

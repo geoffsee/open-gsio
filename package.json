@@ -13,7 +13,7 @@
     "test:all": "bun run --filter='*' tests",
     "client:dev": "(cd packages/client && bun run dev)",
     "server:dev": "bun build:client && (cd packages/server && bun run dev)",
-    "build": "(cd packages/cloudflare-workers && bun run deploy:dry-run)",
+    "build": "(cd packages/cloudflare-workers/open-gsio && bun run deploy:dry-run)",
     "build:client": "(cd packages/client && bun run vite build)",
     "deploy": "(cd packages/cloudflare-workers && bun run deploy)",
     "deploy:secrets": "wrangler secret bulk secrets.json -c packages/cloudflare-workers/open-gsio/wrangler.jsonc",
