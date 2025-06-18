@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-import { renderPage } from "vike/server";
+
 
 export default types
   .model("StaticAssetStore", {})
@@ -17,7 +17,7 @@ export default types
     async handleSsr(
       url: string,
       headers: Headers,
-      env: Vike.PageContext["env"],
+      env: Vike.PageContext.env,
     ) {
       console.log("handleSsr");
       const pageContextInit = {

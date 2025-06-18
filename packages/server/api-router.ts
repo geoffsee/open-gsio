@@ -1,5 +1,5 @@
 import { Router, withParams } from "itty-router";
-import { createRequestContext } from "./RequestContext.ts";
+import { createRequestContext } from "./RequestContext";
 
 export function createRouter() {
   return (
@@ -57,13 +57,18 @@ export function createRouter() {
       //     return documentService.handleGetDocument(r)
       // })
 
-      .all("/api/metrics*", async (r, e, c) => {
+      .get("/api/metrics*", async (r, e, c) => {
         const { metricsService } = createRequestContext(e, c);
         return metricsService.handleMetricsRequest(r);
       })
 
-      // renders the app
-        .get("^(?!/api/).*$", async (r, e, c) => {
+        .post("/api/metrics*", async (r, e, c) => {
+            const { metricsService } = createRequestContext(e, c);
+            return metricsService.handleMetricsRequest(r);
+        })
+
+        // renders the app
+        .all("^(?!/api/)(?!/assets/).*$", async (r, e, c) => {
 
             const { assetService } = createRequestContext(e, c);
 

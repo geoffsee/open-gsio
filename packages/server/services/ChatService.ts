@@ -13,7 +13,7 @@ import {XaiChatSdk} from "../providers/xai";
 import {CerebrasSdk} from "../providers/cerebras";
 import {CloudflareAISdk} from "../providers/cloudflareAi";
 import {OllamaChatSdk} from "../providers/ollama";
-import {MlxOmniChatSdk} from "../providers/mlx-omni";
+import {MlxOmniChatProvider, MlxOmniChatSdk} from "../providers/mlx-omni";
 import {ProviderRepository} from "../providers/_ProviderRepository";
 
 export interface StreamParams {
@@ -126,7 +126,7 @@ const ChatService = types
                 // ----- Helpers ----------------------------------------------------------
                 const logger = console;
 
-                const useCache = false;
+                const useCache = true;
 
                 if(useCache) {
                     // ----- 1. Try cached value ---------------------------------------------
@@ -139,9 +139,10 @@ const ChatService = types
                                 return new Response(JSON.stringify(parsed), { status: 200 });
                             }
                             logger.warn('Cache entry malformed – refreshing');
+                            throw new Error('Malformed cache entry');
                         }
                     } catch (err) {
-                        logger.error('Error reading/parsing supportedModels cache', err);
+                        logger.warn('Error reading/parsing supportedModels cache', err);
                     }
                 }
 
@@ -260,11 +261,8 @@ const ChatService = types
             }) {
                 const {streamConfig, streamParams, controller, encoder, streamId} = params;
 
-                const useModelFamily = () => {
-                    return ProviderRepository.getModelFamily(streamConfig.model, self.env)
-                }
 
-                const modelFamily = await useModelFamily();
+                const modelFamily = await ProviderRepository.getModelFamily(streamConfig.model, self.env);
 
                 const useModelHandler = () => {
                     return modelHandlers[modelFamily]

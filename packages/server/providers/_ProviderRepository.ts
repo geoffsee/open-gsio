@@ -1,7 +1,12 @@
+export type GenericEnv = Record<string, any>;
+
 
 export class ProviderRepository {
     #providers: {name: string, key: string, endpoint: string}[] = [];
-    constructor(env: Record<string, any>) {
+    #env: Record<string, any>;
+
+    constructor(env: GenericEnv) {
+        this.#env = env
         this.setProviders(env);
     }
 
@@ -19,7 +24,8 @@ export class ProviderRepository {
         mlx: "http://localhost:10240/v1",
     }
 
-    static async getModelFamily(model, env: Env) {
+    static async getModelFamily(model: any, env: Env) {
+        console.log(env);
         const allModels = await env.KV_STORAGE.get("supportedModels");
         const models = JSON.parse(allModels);
         const modelData = models.filter(m => m.id === model)
