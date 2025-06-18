@@ -1,4 +1,4 @@
-import {BunSqliteKVNamespace} from "./storage/BunSqliteKVNamespace";
+import {BunSqliteKVNamespace} from "../storage/BunSqliteKVNamespace";
 
 
 class BunDurableObject {

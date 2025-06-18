@@ -6,10 +6,8 @@
   <img src="https://github.com/user-attachments/assets/620d2517-e7be-4bb0-b2b7-3aa0cba37ef0" width="250" />
 </p>
 
-> **Note**: I am porting logic from 3 projects back into this one. The styling is a work in progress and some functionality
-> may be broken. Tests are being actively ported and stability will improve over time. Thank you for your patience.
 
-This is a full-stack Conversational AI. It runs on Cloudflare or Bun. 
+This is a full-stack Conversational AI. 
 
 ## Table of Contents
 
@@ -22,7 +20,6 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
         - [Adding models](#adding-models-for-local-inference-ollama)
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
-- [History](#history)
 - [Acknowledgments](#acknowledgments)
 - [License](#license)
 
@@ -41,8 +38,7 @@ This is a full-stack Conversational AI. It runs on Cloudflare or Bun.
 1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
-
-
+ 
 ## Local Inference
 > Local inference is supported for Ollama and mlx-omni-server. OpenAI compatible servers can be used by overriding OPENAI_API_KEY and OPENAI_API_ENDPOINT. 
 

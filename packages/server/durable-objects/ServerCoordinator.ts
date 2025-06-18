@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import {ProviderRepository} from "./providers/_ProviderRepository";
+import {ProviderRepository} from "../providers/_ProviderRepository";
 
 export default class ServerCoordinator extends DurableObject {
   env;

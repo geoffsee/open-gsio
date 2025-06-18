@@ -2,9 +2,10 @@ import {BunSqliteKVNamespace} from "./storage/BunSqliteKVNamespace";
 import {readdir} from 'node:fs/promises';
 import type { RequestLike } from "itty-router";
 
-import {config} from "dotenv";
+import ServerCoordinator from "./durable-objects/ServerCoordinatorBun";
 import Server from ".";
-import DurableObjectLocal from "./ServerCoordinatorBun";
+
+import {config} from "dotenv";
 
 const router = Server.Router();
 
@@ -21,7 +22,7 @@ export default {
     fetch: async (request: RequestLike, env: { [key: string]: any; }, ctx: any) =>{
         // console.log("[trace] request: ", request.method, request.url, "headers: ", request.headers.get("referer"), "body: ", request.body, "env: ", env, "ctx: ", ctx, "")
 
-        env["SERVER_COORDINATOR"] = DurableObjectLocal;
+        env["SERVER_COORDINATOR"] = ServerCoordinator;
         env["ASSETS"] = assetHandler.ASSETS;
         env["EVENTSOURCE_HOST"] = process.env.EVENTSOURCE_HOST;
         env["GROQ_API_KEY"] = process.env.GROQ_API_KEY;
@@ -57,7 +58,7 @@ export default {
     }
 }
 
-const assetHandler = {
+export const assetHandler = {
     ASSETS: {
         /**
          * Fetches the requested static asset from local dist

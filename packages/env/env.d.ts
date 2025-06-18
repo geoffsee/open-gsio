@@ -4,7 +4,7 @@ interface Env {
   EMAIL_SERVICE: any;
 
   // Durable Objects
-  SERVER_COORDINATOR: import("packages/server/ServerCoordinator.ts");
+  SERVER_COORDINATOR: import("packages/server/durable-objects/ServerCoordinator.ts");
 
   // Handles serving static assets
   ASSETS: Fetcher;
