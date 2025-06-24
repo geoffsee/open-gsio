@@ -17,9 +17,9 @@ export class ProviderRepository {
         fireworks: 'https://api.fireworks.ai/inference/v1',
         cohere: 'https://api.cohere.ai/compatibility/v1',
         cloudflare: 'https://api.cloudflare.com/client/v4/accounts/{CLOUDFLARE_ACCOUNT_ID}/ai/v1',
-        anthropic: 'https://api.anthropic.com/v1/',
-        openai: 'https://api.openai.com/v1/',
-        cerebras: 'https://api.cerebras.com/v1/',
+        anthropic: 'https://api.anthropic.com/v1',
+        openai: 'https://api.openai.com/v1',
+        cerebras: 'https://api.cerebras.com/v1',
         ollama: "http://localhost:11434",
         mlx: "http://localhost:10240/v1",
     }
