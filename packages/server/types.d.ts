@@ -1,5 +1,5 @@
 declare global {
-    type ExecutionContext = any
-    type Env = import("@open-gsio/env")
+  type ExecutionContext = any;
+  type Env = import('@open-gsio/env');
 }
-export type ExecutionContext = any
+export type ExecutionContext = any;

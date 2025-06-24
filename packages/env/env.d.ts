@@ -4,14 +4,13 @@ interface Env {
   EMAIL_SERVICE: any;
 
   // Durable Objects
-  SERVER_COORDINATOR: import("packages/server/durable-objects/ServerCoordinator.ts");
+  SERVER_COORDINATOR: import('packages/server/durable-objects/ServerCoordinator.ts');
 
   // Handles serving static assets
   ASSETS: Fetcher;
 
   // KV Bindings
   KV_STORAGE: KVNamespace;
-
 
   // Text/Secrets
   METRICS_HOST: string;
