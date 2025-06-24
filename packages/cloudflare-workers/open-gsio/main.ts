@@ -1,5 +1,5 @@
 import Server from "@open-gsio/server";
-import ServerCoordinator from "packages/server/durable-objects/ServerCoordinator";
+import ServerCoordinator from "@open-gsio/server/durable-objects/ServerCoordinator";
 
 export {ServerCoordinator}
 

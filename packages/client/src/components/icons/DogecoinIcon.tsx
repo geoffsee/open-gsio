@@ -6,6 +6,7 @@ const TealDogecoinIcon = (props) => (
     as="svg"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
+    stroke={"currentColor"}
     fill="currentColor"
     boxSize={props.boxSize || "1em"}
     {...props}
@@ -26,8 +27,8 @@ const TealDogecoinIcon = (props) => (
       fill-rule="evenodd"
       clip-rule="evenodd"
       d="M17.5001 9.54053C16.4888 6.92891 13.9888 6.44507 13.9888 6.44507H6.85606L6.88358 9.10523H8.30406V15.0454H6.85596V17.7007H13.7913C15.4628 17.7007 16.8026 16.0211 16.8026 16.0211C18.9482 12.9758 17.5 9.54053 17.5 9.54053H17.5001ZM13.8285 14.2314C13.8285 14.2314 13.2845 15.0163 12.6927 15.0163H11.5087L11.4806 9.11173H13.0001C13.0001 9.11173 13.7041 9.25894 14.1959 10.6521C14.1959 10.6521 14.848 12.6468 13.8285 14.2314Z"
-      fill="white"
-      fill-opacity="0.8"
+      // fill="white"
+      // fill-opacity="0.8"
     />
   </Box>
 );

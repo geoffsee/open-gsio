@@ -89,8 +89,11 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
       motionPreset="slideInBottom"
       zIndex={zIndex}
     >
-      <ModalOverlay />
-      <ModalContent bg="gray.800" color="text.primary">
+      <ModalOverlay
+          bg='bg.primary'
+          backdropFilter='blur(10px) hue-rotate(90deg)'
+      />
+      <ModalContent bg="bg.primary" color="text.primary" >
         <ModalHeader textAlign="center" mb={2}>
           Support
         </ModalHeader>
@@ -103,7 +106,7 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
             <Tabs
               align="center"
               variant="soft-rounded"
-              colorScheme="teal"
+              // colorScheme="teal"
               isFitted
             >
               <TabList mb={2} w={"20%"}>
@@ -111,11 +114,13 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                   <Tab
                     p={4}
                     key={method.name}
+                    color={"text.primary"}
+                    bg={clientTransactionStore.selectedMethod=== method.name ? "bg.primary": "bg.secondary"}
                     onClick={() => {
                       clientTransactionStore.setSelectedMethod(method.name);
                     }}
                   >
-                    <Box p={1} w={"fit-content"}>
+                    <Box p={1} w={"fit-content"} >
                       <method.icon />{" "}
                     </Box>
                     {method.name}
@@ -137,8 +142,8 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                             clientTransactionStore.setDonerId(e.target.value)
                           }
                           type="text"
-                          bg="gray.700"
-                          color="white"
+                          bg="bg.secondary"
+                          color="text.primary"
                           w="100%"
                         />
                         <Text>Enter the amount you wish to donate:</Text>
@@ -151,14 +156,14 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                             clientTransactionStore.setAmount(e.target.value)
                           }
                           type="number"
-                          bg="gray.700"
-                          color="white"
+                          bg="bg.secondary"
+                          // color="white"
                           w="100%"
                         />
                         <Button
                           onClick={handleConfirmAmount}
                           size="md"
-                          colorScheme="teal"
+                          // colorScheme="teal"
                         >
                           Confirm Amount
                         </Button>
@@ -181,7 +186,7 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                         </Box>
 
                         <Box
-                          bg="gray.700"
+                          bg="bg.secondary"
                           p={4}
                           borderRadius="md"
                           wordBreak="unset"
@@ -196,7 +201,7 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                         <Button
                           onClick={handleCopy}
                           size="md"
-                          colorScheme="teal"
+                          // colorScheme="teal"
                           mb={4}
                         >
                           {hasCopied ? "Address Copied!" : "Copy Address"}
@@ -213,7 +218,7 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button variant="outline" mr={3} onClick={onClose} colorScheme="gray">
+          <Button variant="outline" mr={3} onClick={onClose} >
             Close
           </Button>
         </ModalFooter>
