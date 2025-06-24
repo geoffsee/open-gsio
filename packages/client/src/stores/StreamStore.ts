@@ -1,6 +1,6 @@
 import {flow, getParent, type Instance, types} from "mobx-state-tree";
 import UserOptionsStore from "./UserOptionsStore";
-import Message from "../models/Message";
+import Message, { batchContentUpdate } from "../models/Message";
 import type {RootDeps} from "./RootDeps.ts";
 
 export const StreamStore = types
@@ -60,13 +60,13 @@ export const StreamStore = types
                 });
 
                 if (response.status === 429) {
-                    root.updateLast("Too many requests • please slow down.");
+                    root.appendLast("\n\nError: Too many requests • please slow down.");
                     cleanup();
                     UserOptionsStore.setFollowModeEnabled(false);
                     return;
                 }
                 if (response.status > 200) {
-                    root.updateLast("Error • something went wrong.");
+                    root.appendLast("\n\nError: Something went wrong.");
                     cleanup();
                     UserOptionsStore.setFollowModeEnabled(false);
                     return;
@@ -79,19 +79,29 @@ export const StreamStore = types
                 const handleMessage = (event: MessageEvent) => {
                     try {
                         const parsed = JSON.parse(event.data);
+
                         if (parsed.type === "error") {
-                            root.updateLast(parsed.error);
+                            // Append error message instead of replacing content
+                            root.appendLast("\n\nError: " + parsed.error);
                             root.setIsLoading(false);
                             UserOptionsStore.setFollowModeEnabled(false);
                             cleanup();
                             return;
                         }
 
+                        // Get the last message
+                        const lastMessage = root.items[root.items.length - 1];
+
                         if (
                             parsed.type === "chat" &&
                             parsed.data.choices[0]?.finish_reason === "stop"
                         ) {
-                            root.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+                            // For the final chunk, append it and close the connection
+                            const content = parsed.data.choices[0]?.delta?.content ?? "";
+                            if (content) {
+                                // Use appendLast for the final chunk to ensure it's added immediately
+                                root.appendLast(content);
+                            }
                             UserOptionsStore.setFollowModeEnabled(false);
                             root.setIsLoading(false);
                             cleanup();
@@ -99,7 +109,12 @@ export const StreamStore = types
                         }
 
                         if (parsed.type === "chat") {
-                            root.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+                            // For regular chunks, use the batched content update for a smoother effect
+                            const content = parsed.data.choices[0]?.delta?.content ?? "";
+                            if (content && lastMessage) {
+                                // Use the batching utility for more efficient updates
+                                batchContentUpdate(lastMessage, content);
+                            }
                         }
                     } catch (err) {
                         console.error("stream parse error", err);
@@ -107,7 +122,7 @@ export const StreamStore = types
                 };
 
                 const handleError = () => {
-                    root.updateLast("Error • connection lost.");
+                    root.appendLast("\n\nError: Connection lost.");
                     root.setIsLoading(false);
                     UserOptionsStore.setFollowModeEnabled(false);
                     cleanup();
@@ -117,7 +132,7 @@ export const StreamStore = types
                 self.eventSource.onerror = handleError;
             } catch (err) {
                 console.error("sendMessage", err);
-                root.updateLast("Sorry • network error.");
+                root.appendLast("\n\nError: Sorry • network error.");
                 root.setIsLoading(false);
                 UserOptionsStore.setFollowModeEnabled(false);
                 cleanup();

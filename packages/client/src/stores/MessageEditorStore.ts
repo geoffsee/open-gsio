@@ -1,7 +1,7 @@
 import {types, type Instance} from "mobx-state-tree";
 import clientChatStore from "./ClientChatStore";
 import UserOptionsStore from "./UserOptionsStore";
-import Message from "../models/Message";
+import Message, { batchContentUpdate } from "../models/Message";
 import {MessagesStore} from "./MessagesStore";
 
 export const MessageEditorStore = types
@@ -78,34 +78,47 @@ export const MessageEditorStore = types
                     });
 
                     if (response.status === 429) {
-                        clientChatStore.updateLast("Too many requests • please slow down.");
+                        clientChatStore.appendLast("\n\nError: Too many requests • please slow down.");
                         clientChatStore.setIsLoading(false);
                         UserOptionsStore.setFollowModeEnabled(false);
                         return;
                     }
                     if (response.status > 200) {
-                        clientChatStore.updateLast("Error • something went wrong.");
+                        clientChatStore.appendLast("\n\nError: Something went wrong.");
                         clientChatStore.setIsLoading(false);
                         UserOptionsStore.setFollowModeEnabled(false);
                         return;
                     }
 
                     const {streamUrl} = await response.json();
+
+                    // Use the StreamStore's functionality to handle the event source
                     const eventSource = new EventSource(streamUrl);
 
-                    eventSource.onmessage = (event) => {
+                    // Set up event handlers using a more efficient approach
+                    const handleMessage = (event) => {
                         try {
                             const parsed = JSON.parse(event.data);
+
                             if (parsed.type === "error") {
-                                clientChatStore.updateLast(parsed.error);
+                                // Append error message instead of replacing content
+                                clientChatStore.appendLast("\n\nError: " + parsed.error);
                                 clientChatStore.setIsLoading(false);
                                 UserOptionsStore.setFollowModeEnabled(false);
                                 eventSource.close();
                                 return;
                             }
 
+                            // Get the last message to use its streamContent method
+                            const lastMessage = clientChatStore.items[clientChatStore.items.length - 1];
+
                             if (parsed.type === "chat" && parsed.data.choices[0]?.finish_reason === "stop") {
-                                clientChatStore.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+                                // For the final chunk, append it and close the connection
+                                const content = parsed.data.choices[0]?.delta?.content ?? "";
+                                if (content) {
+                                    // Use appendLast for the final chunk to ensure it's added immediately
+                                    clientChatStore.appendLast(content);
+                                }
                                 clientChatStore.setIsLoading(false);
                                 UserOptionsStore.setFollowModeEnabled(false);
                                 eventSource.close();
@@ -113,22 +126,30 @@ export const MessageEditorStore = types
                             }
 
                             if (parsed.type === "chat") {
-                                clientChatStore.appendLast(parsed.data.choices[0]?.delta?.content ?? "");
+                                // For regular chunks, use the batched content update for a smoother effect
+                                const content = parsed.data.choices[0]?.delta?.content ?? "";
+                                if (content && lastMessage) {
+                                    // Use the batching utility for more efficient updates
+                                    batchContentUpdate(lastMessage, content);
+                                }
                             }
                         } catch (err) {
                             console.error("stream parse error", err);
                         }
                     };
 
-                    eventSource.onerror = () => {
-                        clientChatStore.updateLast("Error • connection lost.");
+                    const handleError = () => {
+                        clientChatStore.appendLast("\n\nError: Connection lost.");
                         clientChatStore.setIsLoading(false);
                         UserOptionsStore.setFollowModeEnabled(false);
                         eventSource.close();
                     };
+
+                    eventSource.onmessage = handleMessage;
+                    eventSource.onerror = handleError;
                 } catch (err) {
                     console.error("sendMessage", err);
-                    clientChatStore.updateLast("Sorry • network error.");
+                    clientChatStore.appendLast("\n\nError: Sorry • network error.");
                     clientChatStore.setIsLoading(false);
                     UserOptionsStore.setFollowModeEnabled(false);
                 }

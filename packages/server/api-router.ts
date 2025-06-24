@@ -72,26 +72,19 @@ export function createRouter() {
 
             const { assetService } = createRequestContext(e, c);
 
-          console.log('Request received:', { url: r.url, headers: r.headers });
-
           // First attempt to serve pre-rendered HTML
           const preRenderedHtml = await assetService.handleStaticAssets(r, e);
           if (preRenderedHtml !== null) {
-              console.log('Serving pre-rendered HTML for:', r.url);
-              // console.log({preRenderedHtml});
               return preRenderedHtml;
           }
 
           // If no pre-rendered HTML, attempt SSR
-          console.log('No pre-rendered HTML found, attempting SSR for:', r.url);
           const ssrResponse = await assetService.handleSsr(r.url, r.headers, e);
           if (ssrResponse !== null) {
-              console.log('SSR successful for:', r.url);
               return ssrResponse;
           }
 
           // Finally, proxy to static assets if nothing else matched
-          console.log('Falling back to static assets for:', r.url);
           return assetService.handleStaticAssets(r, e);
       })
   );

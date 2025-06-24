@@ -151,7 +151,6 @@ const ChatService = types
                 const providerRepo   = new ProviderRepository(self.env);
                 const providers      = providerRepo.getProviders();
 
-                console.log({ providers })
                 const providerModels = new Map<string, any[]>();
                 const modelMeta      = new Map<string, any>();
 
@@ -269,10 +268,9 @@ const ChatService = types
                 }
 
                 const handler = useModelHandler();
-                
+
 
                 if (handler) {
-                    console.log(`Using provider: ${modelFamily}`);
                     try {
                         await handler(streamParams, handleStreamData(controller, encoder));
 
@@ -330,7 +328,6 @@ const ChatService = types
                                     streamId,
                                 });
                             } catch (e) {
-                                console.log("error caught at runModelHandler")
                                 throw e;
                             }
 
@@ -362,8 +359,6 @@ const ChatService = types
 
 
             handleSseStream: flow(function* (streamId: string): Generator<Promise<string>, Response, unknown> {
-                console.log(`chatService::handleSseStream::enter::${streamId}`);
-
                 // Check if a stream is already active for this ID
                 if (self.activeStreams.has(streamId)) {
                     return new Response('Stream already active', {status: 409});

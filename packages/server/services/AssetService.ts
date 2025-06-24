@@ -19,7 +19,6 @@ export default types
       headers: Headers,
       env: Vike.PageContext.env,
     ) {
-      console.log("handleSsr");
       const pageContextInit = {
         urlOriginal: url,
         headersOriginal: headers,
@@ -39,7 +38,6 @@ export default types
       }
     },
     async handleStaticAssets(request: Request, env) {
-      console.log("handleStaticAssets");
       try {
         return await env.ASSETS.fetch(request);
       } catch (error) {

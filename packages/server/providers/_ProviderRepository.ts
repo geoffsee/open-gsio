@@ -25,11 +25,9 @@ export class ProviderRepository {
     }
 
     static async getModelFamily(model: any, env: Env) {
-        console.log(env);
         const allModels = await env.KV_STORAGE.get("supportedModels");
         const models = JSON.parse(allModels);
         const modelData = models.filter(m => m.id === model)
-        console.log({modelData})
         return modelData[0].provider;
     }
 
@@ -50,10 +48,8 @@ export class ProviderRepository {
                 const detectedProvider = envKeys[i].split('_')[0].toLowerCase();
                 const detectedProviderValue = env[envKeys[i]];
                 if(detectedProviderValue) {
-                    console.log({detectedProviderValue});
                     switch (detectedProvider) {
                         case 'anthropic':
-                            console.log({detectedProvider});
                             this.#providers.push({
                                 name: 'anthropic',
                                 key: env.ANTHROPIC_API_KEY,
@@ -61,7 +57,6 @@ export class ProviderRepository {
                             });
                             break;
                         case 'gemini':
-                            console.log({detectedProvider});
                             this.#providers.push({
                                 name: 'google',
                                 key: env.GEMINI_API_KEY,
@@ -69,14 +64,12 @@ export class ProviderRepository {
                             });
                             break;
                         case 'cloudflare':
-                            console.log({detectedProvider});
                             this.#providers.push({
                                 name: 'cloudflare',
                                 key: env.CLOUDFLARE_API_KEY,
                                 endpoint: ProviderRepository.OPENAI_COMPAT_ENDPOINTS[detectedProvider].replace("{CLOUDFLARE_ACCOUNT_ID}", env.CLOUDFLARE_ACCOUNT_ID)
                             })
                         default:
-                            console.log({detectedProvider});
                             this.#providers.push({
                                 name: detectedProvider,
                                 key: env[envKeys[i]],

@@ -11,7 +11,7 @@ export default function IndexPage() {
 
       clientChatStore.setModel(model as string);
     } catch (_) {
-      console.log("using default model");
+      // Fall back to default model
     }
   }, []);
 

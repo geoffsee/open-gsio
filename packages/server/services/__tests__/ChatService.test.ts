@@ -1,12 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { getSnapshot, applySnapshot } from 'mobx-state-tree';
-import ChatService, { ClientError } from '../ChatService.ts';
+import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
+import {getSnapshot} from 'mobx-state-tree';
+import ChatService, {ClientError} from '../ChatService.ts';
 import OpenAI from 'openai';
 import ChatSdk from '../../lib/chat-sdk.ts';
-import Message from '../../models/Message.ts';
-import { SUPPORTED_MODELS } from '@open-gsio/ai/supported-models';
-import handleStreamData from '../../lib/handleStreamData.ts';
-
 // Create mock OpenAI instance
 const mockOpenAIInstance = {
   models: {
