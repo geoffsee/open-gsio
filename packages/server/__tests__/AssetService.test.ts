@@ -1,5 +1,7 @@
+import { type Instance } from 'mobx-state-tree';
+import { renderPage } from 'vike/server';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getSnapshot, Instance } from 'mobx-state-tree';
+
 import AssetService from '../services/AssetService.ts';
 
 // Define types for testing
@@ -11,29 +13,31 @@ vi.mock('vike/server', () => ({
 }));
 
 // Import the mocked renderPage function for assertions
-import { renderPage } from 'vike/server';
 
 // Mock global types
 vi.stubGlobal('ReadableStream', class MockReadableStream {});
-vi.stubGlobal('Response', class MockResponse {
-  status: number;
-  headers: Headers;
-  body: any;
+vi.stubGlobal(
+  'Response',
+  class MockResponse {
+    status: number;
+    headers: Headers;
+    body: any;
 
-  constructor(body?: any, init?: ResponseInit) {
-    this.body = body;
-    this.status = init?.status || 200;
-    this.headers = new Headers(init?.headers);
-  }
+    constructor(body?: any, init?: ResponseInit) {
+      this.body = body;
+      this.status = init?.status || 200;
+      this.headers = new Headers(init?.headers);
+    }
 
-  clone() {
-    return this;
-  }
+    clone() {
+      return this;
+    }
 
-  async text() {
-    return this.body?.toString() || '';
-  }
-});
+    async text() {
+      return this.body?.toString() || '';
+    }
+  },
+);
 
 describe('AssetService', () => {
   let assetService: AssetServiceInstance;

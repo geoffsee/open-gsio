@@ -1,44 +1,44 @@
-import { types, flow } from "mobx-state-tree";
+import { types, flow } from 'mobx-state-tree';
 
 const ClientFeedbackStore = types
-  .model("ClientFeedbackStore", {
-    input: types.optional(types.string, ""),
+  .model('ClientFeedbackStore', {
+    input: types.optional(types.string, ''),
     isLoading: types.optional(types.boolean, false),
     isSubmitted: types.optional(types.boolean, false),
-    error: types.optional(types.string, ""),
+    error: types.optional(types.string, ''),
   })
-  .actions((self) => {
-    const setError = (error) => {
+  .actions(self => {
+    const setError = error => {
       self.error = error;
     };
 
-    const setInput = (value) => {
+    const setInput = value => {
       self.input = value;
 
       if (self.error) {
-        setError("");
+        setError('');
       }
     };
 
     const reset = () => {
-      self.input = "";
+      self.input = '';
       self.isLoading = false;
       self.isSubmitted = false;
-      self.error = "";
+      self.error = '';
     };
 
     const validateInput = () => {
       if (!self.input.trim()) {
-        setError("Feedback cannot be empty.");
+        setError('Feedback cannot be empty.');
         return false;
       }
 
       if (self.input.length > 500) {
-        setError("Feedback cannot exceed 500 characters.");
+        setError('Feedback cannot exceed 500 characters.');
         return false;
       }
 
-      setError("");
+      setError('');
       return true;
     };
 
@@ -50,10 +50,10 @@ const ClientFeedbackStore = types
       self.isLoading = true;
 
       try {
-        const response = yield fetch("/api/feedback", {
-          method: "POST",
+        const response = yield fetch('/api/feedback', {
+          method: 'POST',
           headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({ feedback: self.input }),
         });
@@ -63,13 +63,11 @@ const ClientFeedbackStore = types
         }
 
         self.isSubmitted = true;
-        self.input = "";
+        self.input = '';
         return true;
       } catch (error) {
         console.error(error);
-        setError(
-          error.message || "An error occurred while submitting feedback.",
-        );
+        setError(error.message || 'An error occurred while submitting feedback.');
         return false;
       } finally {
         self.isLoading = false;

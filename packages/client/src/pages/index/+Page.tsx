@@ -1,13 +1,14 @@
-import React, { useEffect } from "react";
-import { Stack } from "@chakra-ui/react";
-import Chat from "../../components/chat/Chat";
-import clientChatStore from "../../stores/ClientChatStore";
+import { Stack } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+
+import Chat from '../../components/chat/Chat';
+import clientChatStore from '../../stores/ClientChatStore';
 
 // renders "/"
 export default function IndexPage() {
   useEffect(() => {
     try {
-      const model = localStorage.getItem("recentModel");
+      const model = localStorage.getItem('recentModel');
 
       clientChatStore.setModel(model as string);
     } catch (_) {

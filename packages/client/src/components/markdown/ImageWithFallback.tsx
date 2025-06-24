@@ -1,21 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Image, Box, Spinner, Text, Flex } from "@chakra-ui/react";
-import { keyframes } from "@emotion/react";
+import { Image, Box, Spinner, Text, Flex } from '@chakra-ui/react';
+import { keyframes } from '@emotion/react';
+import React, { useState, useEffect } from 'react';
 
 const shimmer = keyframes`
     0% { background-position: -100% 0; }
     100% { background-position: 100% 0; }
 `;
 
-const ImageWithFallback = ({
-  alt,
-  src,
-  fallbackSrc = "/fallback.png",
-  ...props
-}) => {
+const ImageWithFallback = ({ alt, src, fallbackSrc = '/fallback.png', ...props }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
-  const isSlowLoadingSource = src.includes("text2image.seemueller.io");
+  const isSlowLoadingSource = src.includes('text2image.seemueller.io');
 
   const handleImageLoad = () => setIsLoading(false);
   const handleImageError = () => {
@@ -33,24 +28,17 @@ const ImageWithFallback = ({
       setScrollPosition(scrolled);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const parallaxOffset = scrollPosition * 0.2;
 
   return (
-    <Box
-      position="relative"
-      w="full"
-      maxW="full"
-      borderRadius="md"
-      my={2}
-      overflow="hidden"
-    >
+    <Box position="relative" w="full" maxW="full" borderRadius="md" my={2} overflow="hidden">
       {isLoading && isSlowLoadingSource && (
         <Flex
           align="center"
@@ -76,7 +64,7 @@ const ImageWithFallback = ({
         fallbackSrc={fallbackSrc}
         onLoad={handleImageLoad}
         onError={handleImageError}
-        display={isLoading ? "none" : "block"}
+        display={isLoading ? 'none' : 'block'}
         transform={`translateY(${parallaxOffset}px)`}
         transition="transform 0.1s ease-out"
         {...props}

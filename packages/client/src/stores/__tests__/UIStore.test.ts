@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { UIStore } from '../UIStore';
 
 describe('UIStore', () => {
@@ -29,7 +30,7 @@ describe('UIStore', () => {
       // First set to non-empty
       uiStore.setInput('Hello');
       expect(uiStore.input).toBe('Hello');
-      
+
       // Then set to empty
       uiStore.setInput('');
       expect(uiStore.input).toBe('');
@@ -46,7 +47,7 @@ describe('UIStore', () => {
       // First set to true
       uiStore.setIsLoading(true);
       expect(uiStore.isLoading).toBe(true);
-      
+
       // Then set to false
       uiStore.setIsLoading(false);
       expect(uiStore.isLoading).toBe(false);

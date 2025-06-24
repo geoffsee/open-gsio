@@ -1,24 +1,20 @@
-import { types } from "mobx-state-tree";
-import renderPage from "@open-gsio/client/server";
+import renderPage from '@open-gsio/client/server';
+import { types } from 'mobx-state-tree';
 
 export default types
-  .model("StaticAssetStore", {})
-  .volatile((self) => ({
+  .model('StaticAssetStore', {})
+  .volatile(self => ({
     env: {} as Env,
     ctx: {} as ExecutionContext,
   }))
-  .actions((self) => ({
+  .actions(self => ({
     setEnv(env: Env) {
       self.env = env;
     },
     setCtx(ctx: ExecutionContext) {
       self.ctx = ctx;
     },
-    async handleSsr(
-      url: string,
-      headers: Headers,
-      env: Vike.PageContext.env,
-    ) {
+    async handleSsr(url: string, headers: Headers, env: Vike.PageContext.env) {
       const pageContextInit = {
         urlOriginal: url,
         headersOriginal: headers,
@@ -28,7 +24,6 @@ export default types
 
       const pageContext = await renderPage(pageContextInit);
       const { httpResponse } = pageContext;
-
 
       if (!httpResponse) {
         return null;
@@ -41,8 +36,8 @@ export default types
       try {
         return await env.ASSETS.fetch(request);
       } catch (error) {
-        console.error("Error serving static asset:", error);
-        return new Response("Asset not found", { status: 404 });
+        console.error('Error serving static asset:', error);
+        return new Response('Asset not found', { status: 404 });
       }
     },
   }));

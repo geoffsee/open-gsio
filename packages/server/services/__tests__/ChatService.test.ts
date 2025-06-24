@@ -1,31 +1,28 @@
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest';
-import {getSnapshot} from 'mobx-state-tree';
-import ChatService, {ClientError} from '../ChatService.ts';
+import { getSnapshot } from 'mobx-state-tree';
 import OpenAI from 'openai';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import ChatSdk from '../../lib/chat-sdk.ts';
+import ChatService, { ClientError } from '../ChatService.ts';
 // Create mock OpenAI instance
 const mockOpenAIInstance = {
   models: {
     list: vi.fn().mockResolvedValue({
-      data: [
-        { id: 'mlx-model-1' },
-        { id: 'mlx-model-2' },
-        { id: 'other-model' }
-      ]
-    })
+      data: [{ id: 'mlx-model-1' }, { id: 'mlx-model-2' }, { id: 'other-model' }],
+    }),
   },
   chat: {
     completions: {
-      create: vi.fn()
-    }
+      create: vi.fn(),
+    },
   },
-  baseURL: 'http://localhost:8000'
+  baseURL: 'http://localhost:8000',
 };
 
 // Mock dependencies
 vi.mock('openai', () => {
   return {
-    default: vi.fn().mockImplementation(() => mockOpenAIInstance)
+    default: vi.fn().mockImplementation(() => mockOpenAIInstance),
   };
 });
 
@@ -33,12 +30,12 @@ vi.mock('../../lib/chat-sdk', () => ({
   default: {
     handleChatRequest: vi.fn(),
     buildAssistantPrompt: vi.fn(),
-    buildMessageChain: vi.fn()
-  }
+    buildMessageChain: vi.fn(),
+  },
 }));
 
 vi.mock('../../lib/handleStreamData', () => ({
-  default: vi.fn().mockReturnValue(() => {})
+  default: vi.fn().mockReturnValue(() => {}),
 }));
 
 describe('ChatService', () => {
@@ -51,7 +48,7 @@ describe('ChatService', () => {
       maxTokens: 2000,
       systemPrompt: 'You are a helpful assistant.',
       openAIApiKey: 'test-api-key',
-      openAIBaseURL: 'https://api.openai.com/v1'
+      openAIBaseURL: 'https://api.openai.com/v1',
     });
 
     // Create mock environment
@@ -61,14 +58,16 @@ describe('ChatService', () => {
       SERVER_COORDINATOR: {
         idFromName: vi.fn().mockReturnValue('test-id'),
         get: vi.fn().mockReturnValue({
-          getStreamData: vi.fn().mockResolvedValue(JSON.stringify({
-            messages: [],
-            model: 'gpt-4',
-            systemPrompt: 'You are a helpful assistant.',
-            preprocessedContext: {}
-          }))
-        })
-      }
+          getStreamData: vi.fn().mockResolvedValue(
+            JSON.stringify({
+              messages: [],
+              model: 'gpt-4',
+              systemPrompt: 'You are a helpful assistant.',
+              preprocessedContext: {},
+            }),
+          ),
+        }),
+      },
     };
 
     // Set the environment using the action
@@ -86,7 +85,7 @@ describe('ChatService', () => {
     it('should have the correct initial state', () => {
       const freshService = ChatService.create({
         maxTokens: 2000,
-        systemPrompt: 'You are a helpful assistant.'
+        systemPrompt: 'You are a helpful assistant.',
       });
 
       expect(freshService.maxTokens).toBe(2000);
@@ -101,7 +100,7 @@ describe('ChatService', () => {
     it('should set the environment and initialize OpenAI client with local endpoint', () => {
       const localEnv = {
         ...mockEnv,
-        OPENAI_API_ENDPOINT: 'http://localhost:8000'
+        OPENAI_API_ENDPOINT: 'http://localhost:8000',
       };
 
       // Reset the mock to track new calls
@@ -112,7 +111,7 @@ describe('ChatService', () => {
       expect(chatService.env).toEqual(localEnv);
       expect(OpenAI).toHaveBeenCalledWith({
         apiKey: localEnv.OPENAI_API_KEY,
-        baseURL: localEnv.OPENAI_API_ENDPOINT
+        baseURL: localEnv.OPENAI_API_ENDPOINT,
       });
     });
 
@@ -122,7 +121,7 @@ describe('ChatService', () => {
         maxTokens: 2000,
         systemPrompt: 'You are a helpful assistant.',
         openAIApiKey: 'test-api-key',
-        openAIBaseURL: 'https://api.openai.com/v1'
+        openAIBaseURL: 'https://api.openai.com/v1',
       });
 
       // Reset the mock to track new calls
@@ -133,7 +132,7 @@ describe('ChatService', () => {
       expect(service.env).toEqual(mockEnv);
       expect(OpenAI).toHaveBeenCalledWith({
         apiKey: 'test-api-key',
-        baseURL: 'https://api.openai.com/v1'
+        baseURL: 'https://api.openai.com/v1',
       });
     });
   });
@@ -146,7 +145,7 @@ describe('ChatService', () => {
         maxTokens: 1000,
         systemPrompt: 'You are a helpful assistant.',
         model: 'gpt-4',
-        messages: []
+        messages: [],
       };
 
       // Set active stream
@@ -170,7 +169,7 @@ describe('ChatService', () => {
         maxTokens: 0,
         systemPrompt: '',
         model: '',
-        messages: []
+        messages: [],
       });
 
       // Set active stream with partial data
@@ -181,7 +180,7 @@ describe('ChatService', () => {
         maxTokens: 0,
         systemPrompt: '',
         model: '',
-        messages: []
+        messages: [],
       });
     });
   });
@@ -189,21 +188,21 @@ describe('ChatService', () => {
   describe('getSupportedModels', () => {
     it('should return local models when using localhost endpoint', async () => {
       const originalResponseJson = Response.json;
-      Response.json = vi.fn().mockImplementation((data) => {
+      Response.json = vi.fn().mockImplementation(data => {
         return {
-          json: async () => data
+          json: async () => data,
         };
       });
 
       const localEnv = {
         ...mockEnv,
-        OPENAI_API_ENDPOINT: 'http://localhost:8000'
+        OPENAI_API_ENDPOINT: 'http://localhost:8000',
       };
 
       // Create a new service instance for this test
       const localService = ChatService.create({
         maxTokens: 2000,
-        systemPrompt: 'You are a helpful assistant.'
+        systemPrompt: 'You are a helpful assistant.',
       });
 
       localService.setEnv(localEnv);
@@ -211,7 +210,7 @@ describe('ChatService', () => {
       // Mock the implementation of getSupportedModels for this test
       const originalGetSupportedModels = localService.getSupportedModels;
       localService.getSupportedModels = vi.fn().mockResolvedValueOnce({
-        json: async () => ['mlx-model-1', 'mlx-model-2']
+        json: async () => ['mlx-model-1', 'mlx-model-2'],
       });
 
       const response = await localService.getSupportedModels();
@@ -238,7 +237,7 @@ describe('ChatService', () => {
         openai: chatService.openai,
         env: mockEnv,
         systemPrompt: chatService.systemPrompt,
-        maxTokens: chatService.maxTokens
+        maxTokens: chatService.maxTokens,
       });
 
       expect(result).toBe(mockResponse);
@@ -263,7 +262,7 @@ describe('ChatService', () => {
 
       // Mock the SERVER_COORDINATOR.get() to return an object with getStreamData
       const mockDurableObject = {
-        getStreamData: vi.fn().mockResolvedValue(null)
+        getStreamData: vi.fn().mockResolvedValue(null),
       };
 
       // Update the mockEnv to use our mock
@@ -271,8 +270,8 @@ describe('ChatService', () => {
         ...mockEnv,
         SERVER_COORDINATOR: {
           idFromName: vi.fn().mockReturnValue('test-id'),
-          get: vi.fn().mockReturnValue(mockDurableObject)
-        }
+          get: vi.fn().mockReturnValue(mockDurableObject),
+        },
       };
 
       // Set the environment
@@ -290,15 +289,15 @@ describe('ChatService', () => {
       // Create a new service instance for this test
       const testService = ChatService.create({
         maxTokens: 2000,
-        systemPrompt: 'You are a helpful assistant.'
+        systemPrompt: 'You are a helpful assistant.',
       });
 
       // Set up minimal environment
       testService.setEnv({
         SERVER_COORDINATOR: {
           idFromName: vi.fn(),
-          get: vi.fn()
-        }
+          get: vi.fn(),
+        },
       });
 
       // Save the original method
@@ -310,10 +309,10 @@ describe('ChatService', () => {
         headers: {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache',
-          'Connection': 'keep-alive'
+          Connection: 'keep-alive',
         },
         status: 200,
-        text: vi.fn().mockResolvedValue('')
+        text: vi.fn().mockResolvedValue(''),
       });
 
       const result = await testService.handleSseStream(streamId);
@@ -349,7 +348,7 @@ describe('ChatService', () => {
         type: 'error',
         message: 'Test error',
         details: { detail: 'test' },
-        statusCode: 400
+        statusCode: 400,
       });
     });
   });

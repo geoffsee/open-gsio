@@ -1,8 +1,9 @@
-import React from "react";
-import { IconButton, useDisclosure } from "@chakra-ui/react";
-import { LucideHeart } from "lucide-react";
-import { toolbarButtonZIndex } from "./Toolbar";
-import SupportThisSiteModal from "./SupportThisSiteModal";
+import { IconButton, useDisclosure } from '@chakra-ui/react';
+import { LucideHeart } from 'lucide-react';
+import React from 'react';
+
+import SupportThisSiteModal from './SupportThisSiteModal';
+import { toolbarButtonZIndex } from './Toolbar';
 
 export default function SupportThisSiteButton() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -18,10 +19,10 @@ export default function SupportThisSiteButton() {
         stroke="text.accent"
         bg="transparent"
         _hover={{
-          bg: "transparent",
+          bg: 'transparent',
           svg: {
-            stroke: "accent.danger",
-            transition: "stroke 0.3s ease-in-out",
+            stroke: 'accent.danger',
+            transition: 'stroke 0.3s ease-in-out',
           },
         }}
         title="Support"
@@ -29,9 +30,9 @@ export default function SupportThisSiteButton() {
         zIndex={toolbarButtonZIndex}
         sx={{
           svg: {
-            stroke: "text.accent",
-            strokeWidth: "2px",
-            transition: "stroke 0.2s ease-in-out",
+            stroke: 'text.accent',
+            strokeWidth: '2px',
+            transition: 'stroke 0.2s ease-in-out',
           },
         }}
       />

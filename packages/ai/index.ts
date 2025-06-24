@@ -1,2 +1,2 @@
 // for future use
-export {}
+export {};

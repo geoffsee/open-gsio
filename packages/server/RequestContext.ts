@@ -1,14 +1,14 @@
-import { types, Instance, getMembers } from "mobx-state-tree";
-import ContactService from "./services/ContactService.ts";
-import AssetService from "./services/AssetService.ts";
-import MetricsService from "./services/MetricsService.ts";
-import ChatService from "./services/ChatService.ts";
-import TransactionService from "./services/TransactionService.ts";
-import FeedbackService from "./services/FeedbackService.ts";
+import { types, Instance, getMembers } from 'mobx-state-tree';
 
+import AssetService from './services/AssetService.ts';
+import ChatService from './services/ChatService.ts';
+import ContactService from './services/ContactService.ts';
+import FeedbackService from './services/FeedbackService.ts';
+import MetricsService from './services/MetricsService.ts';
+import TransactionService from './services/TransactionService.ts';
 
 const RequestContext = types
-  .model("RequestContext", {
+  .model('RequestContext', {
     chatService: ChatService,
     contactService: types.optional(ContactService, {}),
     assetService: types.optional(AssetService, {}),
@@ -16,20 +16,20 @@ const RequestContext = types
     transactionService: types.optional(TransactionService, {}),
     feedbackService: types.optional(FeedbackService, {}),
   })
-  .actions((self) => {
+  .actions(self => {
     const services = Object.keys(getMembers(self).properties);
 
     return {
       setEnv(env: Env) {
-        services.forEach((service) => {
-          if (typeof self[service]?.setEnv === "function") {
+        services.forEach(service => {
+          if (typeof self[service]?.setEnv === 'function') {
             self[service].setEnv(env);
           }
         });
       },
       setCtx(ctx: ExecutionContext) {
-        services.forEach((service) => {
-          if (typeof self[service]?.setCtx === "function") {
+        services.forEach(service => {
+          if (typeof self[service]?.setCtx === 'function') {
             self[service].setCtx(ctx);
           }
         });
@@ -54,7 +54,7 @@ const createRequestContext = (env, ctx) => {
       activeStreams: undefined,
       maxTokens: 16384,
       systemPrompt:
-        "You are an assistant designed to provide accurate, concise, and context-aware responses while demonstrating your advanced reasoning capabilities.",
+        'You are an assistant designed to provide accurate, concise, and context-aware responses while demonstrating your advanced reasoning capabilities.',
     }),
   });
   instance.setEnv(env);

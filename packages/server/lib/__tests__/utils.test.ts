@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { Utils } from '../utils.ts';
 
 describe('Utils', () => {
@@ -44,8 +45,8 @@ describe('Utils', () => {
       // Mock Intl.DateTimeFormat
       global.Intl.DateTimeFormat = vi.fn().mockReturnValue({
         resolvedOptions: vi.fn().mockReturnValue({
-          timeZone: 'America/New_York'
-        })
+          timeZone: 'America/New_York',
+        }),
       });
     });
 
@@ -102,10 +103,10 @@ describe('Utils', () => {
 
     it('should select items equitably from multiple sources', () => {
       const sources = {
-        a: { 'key1': 'value1', 'key2': 'value2' },
-        b: { 'key3': 'value3', 'key4': 'value4' },
-        c: { 'key5': 'value5', 'key6': 'value6' },
-        d: { 'key7': 'value7', 'key8': 'value8' }
+        a: { key1: 'value1', key2: 'value2' },
+        b: { key3: 'value3', key4: 'value4' },
+        c: { key5: 'value5', key6: 'value6' },
+        d: { key7: 'value7', key8: 'value8' },
       };
 
       const result = Utils.selectEquitably(sources, 4);
@@ -117,10 +118,10 @@ describe('Utils', () => {
 
     it('should handle itemCount greater than available items', () => {
       const sources = {
-        a: { 'key1': 'value1' },
-        b: { 'key2': 'value2' },
+        a: { key1: 'value1' },
+        b: { key2: 'value2' },
         c: {},
-        d: {}
+        d: {},
       };
 
       const result = Utils.selectEquitably(sources, 5);
@@ -135,7 +136,7 @@ describe('Utils', () => {
         a: {},
         b: {},
         c: {},
-        d: {}
+        d: {},
       };
 
       const result = Utils.selectEquitably(sources, 5);
@@ -148,7 +149,7 @@ describe('Utils', () => {
     it('should insert blank messages to maintain user/assistant alternation', () => {
       const messages = [
         { role: 'user', content: 'Hello' },
-        { role: 'user', content: 'How are you?' }
+        { role: 'user', content: 'How are you?' },
       ];
 
       const result = Utils.normalizeWithBlanks(messages);
@@ -160,9 +161,7 @@ describe('Utils', () => {
     });
 
     it('should insert blank user message if first message is assistant', () => {
-      const messages = [
-        { role: 'assistant', content: 'Hello, how can I help?' }
-      ];
+      const messages = [{ role: 'assistant', content: 'Hello, how can I help?' }];
 
       const result = Utils.normalizeWithBlanks(messages);
 
@@ -183,7 +182,7 @@ describe('Utils', () => {
       const messages = [
         { role: 'user', content: 'Hello' },
         { role: 'assistant', content: 'Hi there' },
-        { role: 'user', content: 'How are you?' }
+        { role: 'user', content: 'How are you?' },
       ];
 
       const result = Utils.normalizeWithBlanks(messages);

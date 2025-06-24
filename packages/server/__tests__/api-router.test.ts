@@ -1,9 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
+
 import { createRouter } from '../api-router.ts';
 
 // Mock the vike/server module
 vi.mock('vike/server', () => ({
-  renderPage: vi.fn()
+  renderPage: vi.fn(),
 }));
 
 describe('api-router', () => {

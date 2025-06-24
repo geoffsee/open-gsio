@@ -1,7 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getSnapshot } from 'mobx-state-tree';
-import FeedbackService from '../FeedbackService.ts';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import FeedbackRecord from '../../models/FeedbackRecord.ts';
+import FeedbackService from '../FeedbackService.ts';
 
 describe('FeedbackService', () => {
   let feedbackService;

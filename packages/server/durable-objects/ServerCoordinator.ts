@@ -1,5 +1,8 @@
-import { DurableObject } from "cloudflare:workers";
-import {ProviderRepository} from "../providers/_ProviderRepository";
+// @ts-expect-error - is only available in certain build contexts
+// eslint-disable-next-line import/no-unresolved
+import { DurableObject } from 'cloudflare:workers';
+
+import { ProviderRepository } from '../providers/_ProviderRepository';
 
 export default class ServerCoordinator extends DurableObject {
   env;
@@ -12,7 +15,6 @@ export default class ServerCoordinator extends DurableObject {
 
   // Public method to calculate dynamic max tokens
   async dynamicMaxTokens(model, input, maxOuputTokens) {
-
     const modelMeta = ProviderRepository.getModelMeta(model, this.env);
 
     // The token‑limit information is stored in three different keys:
@@ -20,11 +22,11 @@ export default class ServerCoordinator extends DurableObject {
     // context_window
     // context_length
 
-    if('max_completion_tokens' in modelMeta) {
+    if ('max_completion_tokens' in modelMeta) {
       return modelMeta.max_completion_tokens;
-    } else if('context_window' in modelMeta) {
+    } else if ('context_window' in modelMeta) {
       return modelMeta.context_window;
-    } else if('context_length' in modelMeta) {
+    } else if ('context_length' in modelMeta) {
       return modelMeta.context_length;
     } else {
       return 8096;
@@ -33,9 +35,7 @@ export default class ServerCoordinator extends DurableObject {
 
   // Public method to retrieve conversation history
   async getConversationHistory(conversationId) {
-    const history = await this.env.KV_STORAGE.get(
-        `conversations:${conversationId}`,
-    );
+    const history = await this.env.KV_STORAGE.get(`conversations:${conversationId}`);
 
     return JSON.parse(history) || [];
   }
@@ -44,18 +44,15 @@ export default class ServerCoordinator extends DurableObject {
   async saveConversationHistory(conversationId, message) {
     const history = await this.getConversationHistory(conversationId);
     history.push(message);
-    await this.env.KV_STORAGE.put(
-        `conversations:${conversationId}`,
-        JSON.stringify(history),
-    );
+    await this.env.KV_STORAGE.put(`conversations:${conversationId}`, JSON.stringify(history));
   }
 
   async saveStreamData(streamId, data, ttl = 10) {
     const expirationTimestamp = Date.now() + ttl * 1000;
     // await this.state.storage.put(streamId, { data, expirationTimestamp });
     await this.env.KV_STORAGE.put(
-        `streams:${streamId}`,
-        JSON.stringify({ data, expirationTimestamp }),
+      `streams:${streamId}`,
+      JSON.stringify({ data, expirationTimestamp }),
     );
   }
 

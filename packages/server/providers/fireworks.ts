@@ -1,4 +1,3 @@
-import { OpenAI } from "openai";
 import {
   _NotCustomized,
   castToSnapshot,
@@ -7,11 +6,14 @@ import {
   ModelPropertiesDeclarationToProperties,
   ModelSnapshotType2,
   UnionStringArray,
-} from "mobx-state-tree";
-import Message from "../models/Message.ts";
-import ChatSdk from "../lib/chat-sdk.ts";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+} from 'mobx-state-tree';
+import { OpenAI } from 'openai';
+
+import ChatSdk from '../lib/chat-sdk.ts';
+import Message from '../models/Message.ts';
+
+import { ProviderRepository } from './_ProviderRepository';
+import { BaseChatProvider, CommonProviderParams } from './chat-stream-provider.ts';
 
 export class FireworksAiChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
@@ -22,9 +24,9 @@ export class FireworksAiChatProvider extends BaseChatProvider {
   }
 
   getStreamParams(param: CommonProviderParams, safeMessages: any[]): any {
-    let modelPrefix = "accounts/fireworks/models/";
-    if (param.model.toLowerCase().includes("yi-")) {
-      modelPrefix = "accounts/yi-01-ai/models/";
+    let modelPrefix = 'accounts/fireworks/models/';
+    if (param.model.toLowerCase().includes('yi-')) {
+      modelPrefix = 'accounts/yi-01-ai/models/';
     }
 
     return {
@@ -35,12 +37,12 @@ export class FireworksAiChatProvider extends BaseChatProvider {
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
-      dataCallback({ type: "chat", data: chunk });
+    if (chunk.choices && chunk.choices[0]?.finish_reason === 'stop') {
+      dataCallback({ type: 'chat', data: chunk });
       return true;
     }
 
-    dataCallback({ type: "chat", data: chunk });
+    dataCallback({ type: 'chat', data: chunk });
     return false;
   }
 }

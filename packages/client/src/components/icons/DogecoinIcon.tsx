@@ -1,14 +1,14 @@
-import React from "react";
-import { Box } from "@chakra-ui/react";
+import { Box } from '@chakra-ui/react';
+import React from 'react';
 
-const TealDogecoinIcon = (props) => (
+const TealDogecoinIcon = props => (
   <Box
     as="svg"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
-    stroke={"currentColor"}
+    stroke={'currentColor'}
     fill="currentColor"
-    boxSize={props.boxSize || "1em"}
+    boxSize={props.boxSize || '1em'}
     {...props}
   >
     <path

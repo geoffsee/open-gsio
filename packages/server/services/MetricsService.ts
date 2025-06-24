@@ -1,14 +1,14 @@
-import { types, flow } from "mobx-state-tree";
+import { types, flow } from 'mobx-state-tree';
 
 const MetricsService = types
-  .model("MetricsService", {
+  .model('MetricsService', {
     isCollectingMetrics: types.optional(types.boolean, true),
   })
-  .volatile((self) => ({
+  .volatile(self => ({
     env: {} as Env,
     ctx: {} as ExecutionContext,
   }))
-  .actions((self) => ({
+  .actions(self => ({
     setEnv(env: Env) {
       self.env = env;
     },
@@ -17,35 +17,35 @@ const MetricsService = types
     },
     handleMetricsRequest: flow(function* (request: Request) {
       const url = new URL(request.url);
-      let proxyUrl = "";
-      if(self.env.METRICS_HOST) {
+      let proxyUrl = '';
+      if (self.env.METRICS_HOST) {
         proxyUrl = new URL(`${self.env.METRICS_HOST}${url.pathname}${url.search}`).toString();
       }
 
-      if(proxyUrl) {
+      if (proxyUrl) {
         try {
           const response = yield fetch(proxyUrl, {
             method: request.method,
             headers: request.headers,
-            body: ["GET", "HEAD"].includes(request.method) ? null : request.body,
-            redirect: "follow",
+            body: ['GET', 'HEAD'].includes(request.method) ? null : request.body,
+            redirect: 'follow',
           });
 
           return response;
         } catch (error) {
-          console.error("Failed to proxy metrics request:", error);
-          return new Response("metrics misconfigured", { status: 200 });
+          console.error('Failed to proxy metrics request:', error);
+          return new Response('metrics misconfigured', { status: 200 });
         }
       } else {
         const event = {
           method: request.method,
           headers: request.headers,
-          body: ["GET", "HEAD"].includes(request.method) ? null : request.body,
-        }
-        if(self.env?.KV_STORAGE?.put) {
+          body: ['GET', 'HEAD'].includes(request.method) ? null : request.body,
+        };
+        if (self.env?.KV_STORAGE?.put) {
           self.env.KV_STORAGE.put(`metrics_events::${crypto.randomUUID()}`, JSON.stringify(event));
         } else {
-          console.log("Detected metrics misconfiguration...not storing")
+          console.log('Detected metrics misconfiguration...not storing');
         }
       }
     }),

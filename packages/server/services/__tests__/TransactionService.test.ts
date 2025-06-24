@@ -1,34 +1,38 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getSnapshot, Instance } from 'mobx-state-tree';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import TransactionService from '../TransactionService.ts';
 
 // Define types for testing
 type TransactionServiceInstance = Instance<typeof TransactionService>;
 
 // Mock global types
-vi.stubGlobal('Response', class MockResponse {
-  status: number;
-  headers: Headers;
-  body: any;
+vi.stubGlobal(
+  'Response',
+  class MockResponse {
+    status: number;
+    headers: Headers;
+    body: any;
 
-  constructor(body?: any, init?: ResponseInit) {
-    this.body = body;
-    this.status = init?.status || 200;
-    this.headers = new Headers(init?.headers);
-  }
+    constructor(body?: any, init?: ResponseInit) {
+      this.body = body;
+      this.status = init?.status || 200;
+      this.headers = new Headers(init?.headers);
+    }
 
-  clone() {
-    return this;
-  }
+    clone() {
+      return this;
+    }
 
-  async text() {
-    return this.body?.toString() || '';
-  }
+    async text() {
+      return this.body?.toString() || '';
+    }
 
-  async json() {
-    return typeof this.body === 'string' ? JSON.parse(this.body) : this.body;
-  }
-});
+    async json() {
+      return typeof this.body === 'string' ? JSON.parse(this.body) : this.body;
+    }
+  },
+);
 
 describe('TransactionService', () => {
   let transactionService: TransactionServiceInstance;
@@ -83,8 +87,9 @@ describe('TransactionService', () => {
 
     it('should throw an error for unknown actions', async () => {
       // Call routeAction with an invalid action
-      await expect(transactionService.routeAction('UNKNOWN_ACTION', ['data']))
-        .rejects.toThrow('No handler for action: UNKNOWN_ACTION');
+      await expect(transactionService.routeAction('UNKNOWN_ACTION', ['data'])).rejects.toThrow(
+        'No handler for action: UNKNOWN_ACTION',
+      );
     });
   });
 
@@ -96,8 +101,8 @@ describe('TransactionService', () => {
       // Mock KV_STORAGE
       const mockEnv = {
         KV_STORAGE: {
-          put: vi.fn().mockResolvedValue(undefined)
-        }
+          put: vi.fn().mockResolvedValue(undefined),
+        },
       };
       transactionService.setEnv(mockEnv);
     });
@@ -108,31 +113,33 @@ describe('TransactionService', () => {
         'mock-address',
         'mock-private-key',
         'mock-public-key',
-        'mock-phrase'
+        'mock-phrase',
       ]);
 
       global.fetch.mockResolvedValue({
-        text: vi.fn().mockResolvedValue(mockWalletResponse)
+        text: vi.fn().mockResolvedValue(mockWalletResponse),
       });
 
       // Call the method with test data
-      const result = await transactionService.handlePrepareTransaction(['donor123', 'bitcoin', '0.01']);
+      const result = await transactionService.handlePrepareTransaction([
+        'donor123',
+        'bitcoin',
+        '0.01',
+      ]);
 
       // Verify fetch was called with the correct URL
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://wallets.seemueller.io/api/btc/create'
-      );
+      expect(global.fetch).toHaveBeenCalledWith('https://wallets.seemueller.io/api/btc/create');
 
       // Verify KV_STORAGE.put was called with the correct data
       expect(transactionService.env.KV_STORAGE.put).toHaveBeenCalledWith(
         'transactions::prepared::mock-uuid',
-        expect.stringContaining('mock-address')
+        expect.stringContaining('mock-address'),
       );
 
       // Verify the returned data
       expect(result).toEqual({
         depositAddress: 'mock-address',
-        txKey: 'mock-uuid'
+        txKey: 'mock-uuid',
       });
     });
 
@@ -142,29 +149,25 @@ describe('TransactionService', () => {
         'mock-address',
         'mock-private-key',
         'mock-public-key',
-        'mock-phrase'
+        'mock-phrase',
       ]);
 
       global.fetch.mockResolvedValue({
-        text: vi.fn().mockResolvedValue(mockWalletResponse)
+        text: vi.fn().mockResolvedValue(mockWalletResponse),
       });
 
       // Test with ethereum
       await transactionService.handlePrepareTransaction(['donor123', 'ethereum', '0.01']);
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://wallets.seemueller.io/api/eth/create'
-      );
+      expect(global.fetch).toHaveBeenCalledWith('https://wallets.seemueller.io/api/eth/create');
 
       // Reset mock and test with dogecoin
       vi.resetAllMocks();
       global.fetch.mockResolvedValue({
-        text: vi.fn().mockResolvedValue(mockWalletResponse)
+        text: vi.fn().mockResolvedValue(mockWalletResponse),
       });
 
       await transactionService.handlePrepareTransaction(['donor123', 'dogecoin', '0.01']);
-      expect(global.fetch).toHaveBeenCalledWith(
-        'https://wallets.seemueller.io/api/doge/create'
-      );
+      expect(global.fetch).toHaveBeenCalledWith('https://wallets.seemueller.io/api/doge/create');
     });
   });
 
@@ -177,17 +180,18 @@ describe('TransactionService', () => {
     it('should process a valid transaction request', async () => {
       // Create a mock request
       const mockRequest = {
-        text: vi.fn().mockResolvedValue('PREPARE_TX,donor123,bitcoin,0.01')
+        text: vi.fn().mockResolvedValue('PREPARE_TX,donor123,bitcoin,0.01'),
       };
 
       // Call the method
       const response = await transactionService.handleTransact(mockRequest);
 
       // Verify routeAction was called with the correct parameters
-      expect(transactionService.routeAction).toHaveBeenCalledWith(
-        'PREPARE_TX',
-        ['donor123', 'bitcoin', '0.01']
-      );
+      expect(transactionService.routeAction).toHaveBeenCalledWith('PREPARE_TX', [
+        'donor123',
+        'bitcoin',
+        '0.01',
+      ]);
 
       // Verify the response
       expect(response).toBeInstanceOf(Response);
@@ -200,7 +204,7 @@ describe('TransactionService', () => {
     it('should handle errors gracefully', async () => {
       // Create a mock request
       const mockRequest = {
-        text: vi.fn().mockResolvedValue('PREPARE_TX,donor123,bitcoin,0.01')
+        text: vi.fn().mockResolvedValue('PREPARE_TX,donor123,bitcoin,0.01'),
       };
 
       // Make routeAction throw an error
