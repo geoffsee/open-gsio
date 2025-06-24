@@ -1,10 +1,5 @@
-// Top level control interface for navigation
 export default {
-  "/": { sidebarLabel: "Home", heroLabel: "open-gsio" },
-  // "/about": { sidebarLabel: "About", heroLabel: "About Me" },
-  // "/resume": { sidebarLabel: "Resume", heroLabel: "resume" },
-  // "/demo": { sidebarLabel: "Demo", heroLabel: "Demos" },
-  // "/services": { sidebarLabel: "Services", heroLabel: "services" },
+  "/": { sidebarLabel: "Home", heroLabel: "gsio" },
   "/connect": { sidebarLabel: "Connect", heroLabel: "connect" },
   "/privacy-policy": {
     sidebarLabel: "",

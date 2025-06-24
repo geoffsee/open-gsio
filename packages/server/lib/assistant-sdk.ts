@@ -1,5 +1,5 @@
-import { Utils } from "./utils.ts";
-import few_shots from "../prompts/few_shots.ts";
+import { Utils } from "./utils";
+import few_shots from "../prompts/few_shots";
 
 export class AssistantSdk {
   static getAssistantPrompt(params: {
@@ -12,12 +12,10 @@ export class AssistantSdk {
       userTimezone = "UTC",
       userLocation = "",
     } = params;
-    // Handle both nested and flat few_shots structures
     // console.log('[DEBUG_LOG] few_shots:', JSON.stringify(few_shots));
     let selectedFewshots = Utils.selectEquitably?.(few_shots);
     // console.log('[DEBUG_LOG] selectedFewshots after Utils.selectEquitably:', JSON.stringify(selectedFewshots));
     if (!selectedFewshots) {
-      // If Utils.selectEquitably returns undefined, use few_shots directly
       selectedFewshots = few_shots;
       // console.log('[DEBUG_LOG] selectedFewshots after fallback:', JSON.stringify(selectedFewshots));
     }
@@ -30,7 +28,7 @@ export class AssistantSdk {
     return `# Assistant Knowledge
 ## Current Context
 - **Date**: ${currentDate} ${currentTime}
-- **Web Host**: geoff.seemueller.io
+- Web Host open-gsio.seemueller.workers.dev
 ${maxTokens ? `- **Response Limit**: ${maxTokens} tokens (maximum)` : ""}
 - **Lexicographical Format**: Commonmark marked.js with gfm enabled.
 - **User Location**: ${userLocation || "Unknown"}

@@ -4,8 +4,8 @@ const a = {
 };
 
 const b = {
-    "Calculate the number of unique ways to arrange the letters in the word SUCCESS.": `
-Alright, let's tackle 'SUCCESS' and see just how unique it can get!
+    "Calculate the number of unique ways to arrange the letters in the word SUCCESS.":
+        `Alright, let's tackle 'SUCCESS' and see just how unique it can get!
 ### Step 1: Count the Letters  
 The word 'SUCCESS' has 7 letters, but it’s no free-for-all—there are repeats!  
 - S: 3 times  
@@ -60,7 +60,6 @@ There are 34,650 unique arrangements of 'MISSISSIPPI'.`,
 };
 
 const c = {
-    // c remains unchanged as it contains image generation prompts
     "Render a Greek statue with warm marble tones and realistic proportions.":
         "I don't have the ability to generate images right now. ",
 };

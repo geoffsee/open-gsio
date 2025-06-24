@@ -60,28 +60,6 @@ function RegulatoryItems({ isMobile }) {
     <>
       <VStack alignItems={isMobile ? "flex-start" : "flex-end"} spacing={1}>
         <NavItem
-            color="text.tertiary"
-            as={"span"}
-            path=""
-            cursor={"pointer"}
-            onClick={() => {
-              window.open("https://geoff.seemueller.io");
-            }}
-        >
-          geoff.seemueller.io
-        </NavItem>
-        <NavItem
-          color="text.tertiary"
-          as={"span"}
-          path=""
-          cursor={"pointer"}
-          onClick={() => {
-            window.open("https://seemueller.ai");
-          }}
-        >
-          seemueller.ai
-        </NavItem>
-        <NavItem
           color="text.tertiary"
           as={"span"}
           path=""

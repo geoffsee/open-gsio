@@ -8,7 +8,6 @@ export const MarkdownEditor = (props: {
 }) => {
   return (
     <Box>
-      <link rel="stylesheet" href="/packages/client/public" media="print" onLoad="this.media='all'" />
       <Textarea
         value={props.markdown}
         placeholder={props.placeholder}
@@ -17,6 +16,7 @@ export const MarkdownEditor = (props: {
         minHeight="150px"
         height="100%"
         resize="none"
+        borderColor="text.accent"
       />
     </Box>
   );
