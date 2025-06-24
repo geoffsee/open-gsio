@@ -1,5 +1,3 @@
-import React, { useRef } from "react";
-import { observer } from "mobx-react-lite";
 import {
   Box,
   Divider,
@@ -11,8 +9,10 @@ import {
   Portal,
   Text,
   useDisclosure,
-} from "@chakra-ui/react";
-import { ChevronRight } from "lucide-react";
+} from '@chakra-ui/react';
+import { ChevronRight } from 'lucide-react';
+import { observer } from 'mobx-react-lite';
+import React, { useRef } from 'react';
 
 const FlyoutSubMenu: React.FC<{
   title: string;
@@ -23,15 +23,7 @@ const FlyoutSubMenu: React.FC<{
   parentIsOpen: boolean;
   setMenuState?: (state) => void;
 }> = observer(
-  ({
-    title,
-    flyoutMenuOptions,
-    onClose,
-    handleSelect,
-    isSelected,
-    parentIsOpen,
-    setMenuState,
-  }) => {
+  ({ title, flyoutMenuOptions, onClose, handleSelect, isSelected, parentIsOpen, setMenuState }) => {
     const { isOpen, onOpen, onClose: onSubMenuClose } = useDisclosure();
 
     const menuRef = new useRef();
@@ -41,9 +33,9 @@ const FlyoutSubMenu: React.FC<{
         placement="right-start"
         isOpen={isOpen && parentIsOpen}
         closeOnBlur={true}
-        lazyBehavior={"keepMounted"}
+        lazyBehavior={'keepMounted'}
         isLazy={true}
-        onClose={(e) => {
+        onClose={e => {
           onSubMenuClose();
         }}
         closeOnSelect={false}
@@ -54,12 +46,12 @@ const FlyoutSubMenu: React.FC<{
           ref={menuRef}
           bg="background.tertiary"
           color="text.primary"
-          _hover={{ bg: "rgba(0, 0, 0, 0.05)" }}
-          _focus={{ bg: "rgba(0, 0, 0, 0.1)" }}
+          _hover={{ bg: 'rgba(0, 0, 0, 0.05)' }}
+          _focus={{ bg: 'rgba(0, 0, 0, 0.1)' }}
         >
-          <HStack width={"100%"} justifyContent={"space-between"}>
+          <HStack width={'100%'} justifyContent={'space-between'}>
             <Text>{title}</Text>
-            <ChevronRight size={"1rem"} />
+            <ChevronRight size={'1rem'} />
           </HStack>
         </MenuButton>
         <Portal>
@@ -67,7 +59,7 @@ const FlyoutSubMenu: React.FC<{
             key={title}
             maxHeight={56}
             overflowY="scroll"
-            visibility={"visible"}
+            visibility={'visible'}
             minWidth="180px"
             bg="background.tertiary"
             boxShadow="lg"
@@ -77,43 +69,35 @@ const FlyoutSubMenu: React.FC<{
             left="100%"
             bottom={-10}
             sx={{
-              "::-webkit-scrollbar": {
-                width: "8px",
+              '::-webkit-scrollbar': {
+                width: '8px',
               },
-              "::-webkit-scrollbar-thumb": {
-                background: "background.primary",
-                borderRadius: "4px",
+              '::-webkit-scrollbar-thumb': {
+                background: 'background.primary',
+                borderRadius: '4px',
               },
-              "::-webkit-scrollbar-track": {
-                background: "background.tertiary",
+              '::-webkit-scrollbar-track': {
+                background: 'background.tertiary',
               },
             }}
           >
             {flyoutMenuOptions.map((item, index) => (
-              <Box key={"itemflybox" + index}>
+              <Box key={'itemflybox' + index}>
                 <MenuItem
-                  key={"itemfly" + index}
+                  key={'itemfly' + index}
                   onClick={() => {
                     onSubMenuClose();
                     onClose();
                     handleSelect(item);
                   }}
-                  bg={
-                    isSelected(item)
-                      ? "background.secondary"
-                      : "background.tertiary"
-                  }
-                  _hover={{ bg: "rgba(0, 0, 0, 0.05)" }}
-                  _focus={{ bg: "rgba(0, 0, 0, 0.1)" }}
+                  bg={isSelected(item) ? 'background.secondary' : 'background.tertiary'}
+                  _hover={{ bg: 'rgba(0, 0, 0, 0.05)' }}
+                  _focus={{ bg: 'rgba(0, 0, 0, 0.1)' }}
                 >
                   {item.name}
                 </MenuItem>
                 {index < flyoutMenuOptions.length - 1 && (
-                  <Divider
-                    key={item.name + "-divider"}
-                    color="text.tertiary"
-                    w={"100%"}
-                  />
+                  <Divider key={item.name + '-divider'} color="text.tertiary" w={'100%'} />
                 )}
               </Box>
             ))}

@@ -1,5 +1,5 @@
-import {createRouter} from "./api-router.ts";
+import { createRouter } from './api-router.ts';
 
 export default {
-    Router: createRouter
-}
+  Router: createRouter,
+};

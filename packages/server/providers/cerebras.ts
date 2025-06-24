@@ -1,6 +1,7 @@
-import {OpenAI} from "openai";
-import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+import { OpenAI } from 'openai';
+
+import { ProviderRepository } from './_ProviderRepository';
+import { BaseChatProvider, CommonProviderParams } from './chat-stream-provider.ts';
 
 export class CerebrasChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
@@ -11,8 +12,8 @@ export class CerebrasChatProvider extends BaseChatProvider {
   }
 
   getStreamParams(param: CommonProviderParams, safeMessages: any[]): any {
-      // models provided by cerebras do not follow standard tune params
-      // they must be individually configured
+    // models provided by cerebras do not follow standard tune params
+    // they must be individually configured
     // const tuningParams = {
     //   temperature: 0.86,
     //   top_p: 0.98,
@@ -24,18 +25,18 @@ export class CerebrasChatProvider extends BaseChatProvider {
     return {
       model: param.model,
       messages: safeMessages,
-      stream: true
-        // ...tuningParams
+      stream: true,
+      // ...tuningParams
     };
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
-      dataCallback({ type: "chat", data: chunk });
+    if (chunk.choices && chunk.choices[0]?.finish_reason === 'stop') {
+      dataCallback({ type: 'chat', data: chunk });
       return true;
     }
 
-    dataCallback({ type: "chat", data: chunk });
+    dataCallback({ type: 'chat', data: chunk });
     return false;
   }
 }

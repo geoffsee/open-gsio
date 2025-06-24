@@ -19,14 +19,24 @@
     "deploy:secrets": "wrangler secret bulk secrets.json -c packages/cloudflare-workers/open-gsio/wrangler.jsonc",
     "openai:local:mlx": "packages/scripts/start_inference_server.sh mlx-omni-server",
     "openai:local:ollama": "packages/scripts/start_inference_server.sh ollama",
-    "openai:local:configure": "packages/scripts/configure_local_inference.sh"
+    "openai:local:configure": "packages/scripts/configure_local_inference.sh",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\""
   },
   "devDependencies": {
     "@types/bun": "latest",
-    "happy-dom": "^18.0.1"
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-prettier": "^5.1.3",
+    "happy-dom": "^18.0.1",
+    "prettier": "^3.2.5"
   },
   "peerDependencies": {
     "typescript": "^5"
-  },
-  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
+  }
 }

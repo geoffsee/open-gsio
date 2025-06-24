@@ -1,12 +1,12 @@
 // Base Message
-import { type Instance, types } from "mobx-state-tree";
+import { type Instance, types } from 'mobx-state-tree';
 
 export default types
-  .model("Message", {
+  .model('Message', {
     content: types.string,
-    role: types.enumeration(["user", "assistant", "system"]),
+    role: types.enumeration(['user', 'assistant', 'system']),
   })
-  .actions((self) => ({
+  .actions(self => ({
     setContent(newContent: string) {
       self.content = newContent;
     },

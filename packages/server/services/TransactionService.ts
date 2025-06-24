@@ -1,12 +1,12 @@
-import { types } from "mobx-state-tree";
+import { types } from 'mobx-state-tree';
 
 const TransactionService = types
-  .model("TransactionService", {})
-  .volatile((self) => ({
+  .model('TransactionService', {})
+  .volatile(self => ({
     env: {} as Env,
     ctx: {} as ExecutionContext,
   }))
-  .actions((self) => ({
+  .actions(self => ({
     setEnv(env: Env) {
       self.env = env;
     },
@@ -15,7 +15,7 @@ const TransactionService = types
     },
 
     routeAction: async function (action: string, requestBody: any) {
-      const actionHandlers: Record<string, Function> = {
+      const actionHandlers: Record<string, (data: any) => Promise<any>> = {
         PREPARE_TX: self.handlePrepareTransaction,
       };
 
@@ -30,9 +30,9 @@ const TransactionService = types
     handlePrepareTransaction: async function (data: []) {
       const [donerId, currency, amount] = data;
       const CreateWalletEndpoints = {
-        bitcoin: "/api/btc/create",
-        ethereum: "/api/eth/create",
-        dogecoin: "/api/doge/create",
+        bitcoin: '/api/btc/create',
+        ethereum: '/api/eth/create',
+        dogecoin: '/api/doge/create',
       };
 
       const walletRequest = await fetch(
@@ -40,8 +40,7 @@ const TransactionService = types
       );
       const walletResponse = await walletRequest.text();
       // console.log({ walletRequest: walletResponse });
-      const [address, privateKey, publicKey, phrase] =
-        JSON.parse(walletResponse);
+      const [address, privateKey, publicKey, phrase] = JSON.parse(walletResponse);
 
       const txKey = crypto.randomUUID();
 
@@ -73,19 +72,19 @@ const TransactionService = types
       try {
         const raw = await request.text();
         // console.log({ raw });
-        const [action, ...payload] = raw.split(",");
+        const [action, ...payload] = raw.split(',');
 
         const response = await self.routeAction(action, payload);
 
         return new Response(JSON.stringify(response), {
           status: 200,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       } catch (error) {
-        console.error("Error handling transaction:", error);
-        return new Response(JSON.stringify({ error: "Transaction failed" }), {
+        console.error('Error handling transaction:', error);
+        return new Response(JSON.stringify({ error: 'Transaction failed' }), {
           status: 500,
-          headers: { "Content-Type": "application/json" },
+          headers: { 'Content-Type': 'application/json' },
         });
       }
     },

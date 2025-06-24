@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 const usePageLoaded = (callback: () => void) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -9,15 +9,15 @@ const usePageLoaded = (callback: () => void) => {
       callback();
     };
 
-    if (document.readyState === "complete") {
+    if (document.readyState === 'complete') {
       // Page is already fully loaded
       handlePageLoad();
     } else {
       // Wait for the page to load
-      window.addEventListener("load", handlePageLoad);
+      window.addEventListener('load', handlePageLoad);
     }
 
-    return () => window.removeEventListener("load", handlePageLoad);
+    return () => window.removeEventListener('load', handlePageLoad);
   }, [callback]);
 
   return isLoaded;

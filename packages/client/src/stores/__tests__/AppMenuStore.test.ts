@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import menuState from '../AppMenuStore';
 
 describe('AppMenuStore', () => {

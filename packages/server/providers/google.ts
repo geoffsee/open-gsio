@@ -1,8 +1,10 @@
-import { OpenAI } from "openai";
-import ChatSdk from "../lib/chat-sdk.ts";
-import { StreamParams } from "../services/ChatService.ts";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+import { OpenAI } from 'openai';
+
+import ChatSdk from '../lib/chat-sdk.ts';
+import { StreamParams } from '../services/ChatService.ts';
+
+import { ProviderRepository } from './_ProviderRepository';
+import { BaseChatProvider, CommonProviderParams } from './chat-stream-provider.ts';
 
 export class GoogleChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
@@ -21,14 +23,14 @@ export class GoogleChatProvider extends BaseChatProvider {
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    if (chunk.choices?.[0]?.finish_reason === "stop") {
+    if (chunk.choices?.[0]?.finish_reason === 'stop') {
       dataCallback({
-        type: "chat",
+        type: 'chat',
         data: {
           choices: [
             {
-              delta: { content: chunk.choices[0].delta.content || "" },
-              finish_reason: "stop",
+              delta: { content: chunk.choices[0].delta.content || '' },
+              finish_reason: 'stop',
               index: chunk.choices[0].index,
             },
           ],
@@ -37,11 +39,11 @@ export class GoogleChatProvider extends BaseChatProvider {
       return true;
     } else {
       dataCallback({
-        type: "chat",
+        type: 'chat',
         data: {
           choices: [
             {
-              delta: { content: chunk.choices?.[0]?.delta?.content || "" },
+              delta: { content: chunk.choices?.[0]?.delta?.content || '' },
               finish_reason: null,
               index: chunk.choices?.[0]?.index || 0,
             },
@@ -56,10 +58,7 @@ export class GoogleChatProvider extends BaseChatProvider {
 export class GoogleChatSdk {
   private static provider = new GoogleChatProvider();
 
-  static async handleGoogleStream(
-    param: StreamParams,
-    dataCallback: (data) => void,
-  ) {
+  static async handleGoogleStream(param: StreamParams, dataCallback: (data) => void) {
     return this.provider.handleStream(
       {
         systemPrompt: param.systemPrompt,

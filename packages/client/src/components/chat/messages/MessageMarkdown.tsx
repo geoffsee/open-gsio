@@ -1,5 +1,3 @@
-import React from "react";
-
 import {
   Box,
   Code,
@@ -17,13 +15,15 @@ import {
   Thead,
   Tr,
   useColorModeValue,
-} from "@chakra-ui/react";
-import { marked } from "marked";
-import CodeBlock from "../../code/CodeBlock";
-import ImageWithFallback from "../../markdown/ImageWithFallback";
-import markedKatex from "marked-katex-extension";
-import katex from "katex";
-import domPurify from "../lib/domPurify";
+} from '@chakra-ui/react';
+import katex from 'katex';
+import { marked } from 'marked';
+import markedKatex from 'marked-katex-extension';
+import React from 'react';
+
+import CodeBlock from '../../code/CodeBlock';
+import ImageWithFallback from '../../markdown/ImageWithFallback';
+import domPurify from '../lib/domPurify';
 
 try {
   if (localStorage) {
@@ -34,11 +34,13 @@ try {
         throwOnError: false,
         strict: true,
         colorIsTextColor: true,
-        errorColor: "red",
+        errorColor: 'red',
       }),
     );
   }
-} catch (_) {}
+} catch (_) {
+  // Silently ignore errors in marked setup - fallback to default behavior
+}
 
 const MemoizedCodeBlock = React.memo(CodeBlock);
 
@@ -49,32 +51,29 @@ const MemoizedCodeBlock = React.memo(CodeBlock);
 const getHeadingProps = (depth: number) => {
   switch (depth) {
     case 1:
-      return { as: "h1", size: "xl", mt: 4, mb: 2 };
+      return { as: 'h1', size: 'xl', mt: 4, mb: 2 };
     case 2:
-      return { as: "h2", size: "lg", mt: 3, mb: 2 };
+      return { as: 'h2', size: 'lg', mt: 3, mb: 2 };
     case 3:
-      return { as: "h3", size: "md", mt: 2, mb: 1 };
+      return { as: 'h3', size: 'md', mt: 2, mb: 1 };
     case 4:
-      return { as: "h4", size: "sm", mt: 2, mb: 1 };
+      return { as: 'h4', size: 'sm', mt: 2, mb: 1 };
     case 5:
-      return { as: "h5", size: "sm", mt: 2, mb: 1 };
+      return { as: 'h5', size: 'sm', mt: 2, mb: 1 };
     case 6:
-      return { as: "h6", size: "xs", mt: 2, mb: 1 };
+      return { as: 'h6', size: 'xs', mt: 2, mb: 1 };
     default:
-      return { as: `h${depth}`, size: "md", mt: 2, mb: 1 };
+      return { as: `h${depth}`, size: 'md', mt: 2, mb: 1 };
   }
 };
 
 interface TableToken extends marked.Tokens.Table {
-  align: Array<"center" | "left" | "right" | null>;
+  align: Array<'center' | 'left' | 'right' | null>;
   header: (string | marked.Tokens.TableCell)[];
   rows: (string | marked.Tokens.TableCell)[][];
 }
 
-const CustomHeading: React.FC<{ text: string; depth: number }> = ({
-  text,
-  depth,
-}) => {
+const CustomHeading: React.FC<{ text: string; depth: number }> = ({ text, depth }) => {
   const headingProps = getHeadingProps(depth);
   return (
     <Heading {...headingProps} wordBreak="break-word" maxWidth="100%">
@@ -83,9 +82,7 @@ const CustomHeading: React.FC<{ text: string; depth: number }> = ({
   );
 };
 
-const CustomParagraph: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const CustomParagraph: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Text
       as="p"
@@ -100,9 +97,7 @@ const CustomParagraph: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-const CustomBlockquote: React.FC<{ children: React.ReactNode }> = ({
-  children,
-}) => {
+const CustomBlockquote: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Box
       as="blockquote"
@@ -120,16 +115,9 @@ const CustomBlockquote: React.FC<{ children: React.ReactNode }> = ({
   );
 };
 
-const CustomCodeBlock: React.FC<{ code: string; language?: string }> = ({
-  code,
-  language,
-}) => {
+const CustomCodeBlock: React.FC<{ code: string; language?: string }> = ({ code, language }) => {
   return (
-    <MemoizedCodeBlock
-      language={language}
-      code={code}
-      onRenderComplete={() => Promise.resolve()}
-    />
+    <MemoizedCodeBlock language={language} code={code} onRenderComplete={() => Promise.resolve()} />
   );
 };
 
@@ -141,10 +129,10 @@ const CustomList: React.FC<{
   children: React.ReactNode;
 }> = ({ ordered, start, children }) => {
   const commonStyles = {
-    fontSize: "sm",
-    wordBreak: "break-word" as const,
-    maxWidth: "100%" as const,
-    stylePosition: "outside" as const,
+    fontSize: 'sm',
+    wordBreak: 'break-word' as const,
+    maxWidth: '100%' as const,
+    stylePosition: 'outside' as const,
     mb: 2,
     pl: 4,
   };
@@ -166,16 +154,13 @@ const CustomListItem: React.FC<{
   return <ListItem mb={1}>{children}</ListItem>;
 };
 
-const CustomKatex: React.FC<{ math: string; displayMode: boolean }> = ({
-  math,
-  displayMode,
-}) => {
+const CustomKatex: React.FC<{ math: string; displayMode: boolean }> = ({ math, displayMode }) => {
   const renderedMath = katex.renderToString(math, { displayMode });
 
   return (
     <Box
       as="span"
-      display={displayMode ? "block" : "inline"}
+      display={displayMode ? 'block' : 'inline'}
       p={displayMode ? 4 : 1}
       my={displayMode ? 4 : 0}
       borderRadius="md"
@@ -188,23 +173,17 @@ const CustomKatex: React.FC<{ math: string; displayMode: boolean }> = ({
 
 const CustomTable: React.FC<{
   header: React.ReactNode[];
-  align: Array<"center" | "left" | "right" | null>;
+  align: Array<'center' | 'left' | 'right' | null>;
   rows: React.ReactNode[][];
 }> = ({ header, align, rows }) => {
   return (
-    <Table
-      variant="simple"
-      size="sm"
-      my={4}
-      borderRadius="md"
-      overflow="hidden"
-    >
+    <Table variant="simple" size="sm" my={4} borderRadius="md" overflow="hidden">
       <Thead bg="background.secondary">
         <Tr>
           {header.map((cell, i) => (
             <Th
               key={i}
-              textAlign={align[i] || "left"}
+              textAlign={align[i] || 'left'}
               fontWeight="bold"
               p={2}
               minW={16}
@@ -219,12 +198,7 @@ const CustomTable: React.FC<{
         {rows.map((row, rIndex) => (
           <Tr key={rIndex}>
             {row.map((cell, cIndex) => (
-              <Td
-                key={cIndex}
-                textAlign={align[cIndex] || "left"}
-                p={2}
-                wordBreak="break-word"
-              >
+              <Td key={cIndex} textAlign={align[cIndex] || 'left'} p={2} wordBreak="break-word">
                 {cell}
               </Td>
             ))}
@@ -241,13 +215,7 @@ const CustomHtmlBlock: React.FC<{ content: string }> = ({ content }) => {
 
 const CustomText: React.FC<{ text: React.ReactNode }> = ({ text }) => {
   return (
-    <Text
-      fontSize="sm"
-      lineHeight="short"
-      wordBreak="break-word"
-      maxWidth="100%"
-      as="span"
-    >
+    <Text fontSize="sm" lineHeight="short" wordBreak="break-word" maxWidth="100%" as="span">
       {text}
     </Text>
   );
@@ -262,13 +230,7 @@ const CustomStrong: React.FC<CustomStrongProps> = ({ children }) => {
 
 const CustomEm: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
-    <Text
-      as="em"
-      fontStyle="italic"
-      lineHeight="short"
-      wordBreak="break-word"
-      display="inline"
-    >
+    <Text as="em" fontStyle="italic" lineHeight="short" wordBreak="break-word" display="inline">
       {children}
     </Text>
   );
@@ -289,7 +251,7 @@ const CustomDel: React.FC<{ text: string }> = ({ text }) => {
 };
 
 const CustomCodeSpan: React.FC<{ code: string }> = ({ code }) => {
-  const bg = useColorModeValue("gray.100", "gray.800");
+  const bg = useColorModeValue('gray.100', 'gray.800');
   return (
     <Code
       fontSize="sm"
@@ -312,13 +274,13 @@ const CustomMath: React.FC<{ math: string; displayMode?: boolean }> = ({
   return (
     <Box
       as="span"
-      display={displayMode ? "block" : "inline"}
+      display={displayMode ? 'block' : 'inline'}
       p={displayMode ? 4 : 1}
       my={displayMode ? 4 : 0}
       borderRadius="md"
       overflow="auto"
       maxWidth="100%"
-      className={`math ${displayMode ? "math-display" : "math-inline"}`}
+      className={`math ${displayMode ? 'math-display' : 'math-inline'}`}
     >
       {math}
     </Box>
@@ -336,8 +298,8 @@ const CustomLink: React.FC<{
       title={title}
       isExternal
       sx={{
-        "& span": {
-          color: "text.link",
+        '& span': {
+          color: 'text.link',
         },
       }}
       maxWidth="100%"
@@ -379,46 +341,34 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
 
   tokens.forEach((token, i) => {
     switch (token.type) {
-      case "heading":
-        output.push(
-          <CustomHeading key={i} text={token.text} depth={token.depth} />,
-        );
+      case 'heading':
+        output.push(<CustomHeading key={i} text={token.text} depth={token.depth} />);
         break;
 
-      case "paragraph": {
-        const parsedContent = token.tokens
-          ? parseTokens(token.tokens)
-          : token.text;
+      case 'paragraph': {
+        const parsedContent = token.tokens ? parseTokens(token.tokens) : token.text;
         if (blockquoteContent.length > 0) {
-          blockquoteContent.push(
-            <CustomParagraph key={i}>{parsedContent}</CustomParagraph>,
-          );
+          blockquoteContent.push(<CustomParagraph key={i}>{parsedContent}</CustomParagraph>);
         } else {
-          output.push(
-            <CustomParagraph key={i}>{parsedContent}</CustomParagraph>,
-          );
+          output.push(<CustomParagraph key={i}>{parsedContent}</CustomParagraph>);
         }
         break;
       }
-      case "br":
+      case 'br':
         output.push(<br key={i} />);
         break;
-      case "escape": {
+      case 'escape': {
         break;
       }
-      case "blockquote_start":
+      case 'blockquote_start':
         blockquoteContent = [];
         break;
 
-      case "blockquote_end":
-        output.push(
-          <CustomBlockquote key={i}>
-            {parseTokens(blockquoteContent)}
-          </CustomBlockquote>,
-        );
+      case 'blockquote_end':
+        output.push(<CustomBlockquote key={i}>{parseTokens(blockquoteContent)}</CustomBlockquote>);
         blockquoteContent = [];
         break;
-      case "blockquote": {
+      case 'blockquote': {
         output.push(
           <CustomBlockquote key={i}>
             {token.tokens ? parseTokens(token.tokens) : null}
@@ -426,44 +376,30 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
         );
         break;
       }
-      case "math":
-        output.push(
-          <CustomMath key={i} math={(token as any).value} displayMode={true} />,
-        );
+      case 'math':
+        output.push(<CustomMath key={i} math={(token as any).value} displayMode={true} />);
         break;
 
-      case "inlineMath":
-        output.push(
-          <CustomMath
-            key={i}
-            math={(token as any).value}
-            displayMode={false}
-          />,
-        );
+      case 'inlineMath':
+        output.push(<CustomMath key={i} math={(token as any).value} displayMode={false} />);
         break;
-      case "inlineKatex":
-      case "blockKatex": {
+      case 'inlineKatex':
+      case 'blockKatex': {
         const katexToken = token as any;
         output.push(
-          <CustomKatex
-            key={i}
-            math={katexToken.text}
-            displayMode={katexToken.displayMode}
-          />,
+          <CustomKatex key={i} math={katexToken.text} displayMode={katexToken.displayMode} />,
         );
         break;
       }
-      case "code":
-        output.push(
-          <CustomCodeBlock key={i} code={token.text} language={token.lang} />,
-        );
+      case 'code':
+        output.push(<CustomCodeBlock key={i} code={token.text} language={token.lang} />);
         break;
 
-      case "hr":
+      case 'hr':
         output.push(<CustomHr key={i} />);
         break;
 
-      case "list": {
+      case 'list': {
         const { ordered, start, items } = token;
         const listItems = items.map((listItem, idx) => {
           const nestedContent = parseTokens(listItem.tokens);
@@ -477,53 +413,43 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
         );
         break;
       }
-      case "table": {
+      case 'table': {
         const tableToken = token as TableToken;
 
         output.push(
           <CustomTable
             key={i}
-            header={tableToken.header.map((cell) =>
-              typeof cell === "string" ? cell : parseTokens(cell.tokens || []),
+            header={tableToken.header.map(cell =>
+              typeof cell === 'string' ? cell : parseTokens(cell.tokens || []),
             )}
             align={tableToken.align}
-            rows={tableToken.rows.map((row) =>
-              row.map((cell) =>
-                typeof cell === "string"
-                  ? cell
-                  : parseTokens(cell.tokens || []),
-              ),
+            rows={tableToken.rows.map(row =>
+              row.map(cell => (typeof cell === 'string' ? cell : parseTokens(cell.tokens || []))),
             )}
           />,
         );
         break;
       }
-      case "html":
+      case 'html':
         output.push(<CustomHtmlBlock key={i} content={token.text} />);
         break;
-      case "def":
-      case "space":
+      case 'def':
+      case 'space':
         break;
-      case "strong":
-        output.push(
-          <CustomStrong key={i}>
-            {parseTokens(token.tokens || [])}
-          </CustomStrong>,
-        );
+      case 'strong':
+        output.push(<CustomStrong key={i}>{parseTokens(token.tokens || [])}</CustomStrong>);
         break;
-      case "em":
+      case 'em':
         output.push(
-          <CustomEm key={i}>
-            {token.tokens ? parseTokens(token.tokens) : token.text}
-          </CustomEm>,
+          <CustomEm key={i}>{token.tokens ? parseTokens(token.tokens) : token.text}</CustomEm>,
         );
         break;
 
-      case "codespan":
+      case 'codespan':
         output.push(<CustomCodeSpan key={i} code={token.text} />);
         break;
 
-      case "link":
+      case 'link':
         output.push(
           <CustomLink key={i} href={token.href} title={token.title}>
             {token.tokens ? parseTokens(token.tokens) : token.text}
@@ -531,33 +457,24 @@ function parseTokens(tokens: marked.Token[]): JSX.Element[] {
         );
         break;
 
-      case "image":
+      case 'image':
         output.push(
-          <CustomImage
-            key={i}
-            href={token.href}
-            title={token.title}
-            text={token.text}
-          />,
+          <CustomImage key={i} href={token.href} title={token.title} text={token.text} />,
         );
         break;
 
-      case "text": {
-        const parsedContent = token.tokens
-          ? parseTokens(token.tokens)
-          : token.text;
+      case 'text': {
+        const parsedContent = token.tokens ? parseTokens(token.tokens) : token.text;
 
         if (blockquoteContent.length > 0) {
-          blockquoteContent.push(
-            <React.Fragment key={i}>{parsedContent}</React.Fragment>,
-          );
+          blockquoteContent.push(<React.Fragment key={i}>{parsedContent}</React.Fragment>);
         } else {
           output.push(<CustomText key={i} text={parsedContent} />);
         }
         break;
       }
       default:
-        console.warn("Unhandled token type:", token.type, token);
+        console.warn('Unhandled token type:', token.type, token);
     }
   });
 

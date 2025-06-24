@@ -1,13 +1,14 @@
-import { OpenAI } from "openai";
 import {
   _NotCustomized,
   ISimpleType,
   ModelPropertiesDeclarationToProperties,
   ModelSnapshotType2,
   UnionStringArray,
-} from "mobx-state-tree";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
-import {ProviderRepository} from "./_ProviderRepository";
+} from 'mobx-state-tree';
+import { OpenAI } from 'openai';
+
+import { ProviderRepository } from './_ProviderRepository';
+import { BaseChatProvider, CommonProviderParams } from './chat-stream-provider.ts';
 
 export class GroqChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
@@ -30,17 +31,17 @@ export class GroqChatProvider extends BaseChatProvider {
       model: param.model,
       messages: safeMessages,
       stream: true,
-      ...tuningParams
+      ...tuningParams,
     };
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    if (chunk.choices && chunk.choices[0]?.finish_reason === "stop") {
-      dataCallback({ type: "chat", data: chunk });
+    if (chunk.choices && chunk.choices[0]?.finish_reason === 'stop') {
+      dataCallback({ type: 'chat', data: chunk });
       return true;
     }
 
-    dataCallback({ type: "chat", data: chunk });
+    dataCallback({ type: 'chat', data: chunk });
     return false;
   }
 }

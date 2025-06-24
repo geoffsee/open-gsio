@@ -1,6 +1,11 @@
-import { describe, it, expect, vi } from 'vitest';
-import { BaseChatProvider, CommonProviderParams, ChatStreamProvider } from '../chat-stream-provider.ts';
 import { OpenAI } from 'openai';
+import { describe, it, expect, vi } from 'vitest';
+
+import {
+  BaseChatProvider,
+  CommonProviderParams,
+  ChatStreamProvider,
+} from '../chat-stream-provider.ts';
 
 // Create a concrete implementation of BaseChatProvider for testing
 class TestChatProvider extends BaseChatProvider {
@@ -29,16 +34,16 @@ vi.mock('../../lib/chat-sdk', () => ({
     buildAssistantPrompt: vi.fn().mockReturnValue('Assistant prompt'),
     buildMessageChain: vi.fn().mockReturnValue([
       { role: 'system', content: 'System prompt' },
-      { role: 'user', content: 'User message' }
-    ])
-  }
+      { role: 'user', content: 'User message' },
+    ]),
+  },
 }));
 
 describe('ChatStreamProvider', () => {
   it('should define the required interface', () => {
     // Verify the interface has the required method
     const mockProvider: ChatStreamProvider = {
-      handleStream: vi.fn()
+      handleStream: vi.fn(),
     };
 
     expect(mockProvider.handleStream).toBeDefined();

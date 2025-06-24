@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Button,
@@ -19,26 +18,26 @@ import {
   useClipboard,
   useToast,
   VStack,
-} from "@chakra-ui/react";
-import { QRCodeCanvas } from "qrcode.react";
-import { FaBitcoin, FaEthereum } from "react-icons/fa";
-import { observer } from "mobx-react-lite";
-import clientTransactionStore from "../../stores/ClientTransactionStore";
-import DogecoinIcon from "../icons/DogecoinIcon";
+} from '@chakra-ui/react';
+import { observer } from 'mobx-react-lite';
+import { QRCodeCanvas } from 'qrcode.react';
+import React from 'react';
+import { FaBitcoin, FaEthereum } from 'react-icons/fa';
+
+import clientTransactionStore from '../../stores/ClientTransactionStore';
+import DogecoinIcon from '../icons/DogecoinIcon';
 
 const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
-  const { hasCopied, onCopy } = useClipboard(
-    clientTransactionStore.depositAddress || "",
-  );
+  const { hasCopied, onCopy } = useClipboard(clientTransactionStore.depositAddress || '');
   const toast = useToast();
 
   const handleCopy = () => {
     if (clientTransactionStore.depositAddress) {
       onCopy();
       toast({
-        title: "Address Copied!",
-        description: "Thank you for your support!",
-        status: "success",
+        title: 'Address Copied!',
+        description: 'Thank you for your support!',
+        status: 'success',
         duration: 3000,
         isClosable: true,
       });
@@ -49,17 +48,17 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
     try {
       await clientTransactionStore.prepareTransaction();
       toast({
-        title: "Success",
+        title: 'Success',
         description: `Use your wallet app (Coinbase, ...ect) to send the selected asset to the provided address.`,
-        status: "success",
+        status: 'success',
         duration: 6000,
         isClosable: true,
       });
     } catch (error) {
       toast({
-        title: "Transaction Failed",
-        description: "There was an issue preparing your transaction.",
-        status: "error",
+        title: 'Transaction Failed',
+        description: 'There was an issue preparing your transaction.',
+        status: 'error',
         duration: 3000,
         isClosable: true,
       });
@@ -68,32 +67,23 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
 
   const donationMethods = [
     {
-      name: "Ethereum",
+      name: 'Ethereum',
       icon: FaEthereum,
     },
     {
-      name: "Bitcoin",
+      name: 'Bitcoin',
       icon: FaBitcoin,
     },
     {
-      name: "Dogecoin",
+      name: 'Dogecoin',
       icon: DogecoinIcon,
     },
   ];
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      size="md"
-      motionPreset="slideInBottom"
-      zIndex={zIndex}
-    >
-      <ModalOverlay
-          bg='bg.primary'
-          backdropFilter='blur(10px) hue-rotate(90deg)'
-      />
-      <ModalContent bg="bg.primary" color="text.primary" >
+    <Modal isOpen={isOpen} onClose={onClose} size="md" motionPreset="slideInBottom" zIndex={zIndex}>
+      <ModalOverlay bg="bg.primary" backdropFilter="blur(10px) hue-rotate(90deg)" />
+      <ModalContent bg="bg.primary" color="text.primary">
         <ModalHeader textAlign="center" mb={2}>
           Support
         </ModalHeader>
@@ -109,38 +99,38 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
               // colorScheme="teal"
               isFitted
             >
-              <TabList mb={2} w={"20%"}>
-                {donationMethods.map((method) => (
+              <TabList mb={2} w={'20%'}>
+                {donationMethods.map(method => (
                   <Tab
                     p={4}
                     key={method.name}
-                    color={"text.primary"}
-                    bg={clientTransactionStore.selectedMethod=== method.name ? "bg.primary": "bg.secondary"}
+                    color={'text.primary'}
+                    bg={
+                      clientTransactionStore.selectedMethod === method.name
+                        ? 'bg.primary'
+                        : 'bg.secondary'
+                    }
                     onClick={() => {
                       clientTransactionStore.setSelectedMethod(method.name);
                     }}
                   >
-                    <Box p={1} w={"fit-content"} >
-                      <method.icon />{" "}
+                    <Box p={1} w={'fit-content'}>
+                      <method.icon />{' '}
                     </Box>
                     {method.name}
                   </Tab>
                 ))}
               </TabList>
               <TabPanels>
-                {donationMethods.map((method) => (
+                {donationMethods.map(method => (
                   <TabPanel key={method.name}>
                     {!clientTransactionStore.userConfirmed ? (
                       <VStack spacing={4}>
                         <Text>Enter your information:</Text>
                         <Input
                           placeholder="Your name"
-                          value={
-                            clientTransactionStore.donerId as string | undefined
-                          }
-                          onChange={(e) =>
-                            clientTransactionStore.setDonerId(e.target.value)
-                          }
+                          value={clientTransactionStore.donerId as string | undefined}
+                          onChange={e => clientTransactionStore.setDonerId(e.target.value)}
                           type="text"
                           bg="bg.secondary"
                           color="text.primary"
@@ -149,12 +139,8 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                         <Text>Enter the amount you wish to donate:</Text>
                         <Input
                           placeholder="Enter amount"
-                          value={
-                            clientTransactionStore.amount as number | undefined
-                          }
-                          onChange={(e) =>
-                            clientTransactionStore.setAmount(e.target.value)
-                          }
+                          value={clientTransactionStore.amount as number | undefined}
+                          onChange={e => clientTransactionStore.setAmount(e.target.value)}
                           type="number"
                           bg="bg.secondary"
                           // color="white"
@@ -170,17 +156,9 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                       </VStack>
                     ) : (
                       <>
-                        <Box
-                          bg="white"
-                          p={2}
-                          borderRadius="lg"
-                          mb={4}
-                          w={"min-content"}
-                        >
+                        <Box bg="white" p={2} borderRadius="lg" mb={4} w={'min-content'}>
                           <QRCodeCanvas
-                            value={
-                              clientTransactionStore.depositAddress as string
-                            }
+                            value={clientTransactionStore.depositAddress as string}
                             size={180}
                           />
                         </Box>
@@ -204,7 +182,7 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
                           // colorScheme="teal"
                           mb={4}
                         >
-                          {hasCopied ? "Address Copied!" : "Copy Address"}
+                          {hasCopied ? 'Address Copied!' : 'Copy Address'}
                         </Button>
                         <Text fontSize="md" fontWeight="bold">
                           Transaction ID: {clientTransactionStore.txId}
@@ -218,7 +196,7 @@ const SupportThisSiteModal = observer(({ isOpen, onClose, zIndex }) => {
           </VStack>
         </ModalBody>
         <ModalFooter>
-          <Button variant="outline" mr={3} onClick={onClose} >
+          <Button variant="outline" mr={3} onClick={onClose}>
             Close
           </Button>
         </ModalFooter>

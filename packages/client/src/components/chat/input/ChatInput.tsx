@@ -1,34 +1,28 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-  Box,
-  Button,
-  Grid,
-  GridItem,
-  useBreakpointValue,
-} from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import chatStore from "../../../stores/ClientChatStore";
-import InputMenu from "../input-menu/InputMenu";
-import InputTextarea from "./ChatInputTextArea";
-import SendButton from "./ChatInputSendButton";
-import { useMaxWidth } from "../../../hooks/useMaxWidth";
-import userOptionsStore from "../../../stores/UserOptionsStore";
+import { Box, Button, Grid, GridItem, useBreakpointValue } from '@chakra-ui/react';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { useMaxWidth } from '../../../hooks/useMaxWidth';
+import chatStore from '../../../stores/ClientChatStore';
+import userOptionsStore from '../../../stores/UserOptionsStore';
+import InputMenu from '../input-menu/InputMenu';
+
+import SendButton from './ChatInputSendButton';
+import InputTextarea from './ChatInputTextArea';
 
 const ChatInput = observer(() => {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const maxWidth = useMaxWidth();
-  const [inputValue, setInputValue] = useState<string>("");
+  const [inputValue, setInputValue] = useState<string>('');
 
   const [containerHeight, setContainerHeight] = useState(56);
   const [containerBorderRadius, setContainerBorderRadius] = useState(9999);
 
-  const [shouldFollow, setShouldFollow] = useState<boolean>(
-    userOptionsStore.followModeEnabled,
-  );
+  const [shouldFollow, setShouldFollow] = useState<boolean>(userOptionsStore.followModeEnabled);
   const [couldFollow, setCouldFollow] = useState<boolean>(chatStore.isLoading);
 
-  const [inputWidth, setInputWidth] = useState<string>("50%");
+  const [inputWidth, setInputWidth] = useState<string>('50%');
 
   useEffect(() => {
     setShouldFollow(chatStore.isLoading && userOptionsStore.followModeEnabled);
@@ -42,8 +36,8 @@ const ChatInput = observer(() => {
 
   useEffect(() => {
     if (containerRef.current) {
-      const observer = new ResizeObserver((entries) => {
-        for (let entry of entries) {
+      const observer = new ResizeObserver(entries => {
+        for (const entry of entries) {
           const newHeight = entry.target.clientHeight;
           setContainerHeight(newHeight);
 
@@ -63,20 +57,20 @@ const ChatInput = observer(() => {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       chatStore.sendMessage();
     }
   };
 
   const inputMaxWidth = useBreakpointValue(
-    { base: "50rem", lg: "50rem", md: "80%", sm: "100vw" },
+    { base: '50rem', lg: '50rem', md: '80%', sm: '100vw' },
     { ssr: true },
   );
-  const inputMinWidth = useBreakpointValue({ lg: "40rem" }, { ssr: true });
+  const inputMinWidth = useBreakpointValue({ lg: '40rem' }, { ssr: true });
 
   useEffect(() => {
-    setInputWidth("100%");
+    setInputWidth('100%');
   }, [inputMaxWidth, inputMinWidth]);
 
   return (
@@ -105,12 +99,12 @@ const ChatInput = observer(() => {
             size="sm"
             variant="ghost"
             colorScheme="blue"
-            onClick={(_) => {
+            onClick={_ => {
               userOptionsStore.toggleFollowMode();
             }}
             isDisabled={!chatStore.isLoading}
           >
-            {shouldFollow ? "Disable Follow Mode" : "Enable Follow Mode"}
+            {shouldFollow ? 'Disable Follow Mode' : 'Enable Follow Mode'}
           </Button>
         </Box>
       )}
@@ -123,7 +117,7 @@ const ChatInput = observer(() => {
         gap={2}
         alignItems="center"
         style={{
-          transition: "border-radius 0.2s ease",
+          transition: 'border-radius 0.2s ease',
         }}
       >
         <GridItem>

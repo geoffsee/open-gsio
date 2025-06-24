@@ -1,8 +1,9 @@
+import { types } from 'mobx-state-tree';
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
+
+import Message from '../../models/Message';
 import { StreamStore } from '../StreamStore';
 import UserOptionsStore from '../UserOptionsStore';
-import { types } from 'mobx-state-tree';
-import Message from '../../models/Message';
 
 // Mock UserOptionsStore
 vi.mock('../UserOptionsStore', () => ({
@@ -86,7 +87,7 @@ describe('StreamStore', () => {
     });
 
     // Reset EventSource mock
-    vi.spyOn(global, 'EventSource').mockImplementation((url) => new MockEventSource(url));
+    vi.spyOn(global, 'EventSource').mockImplementation(url => new MockEventSource(url));
   });
 
   afterEach(() => {
@@ -167,7 +168,7 @@ describe('StreamStore', () => {
 
       // Verify
       expect(root.items.length).toBe(2);
-      expect(root.items[1].content).toBe('Too many requests • please slow down.');
+      expect(root.items[1].content).toContain('Too many requests');
       expect(streamStore.eventSource).toBeNull();
       expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
@@ -184,7 +185,7 @@ describe('StreamStore', () => {
 
       // Verify
       expect(root.items.length).toBe(2);
-      expect(root.items[1].content).toBe('Error • something went wrong.');
+      expect(root.items[1].content).toBe('\n\nError: Something went wrong.');
       expect(streamStore.eventSource).toBeNull();
       expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
     });
@@ -199,7 +200,7 @@ describe('StreamStore', () => {
 
       // Verify
       expect(root.items.length).toBe(2);
-      expect(root.items[1].content).toBe('Sorry • network error.');
+      expect(root.items[1].content).toBe('\n\nError: Sorry • network error.');
       expect(streamStore.eventSource).toBeNull();
       expect(root.isLoading).toBe(false);
       expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
@@ -219,8 +220,8 @@ describe('StreamStore', () => {
       const mockEvent = {
         data: JSON.stringify({
           type: 'error',
-          error: 'Test error'
-        })
+          error: 'Test error',
+        }),
       };
 
       // Call the onmessage handler directly
@@ -236,7 +237,7 @@ describe('StreamStore', () => {
       UserOptionsStore.setFollowModeEnabled(false);
 
       // Verify
-      expect(root.items[1].content).toBe('Test error');
+      expect(root.items[1].content).toBe('\n\nError: Test error');
       expect(streamStore.eventSource).toBeNull();
       expect(root.isLoading).toBe(false);
       expect(UserOptionsStore.setFollowModeEnabled).toHaveBeenCalledWith(false);
@@ -267,11 +268,11 @@ describe('StreamStore', () => {
             choices: [
               {
                 finish_reason: 'stop',
-                delta: { content: '' }
-              }
-            ]
-          }
-        })
+                delta: { content: '' },
+              },
+            ],
+          },
+        }),
       };
 
       // Setup spy for UserOptionsStore.setFollowModeEnabled

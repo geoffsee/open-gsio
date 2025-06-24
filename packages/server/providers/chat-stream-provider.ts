@@ -1,5 +1,6 @@
-import { OpenAI } from "openai";
-import ChatSdk from "../lib/chat-sdk.ts";
+import { OpenAI } from 'openai';
+
+import ChatSdk from '../lib/chat-sdk.ts';
 
 export interface CommonProviderParams {
   openai?: OpenAI; // Optional for providers that use a custom client.
@@ -14,10 +15,7 @@ export interface CommonProviderParams {
 }
 
 export interface ChatStreamProvider {
-  handleStream(
-    param: CommonProviderParams,
-    dataCallback: (data: any) => void,
-  ): Promise<any>;
+  handleStream(param: CommonProviderParams, dataCallback: (data: any) => void): Promise<any>;
 }
 
 export abstract class BaseChatProvider implements ChatStreamProvider {
@@ -25,17 +23,14 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
   abstract getStreamParams(param: CommonProviderParams, safeMessages: any[]): any;
   abstract async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean>;
 
-  async handleStream(
-    param: CommonProviderParams,
-    dataCallback: (data: any) => void,
-  ) {
+  async handleStream(param: CommonProviderParams, dataCallback: (data: any) => void) {
     const assistantPrompt = ChatSdk.buildAssistantPrompt({ maxTokens: param.maxTokens });
     const safeMessages = await ChatSdk.buildMessageChain(param.messages, {
       systemPrompt: param.systemPrompt,
       model: param.model,
       assistantPrompt,
       toolResults: param.preprocessedContext,
-      env: param.env
+      env: param.env,
     });
 
     const client = this.getOpenAIClient(param);

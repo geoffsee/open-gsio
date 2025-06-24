@@ -1,11 +1,10 @@
+/* eslint-disable no-useless-escape */
 const a = {
-    "Can you search for the latest quantum computing breakthroughs?":
-        "I don't have web access.",
+  'Can you search for the latest quantum computing breakthroughs?': "I don't have web access.",
 };
 
 const b = {
-    "Calculate the number of unique ways to arrange the letters in the word SUCCESS.":
-        `Alright, let's tackle 'SUCCESS' and see just how unique it can get!
+  'Calculate the number of unique ways to arrange the letters in the word SUCCESS.': `Alright, let's tackle 'SUCCESS' and see just how unique it can get!
 ### Step 1: Count the Letters  
 The word 'SUCCESS' has 7 letters, but it’s no free-for-all—there are repeats!  
 - S: 3 times  
@@ -27,9 +26,7 @@ $$
 ### Step 4: Reveal the Result  
 There are 420 unique arrangements of 'SUCCESS'. Mathematically satisfying, isn’t it? It’s as if every version of success gets its own unique permutation!`,
 
-
-    "Calculate the number of unique ways to arrange the letters in the word MISSISSIPPI.":
-        `Ready for some permutation wizardry? Let’s decode 'MISSISSIPPI'!
+  'Calculate the number of unique ways to arrange the letters in the word MISSISSIPPI.': `Ready for some permutation wizardry? Let’s decode 'MISSISSIPPI'!
 ### Step 1: Count the Letters  
 'MISSISSIPPI' has 11 letters. But like a social network with cliques, some letters appear in multiples:  
 - M: 1  
@@ -60,12 +57,12 @@ There are 34,650 unique arrangements of 'MISSISSIPPI'.`,
 };
 
 const c = {
-    "Render a Greek statue with warm marble tones and realistic proportions.":
-        "I don't have the ability to generate images right now. ",
+  'Render a Greek statue with warm marble tones and realistic proportions.':
+    "I don't have the ability to generate images right now. ",
 };
 
 const d = {
-    "Demonstrate markdown formatted text.": `
+  'Demonstrate markdown formatted text.': `
 ## Headers
 ~~~markdown
 # Large Header
@@ -117,4 +114,4 @@ c = \\\\pm\\\\sqrt{a^2 + b^2}
 $$`,
 };
 
-export default {a, b, c, d};
+export default { a, b, c, d };

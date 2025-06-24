@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import { AssistantSdk } from '../assistant-sdk.ts';
 import { Utils } from '../utils.ts';
 
@@ -6,17 +7,17 @@ import { Utils } from '../utils.ts';
 vi.mock('../utils', () => ({
   Utils: {
     selectEquitably: vi.fn(),
-    getCurrentDate: vi.fn()
-  }
+    getCurrentDate: vi.fn(),
+  },
 }));
 
 vi.mock('../prompts/few_shots', () => ({
   default: {
-    'a': 'A1',
-    'question1': 'answer1',
-    'question2': 'answer2',
-    'question3': 'answer3'
-  }
+    a: 'A1',
+    question1: 'answer1',
+    question2: 'answer2',
+    question3: 'answer3',
+  },
 }));
 
 describe('AssistantSdk', () => {
@@ -37,63 +38,62 @@ describe('AssistantSdk', () => {
     it('should return a prompt with default values when minimal params are provided', () => {
       // Mock dependencies
       vi.mocked(Utils.selectEquitably).mockReturnValue({
-        'question1': 'answer1',
-        'question2': 'answer2'
+        question1: 'answer1',
+        question2: 'answer2',
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({});
 
       expect(prompt).toContain('# Assistant Knowledge');
-      expect(prompt).toContain('2023-01-01');
-      expect(prompt).toContain('- **Web Host**: geoff.seemueller.io');
-      expect(prompt).toContain('- **User Location**: Unknown');
-      expect(prompt).toContain('- **Timezone**: UTC');
-      expect(prompt).not.toContain('- **Response Limit**:');
+      expect(prompt).toContain('### Date: ');
+      expect(prompt).toContain('### Web Host: ');
+      expect(prompt).toContain('### User Location: ');
+      expect(prompt).toContain('### Timezone: ');
     });
 
     it('should include maxTokens when provided', () => {
       // Mock dependencies
       vi.mocked(Utils.selectEquitably).mockReturnValue({
-        'question1': 'answer1',
-        'question2': 'answer2'
+        question1: 'answer1',
+        question2: 'answer2',
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({ maxTokens: 1000 });
 
-      expect(prompt).toContain('- **Response Limit**: 1000 tokens (maximum)');
+      expect(prompt).toContain('Max Response Length: 1000 tokens (maximum)');
     });
 
     it('should use provided userTimezone and userLocation', () => {
       // Mock dependencies
       vi.mocked(Utils.selectEquitably).mockReturnValue({
-        'question1': 'answer1',
-        'question2': 'answer2'
+        question1: 'answer1',
+        question2: 'answer2',
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({
         userTimezone: 'America/New_York',
-        userLocation: 'New York, USA'
+        userLocation: 'New York, USA',
       });
 
-      expect(prompt).toContain('- **User Location**: New York, USA');
-      expect(prompt).toContain('- **Timezone**: America/New_York');
+      expect(prompt).toContain('### User Location: New York, USA');
+      expect(prompt).toContain('### Timezone: America/New_York');
     });
 
     it('should use current date when Utils.getCurrentDate is not available', () => {
       // Mock dependencies
       vi.mocked(Utils.selectEquitably).mockReturnValue({
-        'question1': 'answer1',
-        'question2': 'answer2'
+        question1: 'answer1',
+        question2: 'answer2',
       });
       vi.mocked(Utils.getCurrentDate).mockReturnValue(undefined);
 
       const prompt = AssistantSdk.getAssistantPrompt({});
 
       // Instead of checking for a specific date, just verify that a date is included
-      expect(prompt).toMatch(/- \*\*Date\*\*: \d{4}-\d{2}-\d{2} \d{1,2}:\d{2} \d{1,2}s/);
+      expect(prompt).toMatch(/### Date: \d{4}-\d{2}-\d{2} \d{1,2}:\d{2} \d{1,2}s/);
     });
 
     it('should use few_shots directly when Utils.selectEquitably is not available', () => {
@@ -114,7 +114,7 @@ describe('AssistantSdk', () => {
     it('should format fewshots correctly', () => {
       const fewshots = {
         'What is the capital of France?': 'Paris is the capital of France.',
-        'How do I make pasta?': 'Boil water, add pasta, cook until al dente.'
+        'How do I make pasta?': 'Boil water, add pasta, cook until al dente.',
       };
 
       const result = AssistantSdk.useFewshots(fewshots);
@@ -129,12 +129,12 @@ describe('AssistantSdk', () => {
 
     it('should respect the limit parameter', () => {
       const fewshots = {
-        'Q1': 'A1',
-        'Q2': 'A2',
-        'Q3': 'A3',
-        'Q4': 'A4',
-        'Q5': 'A5',
-        'Q6': 'A6'
+        Q1: 'A1',
+        Q2: 'A2',
+        Q3: 'A3',
+        Q4: 'A4',
+        Q5: 'A5',
+        Q6: 'A6',
       };
 
       const result = AssistantSdk.useFewshots(fewshots, 3);

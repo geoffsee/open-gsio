@@ -1,8 +1,8 @@
-import { types } from "mobx-state-tree";
+import { types } from 'mobx-state-tree';
 
 export default types
-  .model("O1Message", {
-    role: types.enumeration(["user", "assistant", "system"]),
+  .model('O1Message', {
+    role: types.enumeration(['user', 'assistant', 'system']),
     content: types.array(
       types.model({
         type: types.string,
@@ -10,11 +10,11 @@ export default types
       }),
     ),
   })
-  .actions((self) => ({
-    setContent(newContent: string, contentType: string = "text") {
+  .actions(self => ({
+    setContent(newContent: string, contentType: string = 'text') {
       self.content = [{ type: contentType, text: newContent }];
     },
-    append(newContent: string, contentType: string = "text") {
+    append(newContent: string, contentType: string = 'text') {
       self.content.push({ type: contentType, text: newContent });
     },
   }));

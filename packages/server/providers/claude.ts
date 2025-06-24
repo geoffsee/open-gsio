@@ -1,14 +1,16 @@
-import Anthropic from "@anthropic-ai/sdk";
-import {OpenAI} from "openai";
+import Anthropic from '@anthropic-ai/sdk';
 import {
   _NotCustomized,
   ISimpleType,
   ModelPropertiesDeclarationToProperties,
   ModelSnapshotType2,
   UnionStringArray,
-} from "mobx-state-tree";
-import ChatSdk from "../lib/chat-sdk.ts";
-import {BaseChatProvider, CommonProviderParams} from "./chat-stream-provider.ts";
+} from 'mobx-state-tree';
+import { OpenAI } from 'openai';
+
+import ChatSdk from '../lib/chat-sdk.ts';
+
+import { BaseChatProvider, CommonProviderParams } from './chat-stream-provider.ts';
 
 export class ClaudeChatProvider extends BaseChatProvider {
   private anthropic: Anthropic | null = null;
@@ -33,20 +35,20 @@ export class ClaudeChatProvider extends BaseChatProvider {
       stream: true,
       model: param.model,
       messages: safeMessages,
-      ...claudeTuningParams
+      ...claudeTuningParams,
     };
   }
 
   async processChunk(chunk: any, dataCallback: (data: any) => void): Promise<boolean> {
-    if (chunk.type === "message_stop") {
+    if (chunk.type === 'message_stop') {
       dataCallback({
-        type: "chat",
+        type: 'chat',
         data: {
           choices: [
             {
-              delta: { content: "" },
+              delta: { content: '' },
               logprobs: null,
-              finish_reason: "stop",
+              finish_reason: 'stop',
             },
           ],
         },
@@ -54,15 +56,12 @@ export class ClaudeChatProvider extends BaseChatProvider {
       return true;
     }
 
-    dataCallback({ type: "chat", data: chunk });
+    dataCallback({ type: 'chat', data: chunk });
     return false;
   }
 
   // Override the base handleStream method to use Anthropic client instead of OpenAI
-  async handleStream(
-    param: CommonProviderParams,
-    dataCallback: (data: any) => void,
-  ) {
+  async handleStream(param: CommonProviderParams, dataCallback: (data: any) => void) {
     const assistantPrompt = ChatSdk.buildAssistantPrompt({ maxTokens: param.maxTokens });
     const safeMessages = ChatSdk.buildMessageChain(param.messages, {
       systemPrompt: param.systemPrompt,
@@ -75,7 +74,7 @@ export class ClaudeChatProvider extends BaseChatProvider {
     const streamParams = this.getStreamParams(param, safeMessages);
 
     if (!this.anthropic) {
-      throw new Error("Anthropic client not initialized");
+      throw new Error('Anthropic client not initialized');
     }
 
     const stream = await this.anthropic.messages.create(streamParams);

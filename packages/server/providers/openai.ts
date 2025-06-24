@@ -1,16 +1,21 @@
-import { OpenAI } from "openai";
-import { Utils } from "../lib/utils.ts";
-import { ChatCompletionCreateParamsStreaming } from "openai/resources/chat/completions/completions";
-import { BaseChatProvider, CommonProviderParams } from "./chat-stream-provider.ts";
+import { OpenAI } from 'openai';
+import { ChatCompletionCreateParamsStreaming } from 'openai/resources/chat/completions/completions';
+
+import { Utils } from '../lib/utils.ts';
+
+import { BaseChatProvider, CommonProviderParams } from './chat-stream-provider.ts';
 
 export class OpenAiChatProvider extends BaseChatProvider {
   getOpenAIClient(param: CommonProviderParams): OpenAI {
     return param.openai as OpenAI;
   }
 
-  getStreamParams(param: CommonProviderParams, safeMessages: any[]): ChatCompletionCreateParamsStreaming {
+  getStreamParams(
+    param: CommonProviderParams,
+    safeMessages: any[],
+  ): ChatCompletionCreateParamsStreaming {
     const isO1 = () => {
-      if (param.model === "o1-preview" || param.model === "o1-mini") {
+      if (param.model === 'o1-preview' || param.model === 'o1-mini') {
         return true;
       }
     };
@@ -27,8 +32,8 @@ export class OpenAiChatProvider extends BaseChatProvider {
 
     const getTuningParams = () => {
       if (isO1()) {
-        tuningParams["temperature"] = 1;
-        tuningParams["max_completion_tokens"] = (param.maxTokens as number) + 10000;
+        tuningParams['temperature'] = 1;
+        tuningParams['max_completion_tokens'] = (param.maxTokens as number) + 10000;
         return tuningParams;
       }
       return gpt4oTuningParams;
@@ -37,19 +42,19 @@ export class OpenAiChatProvider extends BaseChatProvider {
     let completionRequest: ChatCompletionCreateParamsStreaming = {
       model: param.model,
       stream: true,
-      messages: safeMessages
+      messages: safeMessages,
     };
 
     const client = this.getOpenAIClient(param);
-    const isLocal = client.baseURL.includes("localhost");
+    const isLocal = client.baseURL.includes('localhost');
 
-    if(isLocal) {
-      completionRequest["messages"] = Utils.normalizeWithBlanks(safeMessages);
-      completionRequest["stream_options"] = {
-        include_usage: true
+    if (isLocal) {
+      completionRequest['messages'] = Utils.normalizeWithBlanks(safeMessages);
+      completionRequest['stream_options'] = {
+        include_usage: true,
       };
     } else {
-      completionRequest = {...completionRequest, ...getTuningParams()};
+      completionRequest = { ...completionRequest, ...getTuningParams() };
     }
 
     return completionRequest;
@@ -60,13 +65,13 @@ export class OpenAiChatProvider extends BaseChatProvider {
 
     if (isLocal && chunk.usage) {
       dataCallback({
-        type: "chat",
+        type: 'chat',
         data: {
           choices: [
             {
-              delta: { content: "" },
+              delta: { content: '' },
               logprobs: null,
-              finish_reason: "stop",
+              finish_reason: 'stop',
             },
           ],
         },
@@ -74,7 +79,7 @@ export class OpenAiChatProvider extends BaseChatProvider {
       return true; // Break the stream
     }
 
-    dataCallback({ type: "chat", data: chunk });
+    dataCallback({ type: 'chat', data: chunk });
     return false; // Continue the stream
   }
 }
@@ -95,7 +100,7 @@ export class OpenAiChatSdk {
     dataCallback: (data: any) => any,
   ) {
     if (!ctx.messages?.length) {
-      return new Response("No messages provided", { status: 400 });
+      return new Response('No messages provided', { status: 400 });
     }
 
     return this.provider.handleStream(

@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   Button,
@@ -14,9 +13,11 @@ import {
   Textarea,
   useToast,
   VStack,
-} from "@chakra-ui/react";
-import { observer } from "mobx-react-lite";
-import feedbackState from "../../stores/ClientFeedbackStore";
+} from '@chakra-ui/react';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+
+import feedbackState from '../../stores/ClientFeedbackStore';
 
 const FeedbackModal = observer(({ isOpen, onClose, zIndex }) => {
   const toast = useToast();
@@ -26,9 +27,9 @@ const FeedbackModal = observer(({ isOpen, onClose, zIndex }) => {
 
     if (success) {
       toast({
-        title: "Feedback Submitted",
-        description: "Thank you for your feedback!",
-        status: "success",
+        title: 'Feedback Submitted',
+        description: 'Thank you for your feedback!',
+        status: 'success',
         duration: 3000,
         isClosable: true,
       });
@@ -40,9 +41,9 @@ const FeedbackModal = observer(({ isOpen, onClose, zIndex }) => {
       }
 
       toast({
-        title: "Submission Failed",
+        title: 'Submission Failed',
         description: feedbackState.error,
-        status: "error",
+        status: 'error',
         duration: 3000,
         isClosable: true,
       });
@@ -78,7 +79,7 @@ const FeedbackModal = observer(({ isOpen, onClose, zIndex }) => {
               <Textarea
                 placeholder="Type your feedback here..."
                 value={feedbackState.input}
-                onChange={(e) => feedbackState.setInput(e.target.value)}
+                onChange={e => feedbackState.setInput(e.target.value)}
                 bg="gray.700"
                 color="white"
                 minHeight="120px"
@@ -89,7 +90,7 @@ const FeedbackModal = observer(({ isOpen, onClose, zIndex }) => {
                 bottom="2"
                 right="2"
                 fontSize="xs"
-                color={charactersRemaining < 50 ? "orange.300" : "gray.400"}
+                color={charactersRemaining < 50 ? 'orange.300' : 'gray.400'}
               >
                 {charactersRemaining} characters remaining
               </Text>

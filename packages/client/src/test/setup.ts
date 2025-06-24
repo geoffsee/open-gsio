@@ -1,7 +1,7 @@
 // Vitest setup file
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
 import React from 'react';
+import { vi } from 'vitest';
 
 // Mock for framer-motion to avoid animation-related issues in tests
 // vi.mock('framer-motion', () => ({

@@ -1,8 +1,9 @@
-import React from "react";
-import { Box, Heading, Text } from "@chakra-ui/react";
-import { usePageContext } from "../renderer/usePageContext";
-import Routes from "../renderer/routes";
-import { useIsMobile } from "../components/contexts/MobileContext";
+import { Box, Heading, Text } from '@chakra-ui/react';
+import React from 'react';
+
+import { useIsMobile } from '../components/contexts/MobileContext';
+import Routes from '../renderer/routes';
+import { usePageContext } from '../renderer/usePageContext';
 
 export default function Hero() {
   const pageContext = usePageContext();
@@ -12,12 +13,12 @@ export default function Hero() {
     <Box p={2}>
       <Box>
         <Heading
-          textAlign={isMobile ? "left" : "right"}
+          textAlign={isMobile ? 'left' : 'right'}
           minWidth="90px"
-          maxWidth={"220px"}
+          maxWidth={'220px'}
           color="text.accent"
           as="h3"
-          letterSpacing={"tight"}
+          letterSpacing={'tight'}
           size="lg"
         >
           {Routes[normalizePath(pageContext.urlPathname)]?.heroLabel}
@@ -28,9 +29,9 @@ export default function Hero() {
         isTruncated
         maxWidth="100%"
         whiteSpace="nowrap"
-        letterSpacing={"tight"}
+        letterSpacing={'tight'}
         color="text.accent"
-        textAlign={isMobile ? "left" : "right"}
+        textAlign={isMobile ? 'left' : 'right'}
         overflow="hidden"
       >
         {new Date().toLocaleDateString()}
@@ -39,9 +40,9 @@ export default function Hero() {
   );
 }
 
-const normalizePath = (path) => {
-  if (!path) return "/";
-  if (path.length > 1 && path.endsWith("/")) {
+const normalizePath = path => {
+  if (!path) return '/';
+  if (path.length > 1 && path.endsWith('/')) {
     path = path.slice(0, -1);
   }
   return path.toLowerCase();

@@ -1,5 +1,5 @@
-import { useContext, createContext, type ReactNode } from "react";
-import type { PageContext } from "vike/types";
+import { useContext, createContext, type ReactNode } from 'react';
+import type { PageContext } from 'vike/types';
 
 export { PageContextProvider };
 export { usePageContext };
