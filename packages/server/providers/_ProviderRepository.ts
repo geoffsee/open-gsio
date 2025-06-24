@@ -20,7 +20,7 @@ export class ProviderRepository {
         anthropic: 'https://api.anthropic.com/v1',
         openai: 'https://api.openai.com/v1',
         cerebras: 'https://api.cerebras.com/v1',
-        ollama: "http://localhost:11434",
+        ollama: "http://localhost:11434/v1",
         mlx: "http://localhost:10240/v1",
     }
 
