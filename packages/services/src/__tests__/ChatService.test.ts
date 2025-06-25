@@ -223,25 +223,25 @@ describe('ChatService', () => {
     });
   });
 
-  describe('handleChatRequest', () => {
-    // TODO: Fix this test
-    // it('should call ChatSdk.handleChatRequest with correct parameters', async () => {
-    //   const mockRequest = new Request('https://example.com/chat');
-    //   const mockResponse = new Response('Test response');
-    //
-    //   ChatSdk.handleChatRequest.mockResolvedValueOnce(mockResponse);
-    //   const result = await chatService.handleChatRequest(mockRequest);
-    //
-    //   expect(ChatSdk.handleChatRequest).toHaveBeenCalledWith(mockRequest, {
-    //     openai: chatService.openai,
-    //     env: mockEnv,
-    //     systemPrompt: chatService.systemPrompt,
-    //     maxTokens: chatService.maxTokens,
-    //   });
-    //
-    //   expect(result).toBe(mockResponse);
-    // });
-  });
+  // TODO: Fix this test suite
+  // describe('handleChatRequest', () => {
+  // it('should call ChatSdk.handleChatRequest with correct parameters', async () => {
+  //   const mockRequest = new Request('https://example.com/chat');
+  //   const mockResponse = new Response('Test response');
+  //
+  //   ChatSdk.handleChatRequest.mockResolvedValueOnce(mockResponse);
+  //   const result = await chatService.handleChatRequest(mockRequest);
+  //
+  //   expect(ChatSdk.handleChatRequest).toHaveBeenCalledWith(mockRequest, {
+  //     openai: chatService.openai,
+  //     env: mockEnv,
+  //     systemPrompt: chatService.systemPrompt,
+  //     maxTokens: chatService.maxTokens,
+  //   });
+  //
+  //   expect(result).toBe(mockResponse);
+  // });
+  // });
 
   describe('handleSseStream', () => {
     it('should return 409 if stream is already active', async () => {
