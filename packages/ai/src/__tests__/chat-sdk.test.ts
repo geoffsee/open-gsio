@@ -1,8 +1,9 @@
-import { Message } from '@open-gsio/schema';
+import { Schema } from '@open-gsio/schema';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { AssistantSdk } from '../assistant-sdk';
 import { ChatSdk } from '../chat-sdk';
+import { ProviderRepository } from '../providers/_ProviderRepository.ts';
 
 // Mock dependencies
 vi.mock('../assistant-sdk', () => ({
@@ -11,15 +12,17 @@ vi.mock('../assistant-sdk', () => ({
   },
 }));
 
-vi.mock('../../models/Message', () => ({
-  default: {
-    create: vi.fn(message => message),
+vi.mock('@open-gsio/schema', () => ({
+  Schema: {
+    Message: {
+      create: vi.fn(message => message),
+    },
   },
 }));
 
-vi.mock('../../providers/_ProviderRepository', () => ({
+vi.mock('../providers/_ProviderRepository', () => ({
   ProviderRepository: {
-    getModelFamily: vi.fn(),
+    getModelFamily: vi.fn().mockResolvedValue('openai'),
   },
 }));
 
@@ -35,7 +38,7 @@ describe('ChatSdk', () => {
 
       const result = await ChatSdk.preprocess({ messages });
 
-      expect(Message.create).toHaveBeenCalledWith({
+      expect(Schema.Message.create).toHaveBeenCalledWith({
         role: 'assistant',
         content: '',
       });
@@ -155,80 +158,80 @@ describe('ChatSdk', () => {
 
   describe('buildMessageChain', () => {
     // TODO: Fix this test
-    // it('should build a message chain with system role for most models', async () => {
-    //   vi.mocked(ProviderRepository.getModelFamily).mockResolvedValue('openai');
-    //
-    //   const messages = [{ role: 'user', content: 'Hello' }];
-    //
-    //   const opts = {
-    //     systemPrompt: 'System prompt',
-    //     assistantPrompt: 'Assistant prompt',
-    //     toolResults: { role: 'tool', content: 'Tool result' },
-    //     model: 'gpt-4',
-    //   };
-    //
-    //   const result = await ChatSdk.buildMessageChain(messages, opts as any);
-    //
-    //   expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('gpt-4', undefined);
-    //   expect(Message.create).toHaveBeenCalledTimes(3);
-    //   expect(Message.create).toHaveBeenNthCalledWith(1, {
-    //     role: 'system',
-    //     content: 'System prompt',
-    //   });
-    //   expect(Message.create).toHaveBeenNthCalledWith(2, {
-    //     role: 'assistant',
-    //     content: 'Assistant prompt',
-    //   });
-    //   expect(Message.create).toHaveBeenNthCalledWith(3, {
-    //     role: 'user',
-    //     content: 'Hello',
-    //   });
-    // });
-    // TODO: Fix this test
-    // it('should build a message chain with assistant role for o1, gemma, claude, or google models', async () => {
-    //   vi.mocked(ProviderRepository.getModelFamily).mockResolvedValue('claude');
-    //
-    //   const messages = [{ role: 'user', content: 'Hello' }];
-    //
-    //   const opts = {
-    //     systemPrompt: 'System prompt',
-    //     assistantPrompt: 'Assistant prompt',
-    //     toolResults: { role: 'tool', content: 'Tool result' },
-    //     model: 'claude-3',
-    //   };
-    //
-    //   const result = await ChatSdk.buildMessageChain(messages, opts as any);
-    //
-    //   expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('claude-3', undefined);
-    //   expect(Message.create).toHaveBeenCalledTimes(3);
-    //   expect(Message.create).toHaveBeenNthCalledWith(1, {
-    //     role: 'assistant',
-    //     content: 'System prompt',
-    //   });
-    // });
-    // TODO: Fix this test
-    // it('should filter out messages with empty content', async () => {
-    //   //
-    //   vi.mocked(ProviderRepository.getModelFamily).mockResolvedValue('openai');
-    //
-    //   const messages = [
-    //     { role: 'user', content: 'Hello' },
-    //     { role: 'user', content: '' },
-    //     { role: 'user', content: '  ' },
-    //     { role: 'user', content: 'World' },
-    //   ];
-    //
-    //   const opts = {
-    //     systemPrompt: 'System prompt',
-    //     assistantPrompt: 'Assistant prompt',
-    //     toolResults: { role: 'tool', content: 'Tool result' },
-    //     model: 'gpt-4',
-    //   };
-    //
-    //   const result = await ChatSdk.buildMessageChain(messages, opts as any);
-    //
-    //   // 2 system/assistant messages + 2 user messages (Hello and World)
-    //   expect(Message.create).toHaveBeenCalledTimes(4);
-    // });
+    it('should build a message chain with system role for most models', async () => {
+      ProviderRepository.getModelFamily.mockResolvedValue('openai');
+
+      const messages = [{ role: 'user', content: 'Hello' }];
+
+      const opts = {
+        systemPrompt: 'System prompt',
+        assistantPrompt: 'Assistant prompt',
+        toolResults: { role: 'tool', content: 'Tool result' },
+        model: 'gpt-4',
+        env: {},
+      };
+
+      const result = await ChatSdk.buildMessageChain(messages, opts as any);
+
+      expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('gpt-4', {});
+      expect(Schema.Message.create).toHaveBeenCalledTimes(3);
+      expect(Schema.Message.create).toHaveBeenNthCalledWith(1, {
+        role: 'system',
+        content: 'System prompt',
+      });
+      expect(Schema.Message.create).toHaveBeenNthCalledWith(2, {
+        role: 'assistant',
+        content: 'Assistant prompt',
+      });
+      expect(Schema.Message.create).toHaveBeenNthCalledWith(3, {
+        role: 'user',
+        content: 'Hello',
+      });
+    });
+    it('should build a message chain with assistant role for o1, gemma, claude, or google models', async () => {
+      ProviderRepository.getModelFamily.mockResolvedValue('claude');
+
+      const messages = [{ role: 'user', content: 'Hello' }];
+
+      const opts = {
+        systemPrompt: 'System prompt',
+        assistantPrompt: 'Assistant prompt',
+        toolResults: { role: 'tool', content: 'Tool result' },
+        model: 'claude-3',
+        env: {},
+      };
+
+      const result = await ChatSdk.buildMessageChain(messages, opts as any);
+
+      expect(ProviderRepository.getModelFamily).toHaveBeenCalledWith('claude-3', {});
+      expect(Schema.Message.create).toHaveBeenCalledTimes(3);
+      expect(Schema.Message.create).toHaveBeenNthCalledWith(1, {
+        role: 'assistant',
+        content: 'System prompt',
+      });
+    });
+    it('should filter out messages with empty content', async () => {
+      ProviderRepository.getModelFamily.mockResolvedValue('openai');
+
+      const messages = [
+        { role: 'user', content: 'Hello' },
+        { role: 'user', content: '' },
+        { role: 'user', content: '  ' },
+        { role: 'user', content: 'World' },
+      ];
+
+      const opts = {
+        systemPrompt: 'System prompt',
+        assistantPrompt: 'Assistant prompt',
+        toolResults: { role: 'tool', content: 'Tool result' },
+        model: 'gpt-4',
+        env: {},
+      };
+
+      const result = await ChatSdk.buildMessageChain(messages, opts as any);
+
+      // 2 system/assistant messages + 2 user messages (Hello and World)
+      expect(Schema.Message.create).toHaveBeenCalledTimes(4);
+    });
   });
 });

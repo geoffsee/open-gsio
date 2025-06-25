@@ -13,10 +13,10 @@ import {
   OllamaChatSdk,
   XaiChatSdk,
 } from '@open-gsio/ai/src';
+import { Common } from '@open-gsio/ai/utils';
 import { Schema } from '@open-gsio/schema';
 import { flow, getSnapshot, types } from 'mobx-state-tree';
 import OpenAI from 'openai';
-import { Common } from 'packages/ai/src/utils';
 
 export interface StreamParams {
   env: Env;

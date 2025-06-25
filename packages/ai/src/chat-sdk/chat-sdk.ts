@@ -1,4 +1,4 @@
-import { Message } from '@open-gsio/schema';
+import { Schema } from '@open-gsio/schema';
 import type { Instance } from 'mobx-state-tree';
 import { OpenAI } from 'openai';
 
@@ -14,7 +14,7 @@ import type {
 export class ChatSdk {
   static async preprocess(params: PreprocessParams) {
     //   a slot for to provide additional context
-    return Message.create({
+    return Schema.Message.create({
       role: 'assistant',
       content: '',
     });
@@ -105,7 +105,7 @@ export class ChatSdk {
     const messagesToSend = [];
 
     messagesToSend.push(
-      Message.create({
+      Schema.Message.create({
         role:
           opts.model.includes('o1') ||
           opts.model.includes('gemma') ||
@@ -118,7 +118,7 @@ export class ChatSdk {
     );
 
     messagesToSend.push(
-      Message.create({
+      Schema.Message.create({
         role: 'assistant',
         content: opts.assistantPrompt.trim(),
       }),
@@ -127,7 +127,7 @@ export class ChatSdk {
     messagesToSend.push(
       ...messages
         .filter((message: any) => message.content?.trim())
-        .map((message: any) => Message.create(message)),
+        .map((message: any) => Schema.Message.create(message)),
     );
 
     return messagesToSend;

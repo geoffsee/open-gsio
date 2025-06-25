@@ -1,6 +1,5 @@
 import { getSnapshot } from 'mobx-state-tree';
 import OpenAI from 'openai';
-import { ChatSdk } from 'packages/ai/src/chat-sdk';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import ChatService, { ClientError } from '../chat-service/ChatService.ts';

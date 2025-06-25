@@ -4,7 +4,7 @@ import { AssistantSdk } from '../assistant-sdk';
 import { Utils } from '../utils/utils.ts';
 
 // Mock dependencies
-vi.mock('../utils', () => ({
+vi.mock('../utils/utils.ts', () => ({
   Utils: {
     selectEquitably: vi.fn(),
     getCurrentDate: vi.fn(),
@@ -26,8 +26,7 @@ describe('AssistantSdk', () => {
     vi.setSystemTime(new Date('2023-01-01T12:30:45Z'));
 
     // Reset mocks
-    vi.mocked(Utils.selectEquitably).mockReset();
-    vi.mocked(Utils.getCurrentDate).mockReset();
+    vi.resetAllMocks();
   });
 
   afterEach(() => {
@@ -37,11 +36,11 @@ describe('AssistantSdk', () => {
   describe('getAssistantPrompt', () => {
     it('should return a prompt with default values when minimal params are provided', () => {
       // Mock dependencies
-      vi.mocked(Utils.selectEquitably).mockReturnValue({
+      Utils.selectEquitably.mockReturnValue({
         question1: 'answer1',
         question2: 'answer2',
       });
-      vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
+      Utils.getCurrentDate.mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({});
 
@@ -54,11 +53,11 @@ describe('AssistantSdk', () => {
 
     it('should include maxTokens when provided', () => {
       // Mock dependencies
-      vi.mocked(Utils.selectEquitably).mockReturnValue({
+      Utils.selectEquitably.mockReturnValue({
         question1: 'answer1',
         question2: 'answer2',
       });
-      vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
+      Utils.getCurrentDate.mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({ maxTokens: 1000 });
 
@@ -67,11 +66,11 @@ describe('AssistantSdk', () => {
 
     it('should use provided userTimezone and userLocation', () => {
       // Mock dependencies
-      vi.mocked(Utils.selectEquitably).mockReturnValue({
+      Utils.selectEquitably.mockReturnValue({
         question1: 'answer1',
         question2: 'answer2',
       });
-      vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
+      Utils.getCurrentDate.mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({
         userTimezone: 'America/New_York',
@@ -84,12 +83,12 @@ describe('AssistantSdk', () => {
 
     it('should use current date when Utils.getCurrentDate is not available', () => {
       // Mock dependencies
-      vi.mocked(Utils.selectEquitably).mockReturnValue({
+      Utils.selectEquitably.mockReturnValue({
         question1: 'answer1',
         question2: 'answer2',
       });
       // @ts-expect-error - is supposed to break
-      vi.mocked(Utils.getCurrentDate).mockReturnValue(undefined);
+      Utils.getCurrentDate.mockReturnValue(undefined);
 
       const prompt = AssistantSdk.getAssistantPrompt({});
 
@@ -99,8 +98,8 @@ describe('AssistantSdk', () => {
 
     it('should use few_shots directly when Utils.selectEquitably is not available', () => {
       // @ts-expect-error - is supposed to break
-      vi.mocked(Utils.selectEquitably).mockReturnValue(undefined);
-      vi.mocked(Utils.getCurrentDate).mockReturnValue('2023-01-01T12:30:45Z');
+      Utils.selectEquitably.mockReturnValue(undefined);
+      Utils.getCurrentDate.mockReturnValue('2023-01-01T12:30:45Z');
 
       const prompt = AssistantSdk.getAssistantPrompt({});
 

@@ -2,6 +2,36 @@
   "name": "@open-gsio/ai",
   "type": "module",
   "module": "src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./chat-sdk/chat-sdk.ts": {
+      "import": "./src/chat-sdk/chat-sdk.ts",
+      "types": "./src/chat-sdk/chat-sdk.ts"
+    },
+    "./providers/_ProviderRepository.ts": {
+      "import": "./src/providers/_ProviderRepository.ts",
+      "types": "./src/providers/_ProviderRepository.ts"
+    },
+    "./providers/google.ts": {
+      "import": "./src/providers/google.ts",
+      "types": "./src/providers/google.ts"
+    },
+    "./providers/openai.ts": {
+      "import": "./src/providers/openai.ts",
+      "types": "./src/providers/openai.ts"
+    },
+    "./src": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./utils": {
+      "import": "./src/utils/index.ts",
+      "types": "./src/utils/index.ts"
+    }
+  },
   "scripts": {
     "tests": "vitest run",
     "tests:coverage": "vitest run --coverage.enabled=true"
