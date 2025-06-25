@@ -1,10 +1,10 @@
 import { readdir } from 'node:fs/promises';
 
-import ServerCoordinator from '@open-gsio/durable-objects/src/ServerCoordinatorBun.ts';
+import ServerCoordinator from '@open-gsio/coordinators/src/ServerCoordinatorBun.ts';
+import Router from '@open-gsio/router';
 import { config } from 'dotenv';
 import type { RequestLike } from 'itty-router';
 
-import Router from '../router';
 import { BunSqliteKVNamespace } from '../storage/BunSqliteKVNamespace.ts';
 
 const router = Router.Router();
