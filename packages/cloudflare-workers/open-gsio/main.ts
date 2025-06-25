@@ -1,5 +1,5 @@
-import { ServerCoordinator } from '@open-gsio/durable-objects';
-import Router from '@open-gsio/server/src/router';
+import { ServerCoordinator } from '@open-gsio/coordinators';
+import Router from '@open-gsio/router';
 
 export { ServerCoordinator };
 

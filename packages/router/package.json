@@ -1,0 +1,15 @@
+{
+  "name": "@open-gsio/router",
+  "type": "module",
+  "module": "src/index.ts",
+  "scripts": {
+    "tests": "vitest run",
+    "tests:coverage": "vitest run --coverage.enabled=true"
+  },
+  "devDependencies": {
+    "@open-gsio/services": "workspace:*",
+    "itty-router": "^5.0.18",
+    "mobx": "^6.13.5",
+    "mobx-state-tree": "^6.0.1"
+  }
+}

@@ -1,16 +1,18 @@
 {
-  "name": "@open-gsio/server",
+  "name": "@open-gsio/services",
   "type": "module",
+  "module": "src/index.ts",
   "scripts": {
-    "dev": "bun src/server/server.ts",
-    "build": "bun run src/server/build.ts"
+    "tests": "vitest run",
+    "tests:coverage": "vitest run --coverage.enabled=true"
   },
   "devDependencies": {
     "@open-gsio/env": "workspace:*",
     "@open-gsio/client": "workspace:*",
-    "@open-gsio/router": "workspace:*",
     "@open-gsio/coordinators": "workspace:*",
+    "@open-gsio/schema": "workspace:*",
     "@open-gsio/ai": "workspace:*",
+    "@anthropic-ai/sdk": "^0.32.1",
     "bun-sqlite-key-value": "^1.13.1",
     "@cloudflare/workers-types": "^4.20241205.0",
     "@testing-library/jest-dom": "^6.4.2",
@@ -23,8 +25,12 @@
     "mobx": "^6.13.5",
     "mobx-state-tree": "^6.0.1",
     "moo": "^0.5.2",
+    "openai": "^5.0.1",
     "typescript": "^5.7.2",
     "vike": "0.4.193",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4",
+    "wrangler": "^4.18.0",
     "zod": "^3.23.8",
     "dotenv": "^16.5.0"
   }
