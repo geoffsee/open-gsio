@@ -13,7 +13,7 @@ export default function BuiltWithButton() {
       bg="transparent"
       stroke="text.accent"
       color="text.accent"
-      onClick={() => alert('Built by Geoff Seemueller')}
+      onClick={() => alert('Built by GSIO')}
       _hover={{
         bg: 'transparent',
         svg: {

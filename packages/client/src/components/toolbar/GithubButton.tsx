@@ -8,7 +8,7 @@ export default function GithubButton() {
   return (
     <IconButton
       as="a"
-      href="https://github.com/geoffsee"
+      href="https://github.com/geoffsee/open-gsio"
       target="_blank"
       aria-label="GitHub"
       icon={<Github />}
