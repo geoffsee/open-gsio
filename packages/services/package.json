@@ -19,7 +19,7 @@
     "@open-gsio/coordinators": "workspace:*",
     "@open-gsio/schema": "workspace:*",
     "@open-gsio/ai": "workspace:*",
-    "@anthropic-ai/sdk": "^0.32.1",
+    "@anthropic-ai/sdk": "^0.55.0",
     "bun-sqlite-key-value": "^1.13.1",
     "@cloudflare/workers-types": "^4.20241205.0",
     "@testing-library/jest-dom": "^6.4.2",
