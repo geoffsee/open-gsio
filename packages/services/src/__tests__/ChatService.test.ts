@@ -37,6 +37,18 @@ vi.mock('../../lib/handleStreamData', () => ({
   default: vi.fn().mockReturnValue(() => {}),
 }));
 
+// Mock ProviderRepository
+vi.mock('@open-gsio/ai/providers/_ProviderRepository.ts', () => {
+  return {
+    ProviderRepository: class {
+      constructor() {}
+      getProviders() {
+        return [{ name: 'openai', key: 'test-key', endpoint: 'https://api.openai.com/v1' }];
+      }
+    },
+  };
+});
+
 describe('ChatService', () => {
   let chatService: any;
   let mockEnv: any;
@@ -220,6 +232,105 @@ describe('ChatService', () => {
       // Restore mocks
       Response.json = originalResponseJson;
       localService.getSupportedModels = originalGetSupportedModels;
+    });
+
+    it('should test the cache refresh mechanism when providers change', async () => {
+      // This test verifies that the cache is refreshed when providers change
+      // and that the cache is used when providers haven't changed.
+
+      // Mock data for the first scenario (cache hit)
+      const cachedModels = [
+        { id: 'model-1', provider: 'openai' },
+        { id: 'model-2', provider: 'openai' },
+      ];
+      const providersSignature = JSON.stringify(['openai']);
+
+      // Mock KV_STORAGE for the first scenario (cache hit)
+      const mockKVStorage = {
+        get: vi.fn().mockImplementation(key => {
+          if (key === 'supportedModels') return Promise.resolve(JSON.stringify(cachedModels));
+          if (key === 'providersSignature') return Promise.resolve(providersSignature);
+          return Promise.resolve(null);
+        }),
+        put: vi.fn().mockResolvedValue(undefined),
+      };
+
+      // The ProviderRepository is already mocked at the top of the file
+
+      // Create a service instance with the mocked environment
+      const service = ChatService.create({
+        maxTokens: 2000,
+        systemPrompt: 'You are a helpful assistant.',
+      });
+
+      // Set up the environment with the mocked KV_STORAGE
+      service.setEnv({
+        ...mockEnv,
+        KV_STORAGE: mockKVStorage,
+      });
+
+      // Scenario 1: Cache hit - providers haven't changed
+      const response1 = await service.getSupportedModels();
+      const data1 = await response1.json();
+
+      // Verify the cache was used
+      expect(mockKVStorage.get).toHaveBeenCalledWith('supportedModels');
+      expect(mockKVStorage.get).toHaveBeenCalledWith('providersSignature');
+      expect(data1).toEqual(cachedModels);
+      expect(mockKVStorage.put).not.toHaveBeenCalled();
+
+      // Reset the mock calls for the next scenario
+      vi.clearAllMocks();
+
+      // Scenario 2: Cache miss - providers have changed
+      // Update the mock to return a different providers signature
+      mockKVStorage.get.mockImplementation(key => {
+        if (key === 'supportedModels') {
+          return Promise.resolve(JSON.stringify(cachedModels));
+        }
+        if (key === 'providersSignature') {
+          // Different signature
+          return Promise.resolve(JSON.stringify(['openai', 'anthropic']));
+        }
+        return Promise.resolve(null);
+      });
+
+      // Mock the provider models fetching to avoid actual API calls
+      const mockModels = [
+        { id: 'new-model-1', provider: 'openai' },
+        { id: 'new-model-2', provider: 'openai' },
+      ];
+
+      // Mock OpenAI instance for the second scenario
+      const mockOpenAIInstance = {
+        models: {
+          list: vi.fn().mockResolvedValue({
+            data: mockModels,
+          }),
+          retrieve: vi.fn().mockImplementation(id => {
+            return Promise.resolve({ id, provider: 'openai' });
+          }),
+        },
+      };
+
+      // Update the OpenAI mock
+      vi.mocked(OpenAI).mockImplementation(() => mockOpenAIInstance as any);
+
+      // Call getSupportedModels again
+      const response2 = await service.getSupportedModels();
+
+      // Verify the cache was refreshed
+      expect(mockKVStorage.get).toHaveBeenCalledWith('supportedModels');
+      expect(mockKVStorage.get).toHaveBeenCalledWith('providersSignature');
+      expect(mockKVStorage.put).toHaveBeenCalledTimes(2); // Called twice: once for models, once for signature
+      expect(mockKVStorage.put).toHaveBeenCalledWith('supportedModels', expect.any(String), {
+        expirationTtl: 60 * 60 * 24,
+      });
+      expect(mockKVStorage.put).toHaveBeenCalledWith('providersSignature', expect.any(String), {
+        expirationTtl: 60 * 60 * 24,
+      });
+
+      // No need to restore mocks as we're using vi.mock at the module level
     });
   });
 

@@ -118,11 +118,19 @@ const ChatService = types
 
         const useCache = true;
 
+        // Create a signature of the current providers
+        const providerRepo = new ProviderRepository(self.env);
+        const providers = providerRepo.getProviders();
+        const currentProvidersSignature = JSON.stringify(providers.map(p => p.name).sort());
+
         if (useCache) {
           // ----- 1. Try cached value ---------------------------------------------
           try {
             const cached = yield self.env.KV_STORAGE.get('supportedModels');
-            if (cached) {
+            const cachedSignature = yield self.env.KV_STORAGE.get('providersSignature');
+
+            // Check if cache exists and providers haven't changed
+            if (cached && cachedSignature && cachedSignature === currentProvidersSignature) {
               const parsed = JSON.parse(cached as string);
               if (Array.isArray(parsed) && parsed.length > 0) {
                 logger.info('Cache hit – returning supportedModels from KV');
@@ -130,6 +138,11 @@ const ChatService = types
               }
               logger.warn('Cache entry malformed – refreshing');
               throw new Error('Malformed cache entry');
+            } else if (
+              cached &&
+              (!cachedSignature || cachedSignature !== currentProvidersSignature)
+            ) {
+              logger.info('Providers changed – refreshing cache');
             }
           } catch (err) {
             logger.warn('Error reading/parsing supportedModels cache', err);
@@ -137,8 +150,6 @@ const ChatService = types
         }
 
         // ----- 2. Build fresh list ---------------------------------------------
-        const providerRepo = new ProviderRepository(self.env);
-        const providers = providerRepo.getProviders();
 
         const providerModels = new Map<string, any[]>();
         const modelMeta = new Map<string, any>();
@@ -195,11 +206,20 @@ const ChatService = types
 
         // ----- 4. Cache fresh list ---------------------------------------------
         try {
+          // Store the models
           yield self.env.KV_STORAGE.put(
             'supportedModels',
             JSON.stringify(resultArr),
-            { expirationTtl: 60 * 60 * 24 }, // 24
+            { expirationTtl: 60 * 60 * 24 }, // 24 hours
           );
+
+          // Store the providers signature
+          yield self.env.KV_STORAGE.put(
+            'providersSignature',
+            currentProvidersSignature,
+            { expirationTtl: 60 * 60 * 24 }, // 24 hours
+          );
+
           logger.info('supportedModels cache refreshed');
         } catch (err) {
           logger.error('KV put failed for supportedModels', err);
