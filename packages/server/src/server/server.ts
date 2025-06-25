@@ -17,6 +17,11 @@ config({
   // }
 });
 
+// bootstrap the root path of the existing router to the asset handler defined here
+router.get('/', async (request: RequestLike, env: any) => {
+  return await assetHandler.ASSETS.fetch(request as Request);
+});
+
 export default {
   port: 3003,
   fetch: async (request: RequestLike, env: { [key: string]: any }, ctx: any) => {
@@ -67,9 +72,16 @@ export const assetHandler = {
       const originalUrl = new URL(request.url);
       const url = new URL(request.url);
 
-      // List all files in the public directory
-      const PUBLIC_DIR = new URL('../client/public/', import.meta.url).pathname;
-      const publicFiles = await readdir(PUBLIC_DIR, { recursive: true });
+      // Fixed path: go up to packages level, then to client/public
+      const PUBLIC_DIR = new URL('../../../client/public/', import.meta.url).pathname;
+
+      let publicFiles: string[] = [];
+      try {
+        publicFiles = await readdir(PUBLIC_DIR, { recursive: true });
+      } catch (error) {
+        console.warn(`Could not read public directory ${PUBLIC_DIR}:`, error);
+        // Continue without public files list
+      }
 
       // Get the filename from pathname and remove any path traversal attempts
       const filename = url.pathname.split('/').pop()?.replace(/\.\./g, '') || '';
@@ -84,7 +96,8 @@ export const assetHandler = {
         url.pathname = `/static${url.pathname}`;
       }
 
-      const dist = new URL('../client/dist/client', import.meta.url).pathname;
+      // Fixed path: go up to packages level, then to client/dist/client
+      const dist = new URL('../../../client/dist/client', import.meta.url).pathname;
 
       try {
         return new Response(Bun.file(`${dist}${url.pathname}`));
