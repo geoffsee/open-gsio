@@ -7,30 +7,30 @@ import { VitePWA } from 'vite-plugin-pwa';
 // eslint-disable-next-line import/no-unresolved
 import { configDefaults } from 'vitest/config';
 
+const prebuildPlugin = () => ({
+  name: 'prebuild',
+  config(config, { command }) {
+    if (command === 'build') {
+      child_process.execSync('bun generate:sitemap');
+      console.log('Generated Sitemap -> public/sitemap.xml');
+      child_process.execSync('bun run generate:robotstxt');
+      console.log('Generated robots.txt -> public/robots.txt');
+      child_process.execSync('bun run generate:fonts');
+      console.log('Copied fonts -> public/static/fonts');
+    }
+  },
+});
+
 export default defineConfig(({ command }) => {
-  const customPlugins = [
-    {
-      name: 'sitemap-generator',
-      buildStart(options) {
-        if (command === 'build') {
-          child_process.execSync('bun run generate:sitemap');
-          console.log('Generated Sitemap -> public/sitemap.xml');
-          child_process.execSync('bun run generate:robotstxt');
-          console.log('Generated robots.txt -> public/robots.txt');
-          child_process.execSync('bun run generate:fonts');
-          console.log('Copied fonts -> public/static/fonts');
-        }
-      },
-    },
-  ];
   return {
     mode: 'production',
     plugins: [
-      ...customPlugins,
+      prebuildPlugin(),
+      react(),
       vike({
         prerender: true,
+        disableAutoFullBuild: false,
       }),
-      react(),
       // PWA plugin saves money on data transfer by caching assets on the client
       /*
                 For safari, use this script in the console to unregister the service worker.
@@ -60,7 +60,7 @@ export default defineConfig(({ command }) => {
     server: {
       port: 3000,
       proxy: {
-        // proxies requests to server
+        // proxies requests in development
         '/api': {
           target: 'http://localhost:3003',
         },

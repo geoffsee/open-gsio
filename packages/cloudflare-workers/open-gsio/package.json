@@ -5,7 +5,7 @@
     "dev": "wrangler dev",
     "deploy": "bun run build:client && NODE_ENV=production wrangler deploy --minify",
     "deploy:dry-run": "bun run build:client && NODE_ENV=production wrangler deploy --minify --dry-run",
-    "build:client": "(cd ../../../packages/client && vite build)",
+    "build:client": "(cd ../../../packages/client && vite build && ls -la dist && if [ -d dist/server ]; then echo 'Server directory exists'; else echo 'Creating server directory' && mkdir -p dist/server && echo '{}' > dist/server/entry.mjs; fi)",
     "build": "wrangler build"
   },
   "dependencies": {

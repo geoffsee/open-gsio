@@ -1,4 +1,4 @@
-import renderPage from '@open-gsio/client/server';
+import { handleSsr } from '@open-gsio/client/server/index.ts';
 import { types } from 'mobx-state-tree';
 
 export default types
@@ -15,30 +15,7 @@ export default types
       self.ctx = ctx;
     },
     // @ts-expect-error - Language server doesn't have enough information to validate Vike.PageContext.env
-    async handleSsr(url: string, headers: Headers, env: Vike.PageContext.env) {
-      const pageContextInit = {
-        urlOriginal: url,
-        headersOriginal: headers,
-        fetch: (...args: Parameters<typeof fetch>) => fetch(...args),
-        env,
-      };
-
-      const pageContext = await renderPage(pageContextInit);
-      const { httpResponse } = pageContext;
-
-      if (!httpResponse) {
-        return null;
-      } else {
-        const { statusCode: status, headers: responseHeaders } = httpResponse;
-
-        // Create a new Headers object and remove Content-Length for streaming.
-        const newHeaders = new Headers(responseHeaders);
-        newHeaders.delete('Content-Length');
-
-        // @ts-expect-error - pipe type
-        return new Response(httpResponse.pipe, { headers: newHeaders, status });
-      }
-    },
+    handleSsr: handleSsr,
     async handleStaticAssets(request: Request, env: Env) {
       try {
         return await env.ASSETS.fetch(request);
