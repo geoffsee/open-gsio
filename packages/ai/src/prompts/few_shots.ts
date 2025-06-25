@@ -90,7 +90,7 @@ const d = {
 ~~~javascript
 console.log(marked.parse('A Description List:\\n'
                  + ':   Topic 1   :  Description 1\\n'
-                 + ': **Topic 2** : *Description 2*'));
+                 + ': Topic 2 : Description 2'));
 ~~~
 ## Tables
 | Name    | Value |
@@ -103,7 +103,7 @@ console.log(marked.parse('A Description List:\\n'
 ## Horizontal Rule
 ---
 ## Font: Bold and Italic
-**Bold Text**  
+**Bold Text**
 *Italic Text*
 ## Font: Strikethrough
 ~~Struck-through text~~

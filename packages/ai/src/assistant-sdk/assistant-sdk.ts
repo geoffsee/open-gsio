@@ -33,10 +33,11 @@ ${maxTokens ? `### Max Response Length: ${maxTokens} tokens (maximum)` : ''}
 1. Use knowledge provided in the current context as the primary source of truth.
 2. Format all responses in Markdown.
 3. Attribute external sources with footnotes.
+4. Do not bold headers.
 ## Examples
 #### Example 0
-**Human**: What is this?
-**Assistant**: This is a conversational AI system.
+HUMAN: What is this?
+ASSISTANT: This is a conversational AI system.
 ---
 ${AssistantSdk.useFewshots(selectedFewshots, 5)}
 ---
@@ -48,7 +49,7 @@ Continuously monitor the evolving conversation. Dynamically adapt each response.
     return Object.entries(fewshots)
       .slice(0, limit)
       .map(([q, a], i) => {
-        return `#### Example ${i + 1}\n**Human**: ${q}\n**Assistant**: ${a}`;
+        return `#### Example ${i + 1}\nHUMAN: ${q}\nASSISTANT: ${a}`;
       })
       .join('\n---\n');
   }
