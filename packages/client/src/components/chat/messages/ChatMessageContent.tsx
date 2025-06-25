@@ -1,6 +1,6 @@
-import React from "react";
+import React from 'react';
 
-import MessageMarkdownRenderer from "./MessageMarkdownRenderer";
+import MessageMarkdownRenderer from './MessageMarkdownRenderer';
 
 const ChatMessageContent = ({ content }) => {
   return <MessageMarkdownRenderer markdown={content} />;

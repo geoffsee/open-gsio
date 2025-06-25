@@ -1,10 +1,10 @@
-import { types } from "mobx-state-tree";
+import { types } from 'mobx-state-tree';
 
 const AppMenuStateModel = types
-  .model("AppMenuState", {
+  .model('AppMenuState', {
     isOpen: types.optional(types.boolean, false),
   })
-  .actions((self) => ({
+  .actions(self => ({
     openMenu() {
       self.isOpen = true;
     },

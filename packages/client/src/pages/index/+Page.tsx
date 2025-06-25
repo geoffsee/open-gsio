@@ -1,20 +1,18 @@
-import React, { useEffect } from "react";
-import { Stack } from "@chakra-ui/react";
-import Chat from "../../components/chat/Chat";
-import clientChatStore from "../../stores/ClientChatStore";
-import { getModelFamily } from "../../components/chat/lib/SupportedModels";
+import { Stack } from '@chakra-ui/react';
+import React, { useEffect } from 'react';
+
+import Chat from '../../components/chat/Chat';
+import clientChatStore from '../../stores/ClientChatStore';
 
 // renders "/"
 export default function IndexPage() {
   useEffect(() => {
     try {
-      let model = localStorage.getItem("recentModel");
+      const model = localStorage.getItem('recentModel');
 
-      if (getModelFamily(model as string)) {
-        clientChatStore.setModel(model as string);
-      }
+      clientChatStore.setModel(model as string);
     } catch (_) {
-      console.log("using default model");
+      // Fall back to default model
     }
   }, []);
 

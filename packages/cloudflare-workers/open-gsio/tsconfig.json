@@ -1,15 +1,13 @@
 {
+  "extends": "../../../tsconfig.json",
   "compilerOptions": {
-    "target": "esnext",
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["vite/client"],
-    "module": "esnext",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "jsx": "react-jsx"
+    "outDir": "dist",
+    "rootDir": "."
   },
-  "exclude": ["*.test.ts"]
+  "include": ["*.ts"],
+  "exclude": ["node_modules", "*.test.ts"]
 }

@@ -1,10 +1,12 @@
-import { getColorThemes } from "../layout/theme/color-themes";
-import { Center, IconButton, VStack } from "@chakra-ui/react";
-import userOptionsStore from "../stores/UserOptionsStore";
-import { Circle } from "lucide-react";
-import { toolbarButtonZIndex } from "./toolbar/Toolbar";
-import React from "react";
-import { useIsMobile } from "./contexts/MobileContext";
+import { Center, IconButton, VStack } from '@chakra-ui/react';
+import { Circle } from 'lucide-react';
+import React from 'react';
+
+import { getColorThemes } from '../layout/theme/color-themes';
+import userOptionsStore from '../stores/UserOptionsStore';
+
+import { useIsMobile } from './contexts/MobileContext';
+import { toolbarButtonZIndex } from './toolbar/Toolbar';
 
 export function ThemeSelectionOptions() {
   const children = [];
@@ -24,11 +26,11 @@ export function ThemeSelectionOptions() {
             size={!isMobile ? 16 : 20}
             stroke="transparent"
             style={{
-              background: `conic-gradient(${theme.colors.background.primary.startsWith("#") ? theme.colors.background.primary : theme.colors.background.secondary} 0 50%, ${theme.colors.text.secondary} 50% 100%)`,
-              borderRadius: "50%",
-              boxShadow: "0 0 0.5px 0.25px #fff",
-              cursor: "pointer",
-              transition: "background 0.2s",
+              background: `conic-gradient(${theme.colors.background.primary.startsWith('#') ? theme.colors.background.primary : theme.colors.background.secondary} 0 50%, ${theme.colors.text.secondary} 50% 100%)`,
+              borderRadius: '50%',
+              boxShadow: '0 0 0.5px 0.25px #fff',
+              cursor: 'pointer',
+              transition: 'background 0.2s',
             }}
           />
         }
@@ -38,7 +40,7 @@ export function ThemeSelectionOptions() {
         color="transparent"
         _hover={{
           svg: {
-            transition: "stroke 0.3s ease-in-out", // Smooth transition effect
+            transition: 'stroke 0.3s ease-in-out', // Smooth transition effect
           },
         }}
         zIndex={toolbarButtonZIndex}
@@ -47,7 +49,7 @@ export function ThemeSelectionOptions() {
   }
 
   return (
-    <VStack align={!isMobile ? "end" : "start"} p={1.2}>
+    <VStack align={!isMobile ? 'end' : 'start'} p={1.2}>
       <Center>{children}</Center>
     </VStack>
   );

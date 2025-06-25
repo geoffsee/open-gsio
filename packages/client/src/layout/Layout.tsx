@@ -1,16 +1,18 @@
-import React, { useEffect, useState } from "react";
-import { PageContextProvider } from "../renderer/usePageContext";
-import { MobileProvider } from "../components/contexts/MobileContext";
-import LayoutComponent from "./LayoutComponent";
-import userOptionsStore from "../stores/UserOptionsStore";
-import { observer } from "mobx-react-lite";
-import { Chakra } from "../components/contexts/ChakraContext";
-import { getTheme } from "./theme/color-themes";
+import { observer } from 'mobx-react-lite';
+import React, { useEffect, useState } from 'react';
+
+import { Chakra } from '../components/contexts/ChakraContext';
+import { MobileProvider } from '../components/contexts/MobileContext';
+import { PageContextProvider } from '../renderer/usePageContext';
+import userOptionsStore from '../stores/UserOptionsStore';
+
+import LayoutComponent from './LayoutComponent';
+import { getTheme } from './theme/color-themes';
 
 export { Layout };
 
 const Layout = observer(({ pageContext, children }) => {
-  const [activeTheme, setActiveTheme] = useState<string>("darknight");
+  const [activeTheme, setActiveTheme] = useState<string>('darknight');
 
   useEffect(() => {
     if (userOptionsStore.theme !== activeTheme) {
@@ -22,21 +24,23 @@ const Layout = observer(({ pageContext, children }) => {
     if (pageContext?.headersOriginal) {
       const headers = new Headers(pageContext.headersOriginal);
 
-      const cookies = headers.get("cookie");
+      const cookies = headers.get('cookie');
 
       const userPreferencesCookie = cookies
-        ?.split("; ")
-        .find((row) => row.startsWith("user_preferences="))
-        ?.split("=")[1];
+        ?.split('; ')
+        .find(row => row.startsWith('user_preferences='))
+        ?.split('=')[1];
 
       try {
-        const { theme: receivedTheme } = JSON.parse(
-          atob(userPreferencesCookie ?? "{}"),
-        );
+        const { theme: receivedTheme } = JSON.parse(atob(userPreferencesCookie ?? '{}'));
         setActiveTheme(receivedTheme);
-      } catch (e) {}
+      } catch (e) {
+        // Ignore parsing errors for user preferences cookie
+      }
     }
-  } catch (e) {}
+  } catch (e) {
+    // Ignore errors when accessing headers or cookies
+  }
 
   return (
     <React.StrictMode>

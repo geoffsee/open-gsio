@@ -17,12 +17,19 @@ configure_dev_vars() {
 
   # Default URL is automatic but can be overridden for remote deployments
   if [[ "$endpoint_url" == *"11434"* ]]; then
+    echo "OPENAI_API_ENDPOINT=http://localhost:11434" >> "${ENV_LOCAL_PATH}"
     echo "OLLAMA_API_KEY=active" >> "${ENV_LOCAL_PATH}"
+
+    echo "OPENAI_API_ENDPOINT=http://localhost:11434" >> "${DEV_VARS_PATH}"
     echo "OLLAMA_API_KEY=active" >> "${DEV_VARS_PATH}"
   fi
   if [[ "$endpoint_url" == *"10240"* ]]; then
-  echo "MLX_API_KEY=active" >> "${ENV_LOCAL_PATH}"
-  echo "MLX_API_KEY=active" >> "${DEV_VARS_PATH}"
+
+    echo "OPENAI_API_ENDPOINT=http://localhost:10240/v1" >> "${ENV_LOCAL_PATH}"
+    echo "MLX_API_KEY=active" >> "${ENV_LOCAL_PATH}"
+
+    echo "OPENAI_API_ENDPOINT=http://localhost:10240/v1" >> "${DEV_VARS_PATH}"
+    echo "MLX_API_KEY=active" >> "${DEV_VARS_PATH}"
   fi
 
   echo "Local inference is configured for $endpoint_url"
@@ -39,8 +46,7 @@ echo "Checking for local inference services..."
 if nc -z -w1 localhost 11434 >/dev/null 2>&1; then
   echo "Ollama service detected on port 11434."
   configure_dev_vars "http://localhost:11434"
-# check for mlx-omni-server
-if nc -z -w1 localhost 10240 >/dev/null 2>&1; then
+elif nc -z -w1 localhost 10240 >/dev/null 2>&1; then
   echo "mlx-omni-server service detected on port 10240."
   configure_dev_vars "http://localhost:10240"
 else

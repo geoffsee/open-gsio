@@ -1,10 +1,11 @@
-import React, { KeyboardEvent, useEffect } from "react";
-import { Box, Flex, IconButton, Textarea } from "@chakra-ui/react";
-import { Check, X } from "lucide-react";
-import { observer } from "mobx-react-lite";
-import { Instance } from "mobx-state-tree";
-import Message from "../../../models/Message";
-import messageEditorStore from "../../../stores/MessageEditorStore";
+import { Box, Flex, IconButton, Textarea } from '@chakra-ui/react';
+import { Check, X } from 'lucide-react';
+import { observer } from 'mobx-react-lite';
+import { type Instance } from 'mobx-state-tree';
+import React, { type KeyboardEvent, useEffect } from 'react';
+
+import Message from '../../../models/Message';
+import messageEditorStore from '../../../stores/MessageEditorStore';
 
 interface MessageEditorProps {
   message: Instance<typeof Message>;
@@ -30,15 +31,13 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
     onCancel();
   };
 
-
-
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
       handleSave();
     }
 
-    if (e.key === "Escape") {
+    if (e.key === 'Escape') {
       e.preventDefault();
       handleCancel();
     }
@@ -48,14 +47,14 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
     <Box width="100%">
       <Textarea
         value={messageEditorStore.editedContent}
-        onChange={(e) => messageEditorStore.setEditedContent(e.target.value)}
+        onChange={e => messageEditorStore.setEditedContent(e.target.value)}
         onKeyDown={handleKeyDown}
         minHeight="100px"
         bg="transparent"
         border="1px solid"
         borderColor="whiteAlpha.300"
-        _hover={{ borderColor: "whiteAlpha.400" }}
-        _focus={{ borderColor: "brand.100", boxShadow: "none" }}
+        _hover={{ borderColor: 'whiteAlpha.400' }}
+        _focus={{ borderColor: 'brand.100', boxShadow: 'none' }}
         resize="vertical"
         color="text.primary"
       />
@@ -66,7 +65,7 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
           onClick={handleCancel}
           size="sm"
           variant="ghost"
-          color={"accent.danger"}
+          color={'accent.danger'}
         />
         <IconButton
           aria-label="Save edit"
@@ -74,7 +73,7 @@ const MessageEditor = observer(({ message, onCancel }: MessageEditorProps) => {
           onClick={handleSave}
           size="sm"
           variant="ghost"
-          color={"accent.confirm"}
+          color={'accent.confirm'}
         />
       </Flex>
     </Box>

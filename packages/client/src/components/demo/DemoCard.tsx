@@ -1,5 +1,5 @@
-import React from "react";
-import { Badge, Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Badge, Box, Flex, Heading, Image, Text } from '@chakra-ui/react';
+import React from 'react';
 
 function DemoCard({ icon, title, description, imageUrl, badge, onClick }) {
   return (
@@ -9,15 +9,15 @@ function DemoCard({ icon, title, description, imageUrl, badge, onClick }) {
       overflowY="hidden"
       boxShadow="md"
       transition="transform 0.2s"
-      _hover={{ transform: "scale(1.05)", cursor: "pointer" }}
+      _hover={{ transform: 'scale(1.05)', cursor: 'pointer' }}
       color="text.primary"
       onClick={onClick}
       display="flex"
       flexDirection="column"
-      minW={"12rem"}
-      maxW={"18rem"}
-      minH={"35rem"}
-      maxH={"20rem"}
+      minW={'12rem'}
+      maxW={'18rem'}
+      minH={'35rem'}
+      maxH={'20rem'}
     >
       {imageUrl && (
         <Image
@@ -42,7 +42,7 @@ function DemoCard({ icon, title, description, imageUrl, badge, onClick }) {
       </Flex>
       {badge && (
         <Box p={2}>
-          <Badge colorScheme={"teal"}>{badge}</Badge>
+          <Badge colorScheme={'teal'}>{badge}</Badge>
         </Box>
       )}
     </Box>

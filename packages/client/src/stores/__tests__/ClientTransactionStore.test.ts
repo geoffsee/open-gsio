@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
 import clientTransactionStore from '../ClientTransactionStore';
 
 // Mock global fetch
@@ -88,20 +89,26 @@ describe('ClientTransactionStore', () => {
     it('should throw an error if amount is empty', async () => {
       clientTransactionStore.setDonerId('donor123');
 
-      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow('Invalid donation data');
+      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow(
+        'Invalid donation data',
+      );
     });
 
     it('should throw an error if donerId is empty', async () => {
       clientTransactionStore.setAmount('100');
 
-      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow('Invalid donation data');
+      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow(
+        'Invalid donation data',
+      );
     });
 
     it('should throw an error if amount is less than or equal to 0', async () => {
       clientTransactionStore.setAmount('0');
       clientTransactionStore.setDonerId('donor123');
 
-      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow('Invalid donation data');
+      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow(
+        'Invalid donation data',
+      );
     });
 
     it('should throw an error if the API request fails', async () => {
@@ -114,7 +121,9 @@ describe('ClientTransactionStore', () => {
         ok: false,
       });
 
-      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow('Failed to prepare transaction');
+      await expect(clientTransactionStore.prepareTransaction()).rejects.toThrow(
+        'Failed to prepare transaction',
+      );
     });
 
     it('should successfully prepare an Ethereum transaction', async () => {
@@ -126,10 +135,11 @@ describe('ClientTransactionStore', () => {
       // Mock a successful API response
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          txKey: 'tx123',
-          depositAddress: 'abc123', // Without 0x prefix to test the Ethereum-specific logic
-        }),
+        json: () =>
+          Promise.resolve({
+            txKey: 'tx123',
+            depositAddress: 'abc123', // Without 0x prefix to test the Ethereum-specific logic
+          }),
       });
 
       await clientTransactionStore.prepareTransaction();
@@ -155,10 +165,11 @@ describe('ClientTransactionStore', () => {
       // Mock a successful API response
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({
-          txKey: 'tx123',
-          depositAddress: 'btc123', // Bitcoin address doesn't need prefix
-        }),
+        json: () =>
+          Promise.resolve({
+            txKey: 'tx123',
+            depositAddress: 'btc123', // Bitcoin address doesn't need prefix
+          }),
       });
 
       await clientTransactionStore.prepareTransaction();

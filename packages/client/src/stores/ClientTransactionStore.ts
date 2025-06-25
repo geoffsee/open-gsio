@@ -1,15 +1,15 @@
-import { types, flow } from "mobx-state-tree";
+import { types, flow } from 'mobx-state-tree';
 
 const ClientTransactionStore = types
-  .model("ClientTransactionStore", {
+  .model('ClientTransactionStore', {
     selectedMethod: types.string,
     depositAddress: types.maybeNull(types.string),
-    amount: types.optional(types.string, ""),
-    donerId: types.optional(types.string, ""),
+    amount: types.optional(types.string, ''),
+    donerId: types.optional(types.string, ''),
     userConfirmed: types.optional(types.boolean, false),
-    txId: types.optional(types.string, ""),
+    txId: types.optional(types.string, ''),
   })
-  .actions((self) => ({
+  .actions(self => ({
     setSelectedMethod(method: string) {
       self.selectedMethod = method;
       self.userConfirmed = false;
@@ -30,47 +30,45 @@ const ClientTransactionStore = types
       self.depositAddress = address;
     },
     resetTransaction() {
-      self.txId = "";
+      self.txId = '';
       self.depositAddress = null;
       self.userConfirmed = false;
     },
     prepareTransaction: flow(function* () {
       if (!self.amount || !self.donerId || parseInt(self.amount) <= 0) {
-        throw new Error("Invalid donation data");
+        throw new Error('Invalid donation data');
       }
       const currency = self.selectedMethod.toLowerCase();
 
       try {
-        const response = yield fetch("/api/tx", {
-          method: "POST",
-          body: ["PREPARE_TX", self.donerId, currency, self.amount]
-            .join(",")
-            .trim(),
+        const response = yield fetch('/api/tx', {
+          method: 'POST',
+          body: ['PREPARE_TX', self.donerId, currency, self.amount].join(',').trim(),
         });
-        if (!response.ok) throw new Error("Failed to prepare transaction");
+        if (!response.ok) throw new Error('Failed to prepare transaction');
 
         const txData = yield response.json();
         let finalDepositAddress = txData.depositAddress;
 
-        if (currency === "ethereum") {
-          finalDepositAddress = "0x" + finalDepositAddress;
+        if (currency === 'ethereum') {
+          finalDepositAddress = '0x' + finalDepositAddress;
         }
 
         self.setTransactionId(txData.txKey);
         self.setDepositAddress(finalDepositAddress);
         self.confirmUser();
       } catch (error) {
-        console.error("Transaction preparation failed:", error);
+        console.error('Transaction preparation failed:', error);
         throw error;
       }
     }),
   }));
 
 export default ClientTransactionStore.create({
-  selectedMethod: "Ethereum",
+  selectedMethod: 'Ethereum',
   depositAddress: null,
-  amount: "",
-  donerId: "",
+  amount: '',
+  donerId: '',
   userConfirmed: false,
-  txId: "",
+  txId: '',
 });
