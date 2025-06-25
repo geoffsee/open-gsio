@@ -46,7 +46,7 @@
     "mobx-state-tree": "^6.0.1",
     "moo": "^0.5.2",
     "qrcode.react": "^4.1.0",
-    "react": "^18.3.1",
+    "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.4.0",
     "react-streaming": "^0.3.44",
