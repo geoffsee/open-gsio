@@ -2,7 +2,7 @@ import { type Instance } from 'mobx-state-tree';
 import { renderPage } from 'vike/server';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-import AssetService from '../services/AssetService.ts';
+import AssetService from '../src/services/AssetService.ts';
 
 // Define types for testing
 type AssetServiceInstance = Instance<typeof AssetService>;

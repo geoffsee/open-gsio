@@ -1,4 +1,7 @@
 {
   "name": "@open-gsio/ai",
-  "module": "index.ts"
+  "module": "index.ts",
+  "devDependencies": {
+    "@open-gsio/env": "workspace:*"
+  }
 }

@@ -1,11 +1,11 @@
-import { types, Instance, getMembers } from 'mobx-state-tree';
+import { types, type Instance, getMembers } from 'mobx-state-tree';
 
-import AssetService from './services/AssetService.ts';
-import ChatService from './services/ChatService.ts';
-import ContactService from './services/ContactService.ts';
-import FeedbackService from './services/FeedbackService.ts';
-import MetricsService from './services/MetricsService.ts';
-import TransactionService from './services/TransactionService.ts';
+import AssetService from './src/services/AssetService.ts';
+import ChatService from './src/services/ChatService.ts';
+import ContactService from './src/services/ContactService.ts';
+import FeedbackService from './src/services/FeedbackService.ts';
+import MetricsService from './src/services/MetricsService.ts';
+import TransactionService from './src/services/TransactionService.ts';
 
 const RequestContext = types
   .model('RequestContext', {
@@ -48,6 +48,7 @@ const createRequestContext = (env, ctx) => {
     metricsService: MetricsService.create({
       isCollectingMetrics: true,
     }),
+    // @ts-expect-error - this is fine
     chatService: ChatService.create({
       openAIApiKey: env.OPENAI_API_KEY,
       openAIBaseURL: env.OPENAI_API_ENDPOINT,

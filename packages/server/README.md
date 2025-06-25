@@ -15,6 +15,6 @@ This directory contains the server component of open-gsio, a full-stack Conversa
 - `durable_objects/`: Contains durable object implementations
   - `ServerCoordinator.ts`: Cloudflare Implementation
   - `ServerCoordinatorBun.ts`: Bun Implementation
-- `api-router.ts`: API Router
+- `router.ts`: API Router
 - `RequestContext.ts`: Application Context
 - `server.ts`: Main server entry point

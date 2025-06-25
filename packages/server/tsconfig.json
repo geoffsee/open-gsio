@@ -2,11 +2,10 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "lib": ["ESNext"],
-    "types": ["vite/client"],
+    "types": ["vite/client", "@types/bun"],
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "outDir": "dist",
-    "rootDir": ".",
     "allowJs": true,
     "jsx": "react-jsx"
   },

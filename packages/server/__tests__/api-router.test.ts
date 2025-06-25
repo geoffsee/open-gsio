@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 
-import { createRouter } from '../api-router.ts';
+import { createRouter } from '../src/router/router.ts';
 
 // Mock the vike/server module
 vi.mock('vike/server', () => ({

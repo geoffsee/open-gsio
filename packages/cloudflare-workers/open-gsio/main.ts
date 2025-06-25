@@ -1,6 +1,6 @@
-import Server from '@open-gsio/server';
-import ServerCoordinator from '@open-gsio/server/durable-objects/ServerCoordinator';
+import { ServerCoordinator } from '@open-gsio/durable-objects';
+import Router from '@open-gsio/server/src/router';
 
 export { ServerCoordinator };
 
-export default Server.Router();
+export default Router.Router();
