@@ -106,7 +106,7 @@ describe('AssistantSdk', () => {
       // The prompt should still contain examples
       expect(prompt).toContain('#### Example 1');
       // Instead of checking for specific content, just verify that examples are included
-      expect(prompt).toMatch(/\*\*Human\*\*: .+\n\*\*Assistant\*\*: .+/);
+      expect(prompt).toMatch(/HUMAN: .+\nASSISTANT: .+/);
     });
   });
 
@@ -120,11 +120,11 @@ describe('AssistantSdk', () => {
       const result = AssistantSdk.useFewshots(fewshots);
 
       expect(result).toContain('#### Example 1');
-      expect(result).toContain('**Human**: What is the capital of France?');
-      expect(result).toContain('**Assistant**: Paris is the capital of France.');
+      expect(result).toContain('HUMAN: What is the capital of France?');
+      expect(result).toContain('ASSISTANT: Paris is the capital of France.');
       expect(result).toContain('#### Example 2');
-      expect(result).toContain('**Human**: How do I make pasta?');
-      expect(result).toContain('**Assistant**: Boil water, add pasta, cook until al dente.');
+      expect(result).toContain('HUMAN: How do I make pasta?');
+      expect(result).toContain('ASSISTANT: Boil water, add pasta, cook until al dente.');
     });
 
     it('should respect the limit parameter', () => {
@@ -140,16 +140,16 @@ describe('AssistantSdk', () => {
       const result = AssistantSdk.useFewshots(fewshots, 3);
 
       expect(result).toContain('#### Example 1');
-      expect(result).toContain('**Human**: Q1');
-      expect(result).toContain('**Assistant**: A1');
+      expect(result).toContain('HUMAN: Q1');
+      expect(result).toContain('ASSISTANT: A1');
       expect(result).toContain('#### Example 2');
-      expect(result).toContain('**Human**: Q2');
-      expect(result).toContain('**Assistant**: A2');
+      expect(result).toContain('HUMAN: Q2');
+      expect(result).toContain('ASSISTANT: A2');
       expect(result).toContain('#### Example 3');
-      expect(result).toContain('**Human**: Q3');
-      expect(result).toContain('**Assistant**: A3');
+      expect(result).toContain('HUMAN: Q3');
+      expect(result).toContain('ASSISTANT: A3');
       expect(result).not.toContain('#### Example 4');
-      expect(result).not.toContain('**Human**: Q4');
+      expect(result).not.toContain('HUMAN: Q4');
     });
   });
 });
