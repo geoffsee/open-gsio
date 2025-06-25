@@ -1,9 +1,10 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
-import ChatInput from '../ChatInput';
-import userOptionsStore from '../../../../stores/UserOptionsStore';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+
 import chatStore from '../../../../stores/ClientChatStore';
+import userOptionsStore from '../../../../stores/UserOptionsStore';
+import ChatInput from '../ChatInput';
 
 // Mock browser APIs
 class MockResizeObserver {
@@ -85,7 +86,7 @@ vi.mock('./ChatInputTextArea', () => ({
       aria-label="Chat input"
       ref={inputRef}
       value={value}
-      onChange={(e) => onChange(e.target.value)}
+      onChange={e => onChange(e.target.value)}
       onKeyDown={onKeyDown}
       disabled={isLoading}
     />

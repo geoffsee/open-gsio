@@ -1,17 +1,18 @@
-import { useState, useEffect } from "react";
-import { useIsMobile } from "../components/contexts/MobileContext";
+import { useState, useEffect } from 'react';
+
+import { useIsMobile } from '../components/contexts/MobileContext';
 
 export const useMaxWidth = () => {
   const isMobile = useIsMobile();
-  const [maxWidth, setMaxWidth] = useState("600px");
+  const [maxWidth, setMaxWidth] = useState('600px');
 
   const calculateMaxWidth = () => {
     if (isMobile) {
-      setMaxWidth("800px");
+      setMaxWidth('800px');
     } else if (window.innerWidth < 1024) {
-      setMaxWidth("500px");
+      setMaxWidth('500px');
     } else {
-      setMaxWidth("800px");
+      setMaxWidth('800px');
     }
   };
 
@@ -22,10 +23,10 @@ export const useMaxWidth = () => {
       calculateMaxWidth();
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      window.removeEventListener("resize", handleResize);
+      window.removeEventListener('resize', handleResize);
     };
   }, [isMobile]);
 

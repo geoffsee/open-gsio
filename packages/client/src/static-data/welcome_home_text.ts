@@ -3,9 +3,6 @@ export const welcome_home_text = `
 ---
 Please enjoy [responsibly](https://centerforresponsible.ai/the-center)
 <br/>
-
-[My Resume](https://wellfound.com/u/geoff-seemueller)
-
 <br/>
 `;
 

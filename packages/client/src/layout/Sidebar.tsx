@@ -1,14 +1,16 @@
-import React, { useState } from "react";
-import { Box, Flex, VStack } from "@chakra-ui/react";
-import NavItem from "./NavItem";
-import ToolBar from "../components/toolbar/Toolbar";
-import { useIsMobile } from "../components/contexts/MobileContext";
-import FeedbackModal from "../components/feedback/FeedbackModal";
-import { ThemeSelectionOptions } from "../components/ThemeSelection";
+import { Box, Flex, VStack } from '@chakra-ui/react';
+import React, { useState } from 'react';
+
+import { useIsMobile } from '../components/contexts/MobileContext';
+import FeedbackModal from '../components/feedback/FeedbackModal';
+import { ThemeSelectionOptions } from '../components/ThemeSelection';
+import ToolBar from '../components/toolbar/Toolbar';
+
+import NavItem from './NavItem';
 
 function LowerSidebarContainer({ children, isMobile, ...props }) {
-  const bottom = isMobile ? undefined : "6rem";
-  const position = isMobile ? "relative" : "absolute";
+  const bottom = isMobile ? undefined : '6rem';
+  const position = isMobile ? 'relative' : 'absolute';
   return (
     <Box width="100%" m={0.99} position={position} bottom={bottom} {...props}>
       {children}
@@ -23,7 +25,7 @@ function Sidebar({ children: navLinks }) {
     <SidebarContainer isMobile={isMobile}>
       <VStack
         spacing={6}
-        alignItems={isMobile ? "flex-start" : "flex-end"}
+        alignItems={isMobile ? 'flex-start' : 'flex-end'}
         letterSpacing="tighter"
         width="100%"
         height="100%"
@@ -31,11 +33,11 @@ function Sidebar({ children: navLinks }) {
         {navLinks}
 
         <Box
-          alignItems={isMobile ? "flex-start" : "flex-end"}
+          alignItems={isMobile ? 'flex-start' : 'flex-end'}
           bg="background.primary"
           zIndex={1000}
           width="100%"
-          fontSize={"x-small"}
+          fontSize={'x-small'}
         >
           <LowerSidebarContainer isMobile={isMobile}>
             <ToolBar isMobile={isMobile} />
@@ -58,34 +60,12 @@ function RegulatoryItems({ isMobile }) {
 
   return (
     <>
-      <VStack alignItems={isMobile ? "flex-start" : "flex-end"} spacing={1}>
-        <NavItem
-            color="text.tertiary"
-            as={"span"}
-            path=""
-            cursor={"pointer"}
-            onClick={() => {
-              window.open("https://geoff.seemueller.io");
-            }}
-        >
-          geoff.seemueller.io
-        </NavItem>
+      <VStack alignItems={isMobile ? 'flex-start' : 'flex-end'} spacing={1}>
         <NavItem
           color="text.tertiary"
-          as={"span"}
+          as={'span'}
           path=""
-          cursor={"pointer"}
-          onClick={() => {
-            window.open("https://seemueller.ai");
-          }}
-        >
-          seemueller.ai
-        </NavItem>
-        <NavItem
-          color="text.tertiary"
-          as={"span"}
-          path=""
-          cursor={"pointer"}
+          cursor={'pointer'}
           onClick={openFeedbackModal}
         >
           Feedback
@@ -99,22 +79,14 @@ function RegulatoryItems({ isMobile }) {
       </VStack>
 
       {/* Feedback Modal */}
-      <FeedbackModal
-        isOpen={isFeedbackModalOpen}
-        onClose={closeFeedbackModal}
-      />
+      <FeedbackModal isOpen={isFeedbackModalOpen} onClose={closeFeedbackModal} />
     </>
   );
 }
 
 function SidebarContainer({ children, isMobile }) {
   return (
-    <Flex
-      mt={isMobile ? 28 : undefined}
-      position="relative"
-      height="100vh"
-      width="100%"
-    >
+    <Flex mt={isMobile ? 28 : undefined} position="relative" height="100vh" width="100%">
       {children}
     </Flex>
   );

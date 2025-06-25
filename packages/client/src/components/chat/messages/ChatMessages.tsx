@@ -1,9 +1,11 @@
-import React from "react";
-import {Box, Grid, GridItem} from "@chakra-ui/react";
-import MessageBubble from "./MessageBubble";
-import {observer} from "mobx-react-lite";
-import chatStore from "../../../stores/ClientChatStore";
-import {useIsMobile} from "../../contexts/MobileContext";
+import { Box, Grid, GridItem } from '@chakra-ui/react';
+import { observer } from 'mobx-react-lite';
+import React from 'react';
+
+import chatStore from '../../../stores/ClientChatStore';
+import { useIsMobile } from '../../contexts/MobileContext';
+
+import MessageBubble from './MessageBubble';
 
 interface ChatMessagesProps {
   scrollRef: React.RefObject<HTMLDivElement>;
@@ -13,11 +15,7 @@ const ChatMessages: React.FC<ChatMessagesProps> = observer(({ scrollRef }) => {
   const isMobile = useIsMobile();
 
   return (
-    <Box
-      pt={isMobile ? 24 : undefined}
-      overflowY={"scroll"}
-      overflowX={"hidden"}
-    >
+    <Box pt={isMobile ? 24 : undefined} overflowY={'scroll'} overflowX={'hidden'}>
       <Grid
         fontFamily="Arial, sans-serif"
         templateColumns="1fr"

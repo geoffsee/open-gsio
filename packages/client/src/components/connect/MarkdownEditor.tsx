@@ -1,5 +1,5 @@
-import React from "react";
-import { Box, Textarea } from "@chakra-ui/react";
+import { Box, Textarea } from '@chakra-ui/react';
+import React from 'react';
 
 export const MarkdownEditor = (props: {
   placeholder: string;
@@ -8,15 +8,15 @@ export const MarkdownEditor = (props: {
 }) => {
   return (
     <Box>
-      <link rel="stylesheet" href="/packages/client/public" media="print" onLoad="this.media='all'" />
       <Textarea
         value={props.markdown}
         placeholder={props.placeholder}
-        onChange={(e) => props.onChange(e.target.value)}
+        onChange={e => props.onChange(e.target.value)}
         width="100%"
         minHeight="150px"
         height="100%"
         resize="none"
+        borderColor="text.accent"
       />
     </Box>
   );

@@ -1,11 +1,9 @@
-import { motion } from "framer-motion";
-import { Box, Center, VStack } from "@chakra-ui/react";
-import {
-  welcome_home_text,
-  welcome_home_tip,
-} from "../static-data/welcome_home_text";
-import {renderMarkdown} from "./markdown/MarkdownComponent";
+import { Box, Center, VStack } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 
+import { welcome_home_text, welcome_home_tip } from '../static-data/welcome_home_text';
+
+import { renderMarkdown } from './markdown/MarkdownComponent';
 
 function WelcomeHomeMessage({ visible }) {
   const containerVariants = {
@@ -45,33 +43,19 @@ function WelcomeHomeMessage({ visible }) {
     <Center>
       <VStack spacing={8} align="center" maxW="400px">
         {/* Welcome Message */}
-        <Box
-          fontSize="sm"
-          fontStyle="italic"
-          textAlign="center"
-          color="text.secondary"
-          mt={4}
-        >
+        <Box fontSize="sm" fontStyle="italic" textAlign="center" color="text.secondary" mt={4}>
           <motion.div
             variants={containerVariants}
             initial="hidden"
-            animate={visible ? "visible" : "hidden"}
+            animate={visible ? 'visible' : 'hidden'}
           >
-            <Box userSelect={"none"}>
-              <motion.div variants={textVariants}>
-                {renderMarkdown(welcome_home_text)}
-              </motion.div>
+            <Box userSelect={'none'}>
+              <motion.div variants={textVariants}>{renderMarkdown(welcome_home_text)}</motion.div>
             </Box>
           </motion.div>
         </Box>
         <motion.div variants={textVariants}>
-          <Box
-            fontSize="sm"
-            fontStyle="italic"
-            textAlign="center"
-            color="text.secondary"
-            mt={1}
-          >
+          <Box fontSize="sm" fontStyle="italic" textAlign="center" color="text.secondary" mt={1}>
             {renderMarkdown(welcome_home_tip)}
           </Box>
         </motion.div>

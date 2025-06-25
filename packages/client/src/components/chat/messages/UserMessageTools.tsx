@@ -1,6 +1,6 @@
-import { observer } from "mobx-react-lite";
-import { IconButton } from "@chakra-ui/react";
-import { Edit2Icon } from "lucide-react";
+import { IconButton } from '@chakra-ui/react';
+import { Edit2Icon } from 'lucide-react';
+import { observer } from 'mobx-react-lite';
 
 const UserMessageTools = observer(({ disabled = false, message, onEdit }) => (
   <IconButton
@@ -8,26 +8,26 @@ const UserMessageTools = observer(({ disabled = false, message, onEdit }) => (
     color="text.primary"
     aria-label="Edit message"
     title="Edit message"
-    icon={<Edit2Icon size={"1em"} />}
+    icon={<Edit2Icon size={'1em'} />}
     onClick={() => onEdit(message)}
     _active={{
-      bg: "transparent",
+      bg: 'transparent',
       svg: {
-        stroke: "brand.100",
-        transition: "stroke 0.3s ease-in-out",
+        stroke: 'brand.100',
+        transition: 'stroke 0.3s ease-in-out',
       },
     }}
     _hover={{
-      bg: "transparent",
+      bg: 'transparent',
       svg: {
-        stroke: "accent.secondary",
-        transition: "stroke 0.3s ease-in-out",
+        stroke: 'accent.secondary',
+        transition: 'stroke 0.3s ease-in-out',
       },
     }}
     variant="ghost"
     size="sm"
     isDisabled={disabled}
-    _focus={{ boxShadow: "none" }}
+    _focus={{ boxShadow: 'none' }}
   />
 ));
 

@@ -1,16 +1,12 @@
-import React from "react";
-import { SimpleGrid } from "@chakra-ui/react";
-import { Rocket, Shield } from "lucide-react";
-import DemoCard from "./DemoCard";
+import { SimpleGrid } from '@chakra-ui/react';
+import { Rocket, Shield } from 'lucide-react';
+import React from 'react';
+
+import DemoCard from './DemoCard';
 
 function DemoComponent() {
   return (
-    <SimpleGrid
-      columns={{ base: 1, sm: 1, lg: 2 }}
-      spacing={"7%"}
-      minH={"min-content"}
-      h={"100vh"}
-    >
+    <SimpleGrid columns={{ base: 1, sm: 1, lg: 2 }} spacing={'7%'} minH={'min-content'} h={'100vh'}>
       <DemoCard
         icon={<Rocket size={24} color="teal" />}
         title="toak"
@@ -18,7 +14,7 @@ function DemoComponent() {
         imageUrl="/code-tokenizer-md.jpg"
         badge="npm"
         onClick={() => {
-          window.open("https://github.com/seemueller-io/toak");
+          window.open('https://github.com/seemueller-io/toak');
         }}
       />
       <DemoCard
@@ -28,7 +24,7 @@ function DemoComponent() {
         imageUrl="/rehoboam.png"
         badge="APP"
         onClick={() => {
-          window.open("https://rehoboam.seemueller.io");
+          window.open('https://rehoboam.seemueller.io');
         }}
       />
     </SimpleGrid>

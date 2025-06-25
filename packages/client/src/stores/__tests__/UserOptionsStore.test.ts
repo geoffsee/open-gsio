@@ -1,7 +1,8 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import userOptionsStore, { UserOptionsStoreModel } from '../UserOptionsStore';
-import ClientChatStore from '../ClientChatStore';
 import Cookies from 'js-cookie';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+
+import ClientChatStore from '../ClientChatStore';
+import userOptionsStore, { UserOptionsStoreModel } from '../UserOptionsStore';
 
 // Mock dependencies
 vi.mock('js-cookie', () => ({
@@ -13,7 +14,7 @@ vi.mock('js-cookie', () => ({
 vi.mock('../ClientChatStore', () => ({
   default: {
     isLoading: false,
-    setIsLoading: vi.fn((value) => {
+    setIsLoading: vi.fn(value => {
       (ClientChatStore as any).isLoading = value;
     }),
   },
@@ -179,8 +180,8 @@ describe('UserOptionsStore', () => {
       // Create a new instance of the store for this test
       const testStore = UserOptionsStoreModel.create({
         followModeEnabled: true,
-        theme: "darknight",
-        text_model: "llama-3.3-70b-versatile"
+        theme: 'darknight',
+        text_model: 'llama-3.3-70b-versatile',
       });
 
       // Mock ClientChatStore.isLoading
@@ -211,8 +212,8 @@ describe('UserOptionsStore', () => {
       // Create a new instance of the store for this test
       const testStore = UserOptionsStoreModel.create({
         followModeEnabled: true,
-        theme: "darknight",
-        text_model: "llama-3.3-70b-versatile"
+        theme: 'darknight',
+        text_model: 'llama-3.3-70b-versatile',
       });
 
       // Mock ClientChatStore.isLoading

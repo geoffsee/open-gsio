@@ -1,4 +1,4 @@
-const tosUpdateDate = new Date().toISOString().split("T")[0];
+const tosUpdateDate = new Date().toISOString().split('T')[0];
 
 export default `
 ### Terms of Service
