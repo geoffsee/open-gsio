@@ -1,27 +1,27 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import React from 'react';
-import MessageEditor from '../MessageEditorComponent';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Import the mocked stores
 import clientChatStore from '../../../../stores/ClientChatStore';
 import messageEditorStore from '../../../../stores/MessageEditorStore';
+import MessageEditor from '../MessageEditorComponent';
 
 // Mock the Message model
 vi.mock('../../../../models/Message', () => {
   return {
     default: {
       // This is needed for the Instance<typeof Message> type
-    }
+    },
   };
 });
 
 // Mock fetch globally
 globalThis.fetch = vi.fn(() =>
-    Promise.resolve({
-      ok: true,
-      json: () => Promise.resolve({})
-    })
+  Promise.resolve({
+    ok: true,
+    json: () => Promise.resolve({}),
+  }),
 );
 
 // Mock the ClientChatStore
@@ -31,14 +31,14 @@ vi.mock('../../../../stores/ClientChatStore', () => {
     removeAfter: vi.fn(),
     sendMessage: vi.fn(),
     setIsLoading: vi.fn(),
-    editMessage: vi.fn().mockReturnValue(true)
+    editMessage: vi.fn().mockReturnValue(true),
   };
 
   // Add the mockUserMessage to the items array
   mockStore.items.indexOf = vi.fn().mockReturnValue(0);
 
   return {
-    default: mockStore
+    default: mockStore,
   };
 });
 
@@ -48,25 +48,25 @@ vi.mock('../../../../stores/MessageEditorStore', () => {
     editedContent: 'Test message', // Set initial value to match the test expectation
     message: null,
     setEditedContent: vi.fn(),
-    setMessage: vi.fn((message) => {
+    setMessage: vi.fn(message => {
       mockStore.message = message;
       mockStore.editedContent = message.content;
     }),
     onCancel: vi.fn(),
-    handleSave: vi.fn()
+    handleSave: vi.fn(),
   };
 
   return {
-    default: mockStore
+    default: mockStore,
   };
 });
 
 describe('MessageEditor', () => {
   // Create a message object with a setContent method
-  const mockUserMessage = { 
-    content: 'Test message', 
+  const mockUserMessage = {
+    content: 'Test message',
     role: 'user',
-    setContent: vi.fn()
+    setContent: vi.fn(),
   };
   const mockOnCancel = vi.fn();
 
@@ -93,7 +93,7 @@ describe('MessageEditor', () => {
   });
 
   it('should call handleSave when save button is clicked', () => {
-    render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel}/>);
+    render(<MessageEditor message={mockUserMessage} onCancel={mockOnCancel} />);
 
     const saveButton = screen.getByLabelText('Save edit');
     fireEvent.click(saveButton);

@@ -1,7 +1,7 @@
-import React, {useEffect, useRef, useState} from "react";
-import {observer} from "mobx-react-lite";
-import {Box, chakra, InputGroup,} from "@chakra-ui/react";
-import AutoResize from "react-textarea-autosize";
+import { Box, chakra, InputGroup } from '@chakra-ui/react';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect, useRef, useState } from 'react';
+import AutoResize from 'react-textarea-autosize';
 
 const AutoResizeTextArea = chakra(AutoResize);
 
@@ -15,10 +15,7 @@ interface InputTextAreaProps {
 
 const InputTextArea: React.FC<InputTextAreaProps> = observer(
   ({ inputRef, value, onChange, onKeyDown, isLoading }) => {
-
-    const [heightConstraint, setHeightConstraint] = useState<
-      number | undefined
-    >(10);
+    const [heightConstraint, setHeightConstraint] = useState<number | undefined>(10);
 
     useEffect(() => {
       if (value.length > 10) {
@@ -34,7 +31,6 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
         display="flex"
         flexDirection="column"
       >
-
         {/* Input Area */}
         <InputGroup position="relative">
           <AutoResizeTextArea
@@ -43,7 +39,7 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
             value={value}
             height={heightConstraint}
             autoFocus
-            onChange={(e) => onChange(e.target.value)}
+            onChange={e => onChange(e.target.value)}
             onKeyDown={onKeyDown}
             p={2}
             pr="8px"
@@ -53,19 +49,19 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
             borderRadius="20px"
             border="none"
             placeholder="Free my mind..."
-            _placeholder={{ color: "gray.400" }}
+            _placeholder={{ color: 'gray.400' }}
             _focus={{
-              outline: "none",
+              outline: 'none',
             }}
             disabled={isLoading}
             minRows={1}
             maxRows={12}
             style={{
-              touchAction: "none",
-              resize: "none",
-              overflowY: "auto",
-              width: "100%",
-              transition: "height 0.2s ease-in-out",
+              touchAction: 'none',
+              resize: 'none',
+              overflowY: 'auto',
+              width: '100%',
+              transition: 'height 0.2s ease-in-out',
             }}
           />
         </InputGroup>

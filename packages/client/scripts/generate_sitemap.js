@@ -1,17 +1,16 @@
 #!/usr/bin/env bun
 
-import fs from "fs";
-import {parseArgs} from "util";
+import fs from 'fs';
+import { parseArgs } from 'util';
 
-
-const {positionals} = parseArgs({
+const { positionals } = parseArgs({
   args: Bun.argv,
   options: {},
   strict: true,
   allowPositionals: true,
 });
 
-const currentDate = new Date().toISOString().split("T")[0];
+const currentDate = new Date().toISOString().split('T')[0];
 
 const host = positionals[2];
 
@@ -30,12 +29,12 @@ const sitemapTemplate = `<?xml version="1.0" encoding="UTF-8"?>
     </url>
 </urlset>`;
 
-const sitemapPath = "./public/sitemap.xml";
+const sitemapPath = './public/sitemap.xml';
 
-fs.writeFile(sitemapPath, sitemapTemplate, (err) => {
+fs.writeFile(sitemapPath, sitemapTemplate, err => {
   if (err) {
-    console.error("Error writing sitemap file:", err);
+    console.error('Error writing sitemap file:', err);
     process.exit(1);
   }
-  console.log("Sitemap updated successfully with current date:", currentDate);
+  console.log('Sitemap updated successfully with current date:', currentDate);
 });

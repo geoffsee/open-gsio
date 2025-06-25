@@ -1,17 +1,17 @@
 #!/usr/bin/env bun
+/* eslint-env node */
 
-import fs from "fs";
-import {parseArgs} from "util";
+import fs from 'fs';
+import { parseArgs } from 'util';
 
-
-const {positionals} = parseArgs({
+const { positionals } = parseArgs({
   args: Bun.argv,
   options: {},
   strict: true,
   allowPositionals: true,
 });
 
-const currentDate = new Date().toISOString().split("T")[0];
+const currentDate = new Date().toISOString().split('T')[0];
 
 const host = positionals[2];
 
@@ -25,12 +25,12 @@ Disallow: /assets
 Sitemap: https://${host}/sitemap.xml
 `;
 
-const robotsTxtPath = "./public/robots.txt";
+const robotsTxtPath = './public/robots.txt';
 
-fs.writeFile(robotsTxtPath, robotsTxtTemplate, (err) => {
+fs.writeFile(robotsTxtPath, robotsTxtTemplate, err => {
   if (err) {
-    console.error("Error writing robots.txt:", err);
+    console.error('Error writing robots.txt:', err);
     process.exit(1);
   }
-  console.log("robots.txt created successfully:", currentDate);
+  console.log('robots.txt created successfully:', currentDate);
 });

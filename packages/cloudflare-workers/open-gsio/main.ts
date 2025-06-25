@@ -1,6 +1,6 @@
-import Server from "@open-gsio/server";
-import ServerCoordinator from "@open-gsio/server/ServerCoordinator";
+import { ServerCoordinator } from '@open-gsio/coordinators';
+import Router from '@open-gsio/router';
 
-export {ServerCoordinator}
+export { ServerCoordinator };
 
-export default Server.Router();
+export default Router.Router();

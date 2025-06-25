@@ -28,7 +28,7 @@
   "migrations": [
     {
       "new_classes": [
-        "SiteCoordinator"
+        "ServerCoordinator"
       ],
       "tag": "v1"
     }

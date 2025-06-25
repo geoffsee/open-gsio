@@ -1,16 +1,18 @@
-import { extendTheme } from "@chakra-ui/react";
-import BaseTheme from "../base_theme";
-import DarknightColors from "./Darknight";
-import CapuchinColors from "./Capuchin";
-import VsCodeColors from "./VsCode";
-import OneDark from "./OneDark";
+import { extendTheme } from '@chakra-ui/react';
+
+import BaseTheme from '../base_theme';
+
+import CapuchinColors from './Capuchin';
+import DarknightColors from './Darknight';
+import OneDark from './OneDark';
+import VsCodeColors from './VsCode';
 
 export function getColorThemes() {
   return [
-    { name: "darknight", colors: DarknightColors },
-    { name: "onedark", colors: OneDark },
-    { name: "capuchin", colors: CapuchinColors },
-    { name: "vscode", colors: VsCodeColors },
+    { name: 'darknight', colors: DarknightColors },
+    { name: 'onedark', colors: OneDark },
+    { name: 'capuchin', colors: CapuchinColors },
+    { name: 'vscode', colors: VsCodeColors },
   ];
 }
 
@@ -36,13 +38,13 @@ const onedark = extendTheme({
 
 export function getTheme(theme: string) {
   switch (theme) {
-    case "onedark":
+    case 'onedark':
       return onedark;
-    case "darknight":
+    case 'darknight':
       return darknight;
-    case "capuchin":
+    case 'capuchin':
       return capuchin;
-    case "vscode":
+    case 'vscode':
       return vsCode;
     default:
       return darknight;

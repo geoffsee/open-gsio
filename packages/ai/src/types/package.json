@@ -1,0 +1,5 @@
+{
+  "name": "@open-gsio/types",
+  "type": "module",
+  "module": "index.ts"
+}

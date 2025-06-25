@@ -1,15 +1,14 @@
-import React from "react";
+import React from 'react';
+import { renderToStream } from 'react-streaming/server';
+import { escapeInject } from 'vike/server';
+import type { OnRenderHtmlAsync } from 'vike/types';
+
+import { Layout } from '../layout/Layout';
+
 export { onRenderHtml };
 
-import { renderToStream } from "react-streaming/server";
-import { escapeInject } from "vike/server";
-import { Layout } from "../layout/Layout";
-import type { OnRenderHtmlAsync } from "vike/types";
-
 // See https://vike.dev/onRenderHtml for usage details
-const onRenderHtml: OnRenderHtmlAsync = async (
-  pageContext,
-): ReturnType<OnRenderHtmlAsync> => {
+const onRenderHtml: OnRenderHtmlAsync = async (pageContext): ReturnType<OnRenderHtmlAsync> => {
   const { Page, pageProps } = pageContext;
 
   const page = (
@@ -20,9 +19,9 @@ const onRenderHtml: OnRenderHtmlAsync = async (
 
   let ua;
   try {
-    ua = pageContext.headers["user-agent"];
+    ua = pageContext.headers['user-agent'];
   } catch (e) {
-    ua = "";
+    ua = '';
   }
 
   const res = escapeInject`<!DOCTYPE html>
@@ -43,7 +42,7 @@ window.ga_api = "/api/metrics";
 <script src="/cfga.min.js" async></script>
 </head>
 <body>
-<div id="page-view">${await renderToStream(page, {userAgent: ua})}</div>
+<div id="page-view">${await renderToStream(page, { userAgent: ua })}</div>
 </body>
 </html>`;
 

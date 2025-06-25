@@ -1,4 +1,4 @@
-const privacyPolicyUpdateDate = new Date().toISOString().split("T")[0];
+const privacyPolicyUpdateDate = new Date().toISOString().split('T')[0];
 
 export default `
 ### Privacy Policy

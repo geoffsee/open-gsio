@@ -15,17 +15,29 @@
     "server:dev": "bun build:client && (cd packages/server && bun run dev)",
     "build": "(cd packages/cloudflare-workers/open-gsio && bun run deploy:dry-run)",
     "build:client": "(cd packages/client && bun run vite build)",
-    "deploy": "(cd packages/cloudflare-workers && bun run deploy)",
+    "deploy": "(cd packages/cloudflare-workers/open-gsio && bun run deploy)",
     "deploy:secrets": "wrangler secret bulk secrets.json -c packages/cloudflare-workers/open-gsio/wrangler.jsonc",
     "openai:local:mlx": "packages/scripts/start_inference_server.sh mlx-omni-server",
     "openai:local:ollama": "packages/scripts/start_inference_server.sh ollama",
-    "openai:local:configure": "packages/scripts/configure_local_inference.sh"
+    "openai:local:configure": "packages/scripts/configure_local_inference.sh",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\"",
+    "log": "(cd packages/cloudflare-workers/open-gsio && bun wrangler tail)"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "^1.2.17",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.29.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.1",
+    "happy-dom": "^18.0.1",
+    "prettier": "^3.6.1"
   },
   "peerDependencies": {
-    "typescript": "^5"
-  },
-  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
+    "typescript": "^5.8.3"
+  }
 }

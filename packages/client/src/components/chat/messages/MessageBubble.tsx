@@ -1,43 +1,43 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Box, Flex, Text } from "@chakra-ui/react";
-import MessageRenderer from "./ChatMessageContent";
-import { observer } from "mobx-react-lite";
-import MessageEditor from "./MessageEditorComponent";
-import UserMessageTools from "./UserMessageTools";
-import clientChatStore from "../../../stores/ClientChatStore";
-import UserOptionsStore from "../../../stores/UserOptionsStore";
-import MotionBox from "./MotionBox";
+import { Box, Flex, Text } from '@chakra-ui/react';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect, useRef, useState } from 'react';
 
+import clientChatStore from '../../../stores/ClientChatStore';
+import UserOptionsStore from '../../../stores/UserOptionsStore';
 
+import MessageRenderer from './ChatMessageContent';
+import MessageEditor from './MessageEditorComponent';
+import MotionBox from './MotionBox';
+import UserMessageTools from './UserMessageTools';
 
 const LoadingDots = () => {
   return (
-      <Flex>
-        {[0, 1, 2].map((i) => (
-            <MotionBox
-                key={i}
-                width="8px"
-                height="8px"
-                borderRadius="50%"
-                backgroundColor="text.primary"
-                margin="0 4px"
-                animate={{
-                  scale: [1, 1.2, 1],
-                  opacity: [0.5, 1, 0.5],
-                }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  delay: i * 0.2,
-                }}
-            />
-        ))}
-      </Flex>
+    <Flex>
+      {[0, 1, 2].map(i => (
+        <MotionBox
+          key={i}
+          width="8px"
+          height="8px"
+          borderRadius="50%"
+          backgroundColor="text.primary"
+          margin="0 4px"
+          animate={{
+            scale: [1, 1.2, 1],
+            opacity: [0.5, 1, 0.5],
+          }}
+          transition={{
+            duration: 1,
+            repeat: Infinity,
+            delay: i * 0.2,
+          }}
+        />
+      ))}
+    </Flex>
   );
-}
+};
 
 function renderMessage(msg: any) {
-  if (msg.role === "user") {
+  if (msg.role === 'user') {
     return (
       <Text as="p" fontSize="sm" lineHeight="short" color="text.primary">
         {msg.content}
@@ -50,8 +50,8 @@ function renderMessage(msg: any) {
 const MessageBubble = observer(({ msg, scrollRef }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const isUser = msg.role === "user";
-  const senderName = isUser ? "You" : "Geoff's AI";
+  const isUser = msg.role === 'user';
+  const senderName = isUser ? 'You' : "Geoff's AI";
   const isLoading = !msg.content || !(msg.content.trim().length > 0);
   const messageRef = useRef();
 
@@ -64,10 +64,15 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
   };
 
   useEffect(() => {
-    if (clientChatStore.items.length > 0 && clientChatStore.isLoading && UserOptionsStore.followModeEnabled) { // Refine condition
+    if (
+      clientChatStore.items.length > 0 &&
+      clientChatStore.isLoading &&
+      UserOptionsStore.followModeEnabled
+    ) {
+      // Refine condition
       scrollRef.current?.scrollTo({
         top: scrollRef.current.scrollHeight,
-        behavior: "auto",
+        behavior: 'auto',
       });
     }
   });
@@ -75,7 +80,7 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
   return (
     <Flex
       flexDirection="column"
-      alignItems={isUser ? "flex-end" : "flex-start"}
+      alignItems={isUser ? 'flex-end' : 'flex-start'}
       role="listitem"
       flex={0}
       aria-label={`Message from ${senderName}`}
@@ -85,19 +90,19 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
       <Text
         fontSize="xs"
         color="text.tertiary"
-        textAlign={isUser ? "right" : "left"}
-        alignSelf={isUser ? "flex-end" : "flex-start"}
+        textAlign={isUser ? 'right' : 'left'}
+        alignSelf={isUser ? 'flex-end' : 'flex-start'}
         mb={1}
       >
         {senderName}
       </Text>
 
       <MotionBox
-        minW={{ base: "99%", sm: "99%", lg: isUser ? "55%" : "60%" }}
-        maxW={{ base: "99%", sm: "99%", lg: isUser ? "65%" : "65%" }}
+        minW={{ base: '99%', sm: '99%', lg: isUser ? '55%' : '60%' }}
+        maxW={{ base: '99%', sm: '99%', lg: isUser ? '65%' : '65%' }}
         p={3}
         borderRadius="1.5em"
-        bg={isUser ? "#0A84FF" : "#3A3A3C"}
+        bg={isUser ? '#0A84FF' : '#3A3A3C'}
         color="text.primary"
         textAlign="left"
         boxShadow="0 2px 4px rgba(0, 0, 0, 0.1)"
@@ -115,10 +120,10 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
             whiteSpace="pre-wrap"
             ref={messageRef}
             sx={{
-              "pre, code": {
-                maxWidth: "100%",
-                whiteSpace: "pre-wrap",
-                overflowX: "auto",
+              'pre, code': {
+                maxWidth: '100%',
+                whiteSpace: 'pre-wrap',
+                overflowX: 'auto',
               },
             }}
           >
@@ -139,9 +144,7 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
               justifyContent="center"
               alignItems="center"
             >
-              {isHovered && !isEditing && (
-                <UserMessageTools message={msg} onEdit={handleEdit} />
-              )}
+              {isHovered && !isEditing && <UserMessageTools message={msg} onEdit={handleEdit} />}
             </Box>
           )}
         </Flex>
