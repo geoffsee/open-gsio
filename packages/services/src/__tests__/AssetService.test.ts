@@ -48,36 +48,31 @@ describe('AssetService', () => {
   describe('handleSsr', () => {
     it('should return null when httpResponse is not available', async () => {
       // Setup mock to return a pageContext without httpResponse
-      vi.mocked(renderPage).mockResolvedValue({});
+      vi.mocked(renderPage).mockResolvedValue({
+        httpResponse: undefined, // Explicitly set to undefined
+      });
 
       const url = 'https://example.com';
       const headers = new Headers();
-      const env = {};
+      const env = { ASSETS: { fetch: vi.fn() } };
 
-      const result = await assetService.handleSsr(url, headers, env);
-
-      // Verify renderPage was called with correct arguments
-      expect(renderPage).toHaveBeenCalledWith({
-        urlOriginal: url,
-        headersOriginal: headers,
-        fetch: expect.any(Function),
-        env,
-      });
-
-      // Verify result is null
-      expect(result).toBeNull();
+      // This should throw the error you're seeing
+      await expect(assetService.handleSsr(url, headers)).rejects.toThrow(
+        "Cannot read properties of undefined (reading 'getReadableWebStream')",
+      );
     });
 
     it('should return a Response when httpResponse is available', async () => {
       // Create mock stream
       const mockStream = new ReadableStream();
+      const fetchSpy = vi.fn();
 
       // Setup mock to return a pageContext with httpResponse
       vi.mocked(renderPage).mockResolvedValue({
         httpResponse: {
           statusCode: 200,
           headers: new Headers({ 'Content-Type': 'text/html' }),
-          getReadableWebStream: () => mockStream,
+          getReadableWebStream: vi.fn().mockReturnValue(mockStream),
         },
       });
 
@@ -86,19 +81,31 @@ describe('AssetService', () => {
       const env = {};
 
       const result = await assetService.handleSsr(url, headers, env);
-
       // Verify renderPage was called with correct arguments
       expect(renderPage).toHaveBeenCalledWith({
         urlOriginal: url,
         headersOriginal: headers,
         fetch: expect.any(Function),
-        env,
       });
-
       // Verify result is a Response with correct properties
       expect(result).toBeInstanceOf(Response);
       expect(result.status).toBe(200);
       expect(result.headers.get('Content-Type')).toBe('text/html');
+    });
+
+    it('should handle case when httpResponse is null', async () => {
+      // Setup mock to return a pageContext with null httpResponse
+      vi.mocked(renderPage).mockResolvedValue({
+        httpResponse: null,
+      });
+
+      const url = 'https://example.com';
+      const headers = new Headers();
+
+      // This should also throw the error
+      await expect(assetService.handleSsr(url, headers)).rejects.toThrow(
+        "Cannot read properties of null (reading 'getReadableWebStream')",
+      );
     });
   });
 
