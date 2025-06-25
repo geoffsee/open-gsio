@@ -4,9 +4,12 @@ import { configDefaults } from 'vitest/config';
 
 export default defineConfig(({ command }) => {
   return {
+    build: {
+      cssMinify: 'esbuild',
+    },
     test: {
       globals: true,
-      environment: 'jsdom',
+      environment: 'node',
       registerNodeLoader: false,
       // setupFiles: ['./src/test/setup.ts'],
       exclude: [...configDefaults.exclude, 'dist/**', '.open-gsio/**'],

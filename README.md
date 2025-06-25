@@ -14,6 +14,7 @@ This is a full-stack Conversational AI.
 
 - [Installation](#installation)
 - [Deployment](#deployment)
+- [Docker](#docker)
 - [Local Inference](#local-inference)
   - [mlx-omni-server (default)](#mlx-omni-server)
     - [Adding models](#adding-models-for-local-inference-apple-silicon)
@@ -39,6 +40,59 @@ This is a full-stack Conversational AI.
 1. Run `bun run deploy && bun run deploy:secrets && bun run deploy`
 
 > Note: Subsequent deployments should omit `bun run deploy:secrets`
+
+## Docker
+
+You can run the server using Docker. The image is large but will be slimmed down in future commits.
+
+### Building the Docker Image
+
+```bash
+docker compose build
+# OR
+docker build -t open-gsio .
+```
+
+### Running the Docker Container
+
+```bash
+docker run -p 3003:3003 \
+  -e GROQ_API_KEY=your_groq_api_key \
+  -e FIREWORKS_API_KEY=your_fireworks_api_key \
+  open-gsio
+```
+
+You can omit any environment variables that you don't need. The server will be available at http://localhost:3003.
+
+### Using Docker Compose
+
+A `docker-compose.yml` file is provided in the repository. You can edit it to add your API keys:
+
+```yaml
+version: '3'
+services:
+  open-gsio:
+    build: .
+    ports:
+      - "3003:3003"
+    environment:
+      - GROQ_API_KEY=your_groq_api_key
+      - FIREWORKS_API_KEY=your_fireworks_api_key
+      # Other environment variables are included in the file
+    restart: unless-stopped
+```
+
+Then run:
+
+```bash
+docker compose up
+```
+
+Or to run in detached mode:
+
+```bash
+docker compose up -d
+```
 
 ## Local Inference
 
@@ -116,6 +170,8 @@ I would like to express gratitude to the following projects, libraries, and indi
 - [Vike](https://vike.dev/) - Framework for server-side rendering and routing
 - [Cloudflare Workers](https://developers.cloudflare.com/workers/) - Serverless execution environment
 - [Bun](https://bun.sh/) - JavaScript runtime and toolkit
+- [Marked.js](https://github.com/markedjs/marked) - Markdown Rendering
+- [Shiki](https://github.com/shikijs/shiki) - Syntax Highlighting
 - [itty-router](https://github.com/kwhitley/itty-router) - Lightweight router for serverless environments
 - [MobX-State-Tree](https://mobx-state-tree.js.org/) - State management solution
 - [OpenAI SDK](https://github.com/openai/openai-node) - Client for AI model integration

@@ -1,0 +1,13 @@
+version: '3'
+services:
+  open-gsio:
+    image: open-gsio:latest
+    build:
+      pull: false
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    env_file:
+      - ./packages/server/.env
+    restart: unless-stopped

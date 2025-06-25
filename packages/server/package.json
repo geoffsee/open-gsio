@@ -3,7 +3,7 @@
   "type": "module",
   "scripts": {
     "dev": "bun src/server/server.ts",
-    "build": "bun run src/server/build.ts"
+    "build": "bun ./src/server/build.ts"
   },
   "devDependencies": {
     "@open-gsio/env": "workspace:*",
@@ -24,8 +24,11 @@
     "mobx-state-tree": "^6.0.1",
     "moo": "^0.5.2",
     "typescript": "^5.7.2",
-    "vike": "0.4.193",
+    "vike": "0.4.235",
+    "vite": "^7.0.0",
     "zod": "^3.23.8",
-    "dotenv": "^16.5.0"
+    "dotenv": "^16.5.0",
+    "bun": "^1.2.17",
+    "@types/bun": "^1.2.17"
   }
 }
