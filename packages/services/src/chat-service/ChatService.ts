@@ -154,7 +154,16 @@ const ChatService = types
           try {
             const listResp: any = yield openai.models.list(); // <‑‑ async
             const models = 'data' in listResp ? listResp.data : listResp;
-            providerModels.set(provider.name, models);
+
+            providerModels.set(
+              provider.name,
+              models.filter(
+                (mdl: any) =>
+                  !mdl.id.includes('whisper') &&
+                  !mdl.id.includes('tts') &&
+                  !mdl.id.includes('guard'),
+              ),
+            );
 
             // 2‑b. Retrieve metadata
             for (const mdl of models) {
