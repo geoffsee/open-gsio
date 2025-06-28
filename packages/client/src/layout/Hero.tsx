@@ -17,9 +17,9 @@ export default function Hero() {
           minWidth="90px"
           maxWidth={'220px'}
           color="text.accent"
-          as="h3"
+          // as="h3"
           letterSpacing={'tight'}
-          size="lg"
+          size="xl"
         >
           {Routes[normalizePath(pageContext.urlPathname)]?.heroLabel}
         </Heading>
