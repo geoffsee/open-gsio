@@ -1,0 +1,3 @@
+[submodule "crates/yachtpit"]
+	path = crates/yachtpit
+	url = https://github.com/seemueller-io/yachtpit.git

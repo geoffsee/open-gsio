@@ -7,11 +7,16 @@
 **/.idea/
 **/html/
 **/.env
-packages/client/public/static/fonts/*
 
 **/secrets.json
 **/.dev.vars
-packages/client/public/sitemap.xml
-packages/client/public/robots.txt
 wrangler.dev.jsonc
 /packages/client/public/static/fonts/
+/packages/client/public/robots.txt
+/packages/client/public/sitemap.xml
+/packages/client/public/assets/textures/bevy.png
+/packages/client/public/assets/audio/flying.ogg
+/packages/client/public/assets/textures/github.png
+/packages/client/public/yachtpit.html
+/packages/client/public/yachtpit.js
+/packages/client/public/yachtpit_bg.wasm
