@@ -20,9 +20,10 @@
     {
       "binding": "KV_STORAGE",
       // $ npx wrangler kv namespace create open-gsio
+      // $ npx wrangler kv namespace create open-gsio
       "id": "placeholderId",
       // $ npx wrangler kv namespace create open-gsio --preview
-      "preview_id": "placeholderIdPreview"
+      "preview_id": "placeholderId"
     }
   ],
   "migrations": [

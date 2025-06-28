@@ -1,4 +1,4 @@
-import { Box, Collapse, Grid, GridItem, useBreakpointValue } from '@chakra-ui/react';
+import { Box, Collapse, Grid, GridItem, useBreakpointValue, useTheme } from '@chakra-ui/react';
 import { MenuIcon } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect } from 'react';
@@ -17,6 +17,8 @@ const Navigation = observer(({ children, routeRegistry }) => {
   const pageContext = usePageContext();
 
   const currentPath = pageContext.urlPathname || '/';
+
+  const theme = useTheme();
 
   const getTopValue = () => {
     if (!isMobile) return undefined;
@@ -53,9 +55,10 @@ const Navigation = observer(({ children, routeRegistry }) => {
           <GridItem>
             <MenuIcon
               cursor="pointer"
+              color="text.accent"
               w={6}
               h={6}
-              stroke={getTheme(userOptionsStore.theme).colors.text.accent}
+              stroke={theme.colors.text.accent}
               onClick={() => {
                 switch (menuState.isOpen) {
                   case true:
