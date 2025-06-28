@@ -17,6 +17,10 @@ const prebuildPlugin = () => ({
       console.log('Generated robots.txt -> public/robots.txt');
       child_process.execSync('bun run generate:fonts');
       console.log('Copied fonts -> public/static/fonts');
+      child_process.execSync('bun run generate:bevy:bundle', {
+        stdio: 'inherit',
+      });
+      console.log('Bundled bevy app -> public/yachtpit.html');
     }
   },
 });
@@ -31,6 +35,26 @@ export default defineConfig(({ command }) => {
         prerender: true,
         disableAutoFullBuild: false,
       }),
+      VitePWA({
+        registerType: 'autoUpdate',
+        injectRegister: null,
+        minify: true,
+        disable: false,
+        filename: 'service-worker.js',
+        devOptions: {
+          enabled: false,
+        },
+        manifest: {
+          name: 'open-gsio',
+          short_name: 'open-gsio',
+          description: 'Assistant',
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}'],
+          navigateFallbackDenylist: [/^\/api\//],
+          maximumFileSizeToCacheInBytes: 25000000,
+        },
+      }),
       // PWA plugin saves money on data transfer by caching assets on the client
       /*
                 For safari, use this script in the console to unregister the service worker.
@@ -41,21 +65,6 @@ export default defineConfig(({ command }) => {
                     })
                 })
              */
-      // VitePWA({
-      //     registerType: 'autoUpdate',
-      //     devOptions: {
-      //         enabled: false,
-      //     },
-      //     manifest: {
-      //         name: "open-gsio",
-      //         short_name: "open-gsio",
-      //         description: "Assistant"
-      //     },
-      //     workbox: {
-      //         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-      //         navigateFallbackDenylist: [/^\/api\//],
-      //     }
-      // })
     ],
     server: {
       port: 3000,
