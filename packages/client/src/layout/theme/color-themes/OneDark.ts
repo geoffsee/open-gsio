@@ -15,8 +15,8 @@ export default {
   },
 
   background: {
-    primary: 'linear-gradient(360deg, #15171C 100%, #353A47 100%)',
-
+    // primary: 'linear-gradient(360deg, #15171C 100%, #353A47 100%)',
+    primary: '#15171C',
     secondary: '#1B1F26',
     tertiary: '#1E1E2E',
   },

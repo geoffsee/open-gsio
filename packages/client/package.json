@@ -8,7 +8,8 @@
     "tests:coverage": "vitest run --coverage.enabled=true",
     "generate:sitemap": "bun ./scripts/generate_sitemap.js open-gsio.seemueller.workers.dev",
     "generate:robotstxt": "bun ./scripts/generate_robots_txt.js open-gsio.seemueller.workers.dev",
-    "generate:fonts": "cp -r ../../node_modules/katex/dist/fonts public/static"
+    "generate:fonts": "cp -r ../../node_modules/katex/dist/fonts public/static",
+    "generate:bevy:bundle": "bun scripts/generate-bevy-bundle.js"
   },
   "exports": {
     "./server/index.ts": {
@@ -17,19 +18,22 @@
     }
   },
   "devDependencies": {
-    "@open-gsio/env": "workspace:*",
-    "@open-gsio/scripts": "workspace:*",
+    "@chakra-ui/icons": "^2.2.4",
     "@chakra-ui/react": "^2.10.6",
     "@cloudflare/workers-types": "^4.20241205.0",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
+    "@open-gsio/env": "workspace:*",
+    "@open-gsio/scripts": "workspace:*",
     "@testing-library/jest-dom": "^6.4.2",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^14.5.2",
+    "@types/bun": "^1.2.17",
     "@types/marked": "^6.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^3.1.4",
     "@vitest/ui": "^3.1.4",
+    "bun": "^1.2.17",
     "chokidar": "^4.0.1",
     "framer-motion": "^11.13.1",
     "isomorphic-dompurify": "^2.19.0",
@@ -44,7 +48,6 @@
     "mobx": "^6.13.5",
     "mobx-react-lite": "^4.0.7",
     "mobx-state-tree": "^6.0.1",
-    "moo": "^0.5.2",
     "qrcode.react": "^4.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -52,12 +55,11 @@
     "react-streaming": "^0.4.2",
     "react-textarea-autosize": "^8.5.5",
     "shiki": "^1.24.0",
+    "tslog": "^4.9.3",
     "typescript": "^5.7.2",
     "vike": "^0.4.235",
     "vite": "^7.0.0",
-    "vite-plugin-pwa": "^1.0.0",
-    "vitest": "^3.1.4",
-    "bun": "^1.2.17",
-    "@types/bun": "^1.2.17"
+    "vite-plugin-pwa": "^1.0.1",
+    "vitest": "^3.1.4"
   }
 }
