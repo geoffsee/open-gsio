@@ -14,9 +14,13 @@ wrangler.dev.jsonc
 /packages/client/public/static/fonts/
 /packages/client/public/robots.txt
 /packages/client/public/sitemap.xml
-/packages/client/public/assets/textures/bevy.png
-/packages/client/public/assets/audio/flying.ogg
-/packages/client/public/assets/textures/github.png
 /packages/client/public/yachtpit.html
 /packages/client/public/yachtpit.js
 /packages/client/public/yachtpit_bg.wasm
+/packages/client/public/assets/
+/packages/client/public/apple-touch-icon-180x180.png
+/packages/client/public/icon.ico
+/packages/client/public/maskable-icon-512x512.png
+/packages/client/public/pwa-64x64.png
+/packages/client/public/pwa-192x192.png
+/packages/client/public/pwa-512x512.png

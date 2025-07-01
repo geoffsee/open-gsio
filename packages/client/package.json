@@ -9,7 +9,8 @@
     "generate:sitemap": "bun ./scripts/generate_sitemap.js open-gsio.seemueller.workers.dev",
     "generate:robotstxt": "bun ./scripts/generate_robots_txt.js open-gsio.seemueller.workers.dev",
     "generate:fonts": "cp -r ../../node_modules/katex/dist/fonts public/static",
-    "generate:bevy:bundle": "bun scripts/generate-bevy-bundle.js"
+    "generate:bevy:bundle": "bun scripts/generate-bevy-bundle.js",
+    "generate:pwa:assets": "test ! -f public/pwa-64x64.png && pwa-assets-generator --preset minimal-2023  public/logo.png || echo 'PWA assets already exist'"
   },
   "exports": {
     "./server/index.ts": {
@@ -30,6 +31,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/bun": "^1.2.17",
     "@types/marked": "^6.0.0",
+    "@vite-pwa/assets-generator": "^1.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/coverage-v8": "^3.1.4",
     "@vitest/ui": "^3.1.4",
