@@ -2,6 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 
 import BuiltWithButton from '../BuiltWithButton';
+import InstallButton from '../InstallButton.tsx';
 
 import GithubButton from './GithubButton';
 import SupportThisSiteButton from './SupportThisSiteButton';
@@ -17,6 +18,7 @@ function ToolBar({ isMobile }) {
       alignItems={isMobile ? 'flex-start' : 'flex-end'}
       pb={4}
     >
+      <InstallButton />
       <SupportThisSiteButton />
       <GithubButton />
       <BuiltWithButton />

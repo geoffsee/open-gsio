@@ -1,7 +1,6 @@
 import { Stack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
-import Chat from '../../components/chat/Chat';
 import { LandingComponent } from '../../components/landing-component/LandingComponent.tsx';
 import clientChatStore from '../../stores/ClientChatStore';
 
