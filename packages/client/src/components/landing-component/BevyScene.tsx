@@ -1,51 +1,51 @@
 import { Box } from '@chakra-ui/react';
-import { useEffect } from 'react';
+import React, { memo, useEffect, useMemo } from 'react';
 
 export interface BevySceneProps {
-  speed?: number; // transition seconds
-  intensity?: number;
+  speed?: number;
+  intensity?: number; // 0-1 when visible
   glow?: boolean;
+  visible?: boolean; // NEW — defaults to true
 }
 
-export const BevyScene: React.FC<BevySceneProps> = ({ speed = 1, intensity = 1, glow = false }) => {
+const BevySceneInner: React.FC<BevySceneProps> = ({
+  speed = 1,
+  intensity = 1,
+  glow = false,
+  visible,
+}) => {
+  /* initialise once */
   useEffect(() => {
+    let dispose: (() => void) | void;
     (async () => {
-      const module = await import('/public/yachtpit.js', { type: 'module' });
-      console.log('init', module);
-      await module.default();
+      const { default: init } = await import(/* webpackIgnore: true */ '/public/yachtpit.js');
+      dispose = await init(); // zero-arg, uses #yachtpit-canvas
     })();
-    // const script = document.createElement('script');
-    // script.src = '';
-    // script.type = 'module';
-    // document.body.appendChild(script);
-    // script.onload = loaded => {
-    //   loaded.target?.init();
-    //   console.log('loaded', loaded);
-    // };
+    return () => {
+      if (typeof dispose === 'function') dispose();
+    };
   }, []);
 
+  /* memoised styles */
+  const wrapperStyles = useMemo(
+    () => ({
+      position: 'absolute' as const,
+      inset: 0,
+      zIndex: 0,
+      pointerEvents: 'none' as const,
+      opacity: visible ? Math.min(Math.max(intensity, 0), 1) : 0,
+      filter: glow ? 'blur(1px)' : 'none',
+      transition: `opacity ${speed}s ease-in-out`,
+      display: visible ? 'block' : 'none', // optional: reclaim hit-testing entirely
+    }),
+    [visible, intensity, glow, speed],
+  );
+
   return (
-    <Box
-      pos="absolute"
-      inset={0}
-      zIndex={0}
-      pointerEvents="none"
-      opacity={Math.min(Math.max(intensity, 0), 1)}
-      filter={glow ? 'blur(1px)' : 'none'}
-      transition={`opacity ${speed}s ease-in-out`}
-    >
-      <script type="module"></script>
-      <canvas id="yachtpit-canvas" width="1280" height="720"></canvas>
-      {/*<iframe*/}
-      {/*  src="/yachtpit.html"*/}
-      {/*  style={{*/}
-      {/*    width: '100%',*/}
-      {/*    height: '100%',*/}
-      {/*    border: 'none',*/}
-      {/*    backgroundColor: 'transparent',*/}
-      {/*  }}*/}
-      {/*  title="Bevy Scene"*/}
-      {/*/>*/}
+    <Box as="div" sx={wrapperStyles}>
+      <canvas id="yachtpit-canvas" width={1280} height={720} aria-hidden />
     </Box>
   );
 };
+
+export const BevyScene = memo(BevySceneInner);

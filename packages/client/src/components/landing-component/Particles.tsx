@@ -6,6 +6,7 @@ interface ParticlesProps {
   intensity: number;
   particles: boolean;
   glow: boolean;
+  visible?: boolean;
 }
 
 interface Particle {
@@ -16,7 +17,7 @@ interface Particle {
   size: number;
 }
 
-const Particles: React.FC<ParticlesProps> = ({ speed, intensity, particles, glow }) => {
+const Particles: React.FC<ParticlesProps> = ({ speed, intensity, glow, visible }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<Particle[]>([]);
   const animationFrameRef = useRef<number | undefined>(undefined);
@@ -33,7 +34,7 @@ const Particles: React.FC<ParticlesProps> = ({ speed, intensity, particles, glow
 
   // Main animation effect
   useEffect(() => {
-    if (!particles) {
+    if (!visible) {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
         animationFrameRef.current = undefined;
@@ -128,11 +129,11 @@ const Particles: React.FC<ParticlesProps> = ({ speed, intensity, particles, glow
         animationFrameRef.current = undefined;
       }
     };
-  }, [particles, intensity, speed, glow, theme.colors.text.accent]);
+  }, [visible, intensity, speed, glow, theme.colors.text.accent]);
 
   // Separate effect for speed changes - update existing particle velocities
   useEffect(() => {
-    if (!particles) return;
+    if (!visible) return;
 
     particlesRef.current.forEach(particle => {
       const currentSpeed = Math.sqrt(particle.vx * particle.vx + particle.vy * particle.vy);
@@ -146,13 +147,13 @@ const Particles: React.FC<ParticlesProps> = ({ speed, intensity, particles, glow
         particle.vy = (Math.random() - 0.5) * speed;
       }
     });
-  }, [speed, particles]);
+  }, [speed, visible]);
 
   return (
     <Box zIndex={0} pointerEvents={'none'}>
       <canvas
         ref={canvasRef}
-        style={{ display: particles ? 'block' : 'none', pointerEvents: 'none' }}
+        style={{ display: visible ? 'block' : 'none', pointerEvents: 'none' }}
       />
     </Box>
   );
