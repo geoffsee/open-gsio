@@ -52,13 +52,15 @@ export function createRouter() {
       // })
 
       .get('/api/metrics*', async (r, e, c) => {
-        const { metricsService } = createRequestContext(e, c);
-        return metricsService.handleMetricsRequest(r);
+        return new Response('ok');
+        // const { metricsService } = createRequestContext(e, c);
+        // return metricsService.handleMetricsRequest(r);
       })
 
       .post('/api/metrics*', async (r, e, c) => {
-        const { metricsService } = createRequestContext(e, c);
-        return metricsService.handleMetricsRequest(r);
+        return new Response('ok');
+        // const { metricsService } = createRequestContext(e, c);
+        // return metricsService.handleMetricsRequest(r);
       })
 
       // renders the app
