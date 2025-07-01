@@ -8,12 +8,14 @@ interface MatrixRainProps {
   speed?: number;
   glow?: boolean;
   intensity?: number;
+  visible?: boolean;
 }
 
 export const MatrixRain: React.FC<MatrixRainProps> = ({
   speed = 1,
   glow = false,
   intensity = 1,
+  visible,
 }) => {
   const fontSize = useBreakpointValue({ base: 14, md: 18, lg: 22 }) ?? 14;
   const theme = useTheme();
@@ -111,7 +113,12 @@ export const MatrixRain: React.FC<MatrixRainProps> = ({
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [fontSize, speed, glow, intensity]);
+  }, [fontSize, speed, glow, intensity, visible]);
 
-  return <canvas ref={canvasRef} style={{ display: 'block' }} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ display: visible ? 'block' : 'none', pointerEvents: 'none' }}
+    />
+  );
 };

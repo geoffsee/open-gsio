@@ -34,7 +34,7 @@ export const LandingComponent: React.FC = () => {
         <Tweakbox
           sliders={{
             speed: {
-              value: speed,
+              value: !particles ? speed : 0.99,
               onChange: setSpeed,
               label: 'Animation Speed',
               min: 0.01,
@@ -43,7 +43,7 @@ export const LandingComponent: React.FC = () => {
               ariaLabel: 'animation-speed',
             },
             intensity: {
-              value: intensity,
+              value: !particles ? intensity : 0.99,
               onChange: setIntensity,
               label: 'Effect Intensity',
               min: 0.01,
@@ -94,9 +94,9 @@ export const LandingComponent: React.FC = () => {
           }}
         />
       </Box>
-      {!particles && !matrixRain && <BevyScene speed={speed} intensity={intensity} glow={glow} />}
-      {!particles && matrixRain && <MatrixRain speed={speed} intensity={intensity} glow={glow} />}
-      {particles && <Particles particles glow speed={speed} intensity={intensity} />}
+      <BevyScene speed={speed} intensity={intensity} glow={glow} visible={bevyScene} />
+      <MatrixRain speed={speed} intensity={intensity} glow={glow} visible={matrixRain} />
+      <Particles glow speed={speed} intensity={intensity} visible={particles} />
     </Box>
   );
 };
