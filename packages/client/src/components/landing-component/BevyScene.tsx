@@ -9,13 +9,19 @@ export interface BevySceneProps {
 
 export const BevyScene: React.FC<BevySceneProps> = ({ speed = 1, intensity = 1, glow = false }) => {
   useEffect(() => {
-    const script = document.createElement('script');
-    script.src = '/yachtpit.js';
-    script.type = 'module';
-    document.body.appendChild(script);
-    script.onload = loaded => {
-      console.log('loaded', loaded);
-    };
+    (async () => {
+      const module = await import('/public/yachtpit.js', { type: 'module' });
+      console.log('init', module);
+      await module.default();
+    })();
+    // const script = document.createElement('script');
+    // script.src = '';
+    // script.type = 'module';
+    // document.body.appendChild(script);
+    // script.onload = loaded => {
+    //   loaded.target?.init();
+    //   console.log('loaded', loaded);
+    // };
   }, []);
 
   return (
