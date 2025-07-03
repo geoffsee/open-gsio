@@ -7,6 +7,7 @@ import {
   renameSync,
   rmSync,
   cpSync,
+  statSync,
 } from 'node:fs';
 import { resolve, dirname, join, basename } from 'node:path';
 
@@ -49,7 +50,7 @@ function bundleCrate() {
   }
 
   // Build the yachtpit project
-  const buildCwd = resolve(repoRoot, 'crates/yachtpit');
+  const buildCwd = resolve(repoRoot, 'crates/yachtpit/crates/yachtpit');
   logger.info(`🔨 Building in directory: ${buildCwd}`);
 
   try {
@@ -63,7 +64,7 @@ function bundleCrate() {
   }
 
   // ───────────── Copy assets to public directory ──────────────────────────
-  const yachtpitDistDir = join(yachtpitPath, 'dist');
+  const yachtpitDistDir = join(buildCwd, 'dist');
 
   logger.info(`📋 Copying assets to public directory...`);
 
@@ -151,6 +152,27 @@ function bundleCrate() {
     }
   } else {
     logger.info(`⚠️  ${indexHtml} not found – skipping HTML processing.`);
+  }
+  optimizeWasmSize();
+}
+
+function optimizeWasmSize() {
+  logger.info('🔨 Checking WASM size...');
+
+  const wasmPath = resolve(publicDir, 'yachtpit_bg.wasm');
+  const fileSize = statSync(wasmPath).size;
+  const sizeInMb = fileSize / (1024 * 1024);
+
+  if (sizeInMb > 30) {
+    logger.info(`WASM size is ${sizeInMb.toFixed(2)}MB, optimizing...`);
+    execSync(`wasm-opt -Oz -o ${wasmPath} ${wasmPath}`, {
+      encoding: 'utf-8',
+    });
+    logger.info(`✅ WASM size optimized`);
+  } else {
+    logger.info(
+      `⏩ Skipping WASM optimization, size (${sizeInMb.toFixed(2)}MB) is under 30MB threshold`,
+    );
   }
 }
 

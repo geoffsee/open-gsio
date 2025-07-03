@@ -32,7 +32,6 @@ const BevySceneInner: React.FC<BevySceneProps> = ({
       position: 'absolute' as const,
       inset: 0,
       zIndex: 0,
-      pointerEvents: 'none' as const,
       opacity: visible ? Math.min(Math.max(intensity, 0), 1) : 0,
       filter: glow ? 'blur(1px)' : 'none',
       transition: `opacity ${speed}s ease-in-out`,
