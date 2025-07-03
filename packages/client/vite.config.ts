@@ -114,6 +114,14 @@ export default defineConfig(({ command }) => {
                 })
              */
     ],
+    workbox: {
+      globPatterns: ['**/*.{js,css,html,ico,png,svg,wasm}'],
+      navigateFallbackDenylist: [/^\/api\//],
+      maximumFileSizeToCacheInBytes: 25000000,
+      cacheId: buildId,
+      cleanupOutdatedCaches: true,
+      clientsClaim: true,
+    },
     server: {
       port: 3000,
       proxy: {
