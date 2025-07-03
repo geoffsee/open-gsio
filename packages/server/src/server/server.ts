@@ -4,6 +4,7 @@ import ServerCoordinator from '@open-gsio/coordinators/src/ServerCoordinatorBun.
 import Router from '@open-gsio/router';
 import { config } from 'dotenv';
 import type { RequestLike } from 'itty-router';
+import { error } from 'itty-router';
 
 import { BunSqliteKVNamespace } from '../storage/BunSqliteKVNamespace.ts';
 
@@ -49,8 +50,7 @@ export default {
           reject(new Error('Request timeout after 5s'));
         }, 5000),
       );
-
-      return await Promise.race([router.fetch(request, env, ctx), timeout]);
+      return await Promise.race([router.fetch(request, env, ctx).catch(error), timeout]);
     } catch (e) {
       console.error('Error handling request:', e);
       return new Response('Server Error', { status: 500 });
