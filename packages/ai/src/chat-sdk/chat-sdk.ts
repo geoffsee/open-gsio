@@ -2,6 +2,7 @@ import { Schema } from '@open-gsio/schema';
 import type { Instance } from 'mobx-state-tree';
 import { OpenAI } from 'openai';
 
+import type Message from '../../../schema/src/models/Message.ts';
 import { AssistantSdk } from '../assistant-sdk';
 import { ProviderRepository } from '../providers/_ProviderRepository.ts';
 import type {
