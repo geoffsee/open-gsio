@@ -2,6 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 
 import { Chakra } from '../components/contexts/ChakraContext';
+import ComponentContext, { ComponentProvider } from '../components/contexts/ComponentContext.tsx';
 import { MobileProvider } from '../components/contexts/MobileContext';
 import { PageContextProvider } from '../renderer/usePageContext';
 import userOptionsStore from '../stores/UserOptionsStore';
@@ -13,6 +14,7 @@ export { Layout };
 
 const Layout = observer(({ pageContext, children }) => {
   const [activeTheme, setActiveTheme] = useState<string>('darknight');
+  const [enabledComponent, setEnabledComponent] = useState('gpsmap');
 
   useEffect(() => {
     if (userOptionsStore.theme !== activeTheme) {
@@ -47,7 +49,9 @@ const Layout = observer(({ pageContext, children }) => {
       <PageContextProvider pageContext={pageContext}>
         <MobileProvider>
           <Chakra theme={getTheme(activeTheme)}>
-            <LayoutComponent>{children}</LayoutComponent>
+            <ComponentProvider>
+              <LayoutComponent>{children}</LayoutComponent>
+            </ComponentProvider>
           </Chakra>
         </MobileProvider>
       </PageContextProvider>
