@@ -1,6 +1,7 @@
-import { Stack } from '@chakra-ui/react';
+import { Grid, GridItem, Stack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
+import Chat from '../../components/chat/Chat.tsx';
 import { LandingComponent } from '../../components/landing-component/LandingComponent.tsx';
 import clientChatStore from '../../stores/ClientChatStore';
 
@@ -15,11 +16,14 @@ export default function IndexPage() {
       // Fall back to default model
     }
   }, []);
-
   return (
-    <Stack direction="column" height="100%" width="100%" spacing={0}>
-      <LandingComponent />
-      {/*<Chat height="100%" width="100%" />*/}
-    </Stack>
+    <Grid templateColumns="repeat(2, 1fr)" height="100%" width="100%" gap={0}>
+      <GridItem>
+        <LandingComponent />
+      </GridItem>
+      <GridItem p={2}>
+        <Chat />
+      </GridItem>
+    </Grid>
   );
 }

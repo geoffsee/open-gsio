@@ -32,6 +32,17 @@ const repoRoot = resolve(getRepoRoot);
 const publicDir = resolve(repoRoot, 'packages/client/public');
 const indexHtml = resolve(publicDir, 'index.html');
 
+// Build the yachtpit project
+const buildCwd = resolve(repoRoot, 'crates/yachtpit/crates/yachtpit');
+logger.info(`🔨 Building in directory: ${buildCwd}`);
+
+function needsRebuild() {
+  const optimizedWasm = join(buildCwd, 'dist', 'yachtpit_bg.wasm_optimized');
+  if (!existsSync(optimizedWasm)) return true;
+}
+
+const NEEDS_REBUILD = needsRebuild();
+
 function bundleCrate() {
   // ───────────── Build yachtpit project ───────────────────────────────────
   logger.info('🔨 Building yachtpit...');
@@ -49,15 +60,15 @@ function bundleCrate() {
     logger.info(`✅ Submodules already initialized at: ${yachtpitPath}`);
   }
 
-  // Build the yachtpit project
-  const buildCwd = resolve(repoRoot, 'crates/yachtpit/crates/yachtpit');
-  logger.info(`🔨 Building in directory: ${buildCwd}`);
-
   try {
-    execSync('trunk build --release', {
-      cwd: buildCwd,
-    });
-    logger.info('✅ Yachtpit built');
+    if (NEEDS_REBUILD) {
+      logger.info('🛠️  Changes detected — rebuilding yachtpit...');
+      execSync('trunk build --release', { cwd: buildCwd, stdio: 'inherit' });
+      logger.info('✅ Yachtpit built');
+    } else {
+      logger.info('⏩ No changes since last build — skipping yachtpit rebuild');
+      process.exit(0);
+    }
   } catch (error) {
     console.error('❌ Failed to build yachtpit:', error.message);
     process.exit(1);
@@ -158,7 +169,6 @@ function bundleCrate() {
 
 function optimizeWasmSize() {
   logger.info('🔨 Checking WASM size...');
-
   const wasmPath = resolve(publicDir, 'yachtpit_bg.wasm');
   const fileSize = statSync(wasmPath).size;
   const sizeInMb = fileSize / (1024 * 1024);
