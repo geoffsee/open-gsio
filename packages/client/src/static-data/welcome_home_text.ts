@@ -1,7 +1,7 @@
 export const welcome_home_text = `
-# welcome!
+# yachtpit-ai
 ---
-Please enjoy [responsibly](https://centerforresponsible.ai/the-center)
+
 <br/>
 <br/>
 `;
