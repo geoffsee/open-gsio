@@ -10,7 +10,7 @@ export default function Hero() {
   const isMobile = useIsMobile();
 
   return (
-    <Box p={2}>
+    <Box p={2} mt={2}>
       <Box>
         <Heading
           textAlign={isMobile ? 'left' : 'right'}
