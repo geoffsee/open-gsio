@@ -1,7 +1,7 @@
 import { Stack } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
-import Chat from '../../components/chat/Chat';
+import { LandingComponent } from '../../components/landing-component/LandingComponent.tsx';
 import clientChatStore from '../../stores/ClientChatStore';
 
 // renders "/"
@@ -18,7 +18,8 @@ export default function IndexPage() {
 
   return (
     <Stack direction="column" height="100%" width="100%" spacing={0}>
-      <Chat height="100%" width="100%" />
+      <LandingComponent />
+      {/*<Chat height="100%" width="100%" />*/}
     </Stack>
   );
 }
