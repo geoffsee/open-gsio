@@ -1,7 +1,7 @@
 import { OpenAI } from 'openai';
 
 import ChatSdk from '../chat-sdk/chat-sdk.ts';
-import { BasicValueTool, WeatherTool } from '../tools/basic.ts';
+import { WeatherTool } from '../tools/basic.ts';
 import type { GenericEnv } from '../types';
 
 export interface CommonProviderParams {
@@ -37,31 +37,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
 
     const client = this.getOpenAIClient(param);
 
-    // const tools = [WeatherTool];
-    const tools = [
-      {
-        type: 'function',
-        function: {
-          name: 'getCurrentTemperature',
-          description: 'Get the current temperature for a specific location',
-          parameters: {
-            type: 'object',
-            properties: {
-              location: {
-                type: 'string',
-                description: 'The city and state, e.g., San Francisco, CA',
-              },
-              unit: {
-                type: 'string',
-                enum: ['Celsius', 'Fahrenheit'],
-                description: "The temperature unit to use. Infer this from the user's location.",
-              },
-            },
-            required: ['location', 'unit'],
-          },
-        },
-      },
-    ];
+    const tools = [WeatherTool];
 
     const getCurrentTemp = (location: string) => {
       return '20C';
@@ -89,7 +65,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
       const toolCalls: any[] = [];
 
       for await (const chunk of stream as unknown as AsyncIterable<any>) {
-        console.log('chunk', chunk);
+        // console.log('chunk', chunk);
 
         // Handle tool calls
         if (chunk.choices[0]?.delta?.tool_calls) {
