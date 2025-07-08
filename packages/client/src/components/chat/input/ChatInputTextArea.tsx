@@ -1,4 +1,4 @@
-import { Box, chakra, InputGroup } from '@chakra-ui/react';
+import { Box, chakra, InputGroup, useBreakpointValue } from '@chakra-ui/react';
 import { observer } from 'mobx-react-lite';
 import React, { useEffect, useRef, useState } from 'react';
 import AutoResize from 'react-textarea-autosize';
@@ -19,7 +19,7 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
 
     useEffect(() => {
       if (value.length > 10) {
-        setHeightConstraint();
+        setHeightConstraint(parseInt(value));
       }
     }, [value]);
 
@@ -38,6 +38,7 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
             ref={inputRef}
             value={value}
             height={heightConstraint}
+            maxH={heightConstraint}
             autoFocus
             onChange={e => onChange(e.target.value)}
             onKeyDown={onKeyDown}
@@ -48,8 +49,14 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
             color="text.primary"
             borderRadius="20px"
             border="none"
-            placeholder="Free my mind..."
-            _placeholder={{ color: 'gray.400' }}
+            placeholder="To Gilligan's island!"
+            _placeholder={{
+              color: 'gray.400',
+              textWrap: 'nowrap',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              width: '90%',
+            }}
             _focus={{
               outline: 'none',
             }}
