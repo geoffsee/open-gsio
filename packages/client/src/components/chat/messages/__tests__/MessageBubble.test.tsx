@@ -104,7 +104,7 @@ describe('MessageBubble', () => {
   it('should render assistant message correctly', () => {
     render(<MessageBubble msg={mockAssistantMessage} scrollRef={mockScrollRef} />);
 
-    expect(screen.getByText("Geoff's AI")).toBeInTheDocument();
+    expect(screen.getByText('yachtpit-ai')).toBeInTheDocument();
     expect(screen.getByTestId('message-content')).toHaveTextContent('Assistant response');
   });
 

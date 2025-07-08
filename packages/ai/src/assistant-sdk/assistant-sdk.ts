@@ -22,9 +22,10 @@ export class AssistantSdk {
     const currentTime = `${now.getHours()}:${formattedMinutes} ${now.getSeconds()}s`;
 
     return `# Assistant Knowledge
+## Assistant Name
+### yachtpit-ai
 ## Current Context
 ### Date: ${currentDate} ${currentTime}
-### Web Host: open-gsio.seemueller.workers.dev
 ${maxTokens ? `### Max Response Length: ${maxTokens} tokens (maximum)` : ''}
 ### Lexicographical Format: Markdown
 ### User Location: ${userLocation || 'Unknown'}

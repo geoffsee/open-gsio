@@ -1,20 +1,30 @@
 import { Box } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
+import { useComponent } from '../contexts/ComponentContext.tsx';
 
 import { BevyScene } from './BevyScene.tsx';
-import Map from './Map.tsx';
 import Tweakbox from './Tweakbox.tsx';
 
 export const LandingComponent: React.FC = () => {
   const [speed, setSpeed] = useState(0.2);
-  const [intensity, setIntensity] = useState(0.5);
-  const [particles, setParticles] = useState(false);
+  const [intensity, setIntensity] = useState(0.99);
   const [glow, setGlow] = useState(false);
-  const [matrixRain, setMatrixRain] = useState(false);
   const [bevyScene, setBevyScene] = useState(true);
-  const [mapActive, setMapActive] = useState(false);
+  const [mapActive, setMapActive] = useState(true);
+  const [aiActive, setAiActive] = useState(false);
 
-  const map = <Map visible={mapActive} />;
+  const component = useComponent();
+  const { setEnabledComponent } = component;
+
+  useEffect(() => {
+    if (mapActive) {
+      setEnabledComponent('gpsmap');
+    }
+    if (aiActive) {
+      setEnabledComponent('ai');
+    }
+  }, []);
 
   return (
     <Box
@@ -36,7 +46,7 @@ export const LandingComponent: React.FC = () => {
         <Tweakbox
           sliders={{
             intensity: {
-              value: !particles ? intensity : 0.99,
+              value: intensity,
               onChange: setIntensity,
               label: 'Brightness',
               min: 0.01,
@@ -49,11 +59,6 @@ export const LandingComponent: React.FC = () => {
             bevyScene: {
               value: bevyScene,
               onChange(enabled) {
-                if (enabled) {
-                  setParticles(!enabled);
-                  setMatrixRain(!enabled);
-                  setMapActive(!enabled);
-                }
                 setBevyScene(enabled);
               },
               label: 'Instruments',
@@ -62,19 +67,32 @@ export const LandingComponent: React.FC = () => {
               value: mapActive,
               onChange(enabled) {
                 if (enabled) {
-                  setParticles(!enabled);
-                  setMatrixRain(!enabled);
-                  setBevyScene(!enabled);
+                  setEnabledComponent('gpsmap');
+                  setAiActive(false);
+                } else {
+                  setEnabledComponent('');
                 }
                 setMapActive(enabled);
               },
               label: 'Map',
             },
+            AI: {
+              value: aiActive,
+              onChange(enabled) {
+                if (enabled) {
+                  setEnabledComponent('ai');
+                  setMapActive(false);
+                } else {
+                  setEnabledComponent('');
+                }
+                setAiActive(enabled);
+              },
+              label: 'AI',
+            },
           }}
         />
       </Box>
       <BevyScene speed={speed} intensity={intensity} glow={glow} visible={bevyScene} />
-      {mapActive && map}
     </Box>
   );
 };

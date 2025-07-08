@@ -28,7 +28,7 @@ const Chat = observer(({ height, width }) => {
       <GridItem
         overflow="auto"
         width="100%"
-        maxH="100%"
+        maxH="100vh"
         ref={scrollRef}
         // If there are attachments, use "100px". Otherwise, use "128px" on Android, "73px" elsewhere.
         pb={isAndroid ? '128px' : '73px'}

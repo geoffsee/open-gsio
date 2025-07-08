@@ -1,14 +1,15 @@
 import { IconButton } from '@chakra-ui/react';
 import { HardDriveDownload } from 'lucide-react';
 import React from 'react';
-import { usePWAInstall } from 'react-use-pwa-install';
 
 import { toolbarButtonZIndex } from './toolbar/Toolbar.tsx';
 
 function InstallButton() {
-  const install = usePWAInstall();
+  // const install = usePWAInstall();
 
-  // <button onClick={handleInstall}>Install App</button>;
+  const install = () => {
+    console.warn('this does not work in all browsers');
+  };
   return (
     <IconButton
       aria-label="Install App"

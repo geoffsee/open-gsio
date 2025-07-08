@@ -42,6 +42,7 @@ const Navigation = observer(({ children, routeRegistry }) => {
 
   return (
     <Grid templateColumns="1fr" templateRows="auto 1fr">
+      {/*this is the menu button*/}
       <GridItem
         p={4}
         position="fixed"

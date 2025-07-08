@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, useBreakpointValue } from '@chakra-ui/react';
 import React, { memo, useEffect, useMemo } from 'react';
 
 export interface BevySceneProps {
@@ -14,6 +14,8 @@ const BevySceneInner: React.FC<BevySceneProps> = ({
   glow = false,
   visible,
 }) => {
+  const maxWidth = useBreakpointValue({ base: 640, md: 720 }, { ssr: true });
+
   /* initialise once */
   useEffect(() => {
     let dispose: (() => void) | void;
@@ -31,7 +33,8 @@ const BevySceneInner: React.FC<BevySceneProps> = ({
     () => ({
       position: 'absolute' as const,
       inset: 0,
-      zIndex: 0,
+      zIndex: 1,
+      maxWidth: maxWidth,
       opacity: visible ? Math.min(Math.max(intensity, 0), 1) : 0,
       filter: glow ? 'blur(1px)' : 'none',
       transition: `opacity ${speed}s ease-in-out`,
@@ -42,7 +45,12 @@ const BevySceneInner: React.FC<BevySceneProps> = ({
 
   return (
     <Box as="div" sx={wrapperStyles}>
-      <canvas id="yachtpit-canvas" width={1280} height={720} aria-hidden />
+      <canvas
+        id="yachtpit-canvas"
+        width={useBreakpointValue({ base: 640, md: 1280 }, { ssr: true })}
+        height={useBreakpointValue({ base: 360, md: 720 }, { ssr: true })}
+        aria-hidden
+      />
     </Box>
   );
 };
