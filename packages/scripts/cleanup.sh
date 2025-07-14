@@ -15,7 +15,12 @@ find . -name ".wrangler" -type d -prune -exec rm -rf {} \;
 
 # Remove build directories
 find . -name "dist" -type d -prune -exec rm -rf {} \;
-find . -name "build" -type d -prune -exec rm -rf {} \;
+
+
+#-----
+# crates/yachtpit uses a directory called build for staging assets so it can't be removed
+#find . -name "build" -type d -prune -exec rm -rf {} \;
+#-----
 
 find . -name "fonts" -type d -prune -exec rm -rf {} \;
 

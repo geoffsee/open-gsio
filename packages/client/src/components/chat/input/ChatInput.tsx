@@ -22,7 +22,7 @@ const ChatInput = observer(() => {
   const [shouldFollow, setShouldFollow] = useState<boolean>(userOptionsStore.followModeEnabled);
   const [couldFollow, setCouldFollow] = useState<boolean>(chatStore.isLoading);
 
-  const [inputWidth, setInputWidth] = useState<string>('50%');
+  const [inputWidth, setInputWidth] = useState<string>('40%');
 
   useEffect(() => {
     setShouldFollow(chatStore.isLoading && userOptionsStore.followModeEnabled);
@@ -64,10 +64,10 @@ const ChatInput = observer(() => {
   };
 
   const inputMaxWidth = useBreakpointValue(
-    { base: '50rem', lg: '50rem', md: '80%', sm: '100vw' },
+    { base: '30rem', lg: '50rem', md: '80%', sm: '100vw' },
     { ssr: true },
   );
-  const inputMinWidth = useBreakpointValue({ lg: '40rem' }, { ssr: true });
+  const inputMinWidth = useBreakpointValue({ lg: '40rem', md: '30rem' }, { ssr: true });
 
   useEffect(() => {
     setInputWidth('100%');
@@ -75,9 +75,7 @@ const ChatInput = observer(() => {
 
   return (
     <Box
-      width={inputWidth}
-      maxW={inputMaxWidth}
-      minWidth={inputMinWidth}
+      width={inputMinWidth}
       mx="auto"
       p={2}
       pl={2}

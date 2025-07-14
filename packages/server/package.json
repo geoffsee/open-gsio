@@ -2,7 +2,7 @@
   "name": "@open-gsio/server",
   "type": "module",
   "scripts": {
-    "dev": "bun src/server/server.ts",
+    "dev": "bun --watch src/server/server.ts",
     "build": "bun ./src/server/build.ts"
   },
   "devDependencies": {

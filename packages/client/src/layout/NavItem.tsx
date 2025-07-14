@@ -5,7 +5,7 @@ function NavItem({ path, children, color, onClick, as, cursor }) {
   return (
     <Box
       as={as ?? 'a'}
-      href={path}
+      href={path && path.length > 1 ? path : '/'}
       mb={2}
       cursor={cursor}
       // ml={5}

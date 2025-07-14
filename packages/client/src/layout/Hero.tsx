@@ -10,16 +10,16 @@ export default function Hero() {
   const isMobile = useIsMobile();
 
   return (
-    <Box p={2}>
+    <Box p={2} mt={2}>
       <Box>
         <Heading
           textAlign={isMobile ? 'left' : 'right'}
           minWidth="90px"
           maxWidth={'220px'}
           color="text.accent"
-          as="h3"
+          // as="h3"
           letterSpacing={'tight'}
-          size="lg"
+          size="xl"
         >
           {Routes[normalizePath(pageContext.urlPathname)]?.heroLabel}
         </Heading>
