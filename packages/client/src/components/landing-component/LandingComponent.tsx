@@ -8,8 +8,8 @@ import Tweakbox from './Tweakbox.tsx';
 
 export const LandingComponent: React.FC = () => {
   const [intensity, setIntensity] = useState(0.99);
-  const [mapActive, setMapActive] = useState(false);
-  const [aiActive, setAiActive] = useState(true);
+  const [mapActive, setMapActive] = useState(true);
+  const [aiActive, setAiActive] = useState(false);
 
   const component = useComponent();
   const { setEnabledComponent } = component;
