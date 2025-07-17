@@ -50,7 +50,7 @@
     "marked-katex-extension": "^5.1.4",
     "mobx": "^6.13.5",
     "mobx-react-lite": "^4.0.7",
-    "mobx-state-tree": "^6.0.1",
+    "mobx-state-tree": "^7.0.2",
     "qrcode.react": "^4.1.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
