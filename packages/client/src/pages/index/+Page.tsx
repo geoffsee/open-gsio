@@ -1,4 +1,4 @@
-import { Box, Grid, GridItem, Stack } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
 import Chat from '../../components/chat/Chat.tsx';
@@ -22,26 +22,26 @@ export default function IndexPage() {
   const component = useComponent();
 
   return (
-    <Grid templateColumns="1" height="100%" width="100%" gap={0}>
-      <GridItem>
-        <LandingComponent />
+    <Box height="100%" width="100%">
+      <LandingComponent />
 
-        <Box
-          display={component.enabledComponent === 'ai' ? undefined : 'none'}
-          width="100%"
-          height="100%"
-          overflowY="scroll"
-        >
-          <Chat />
-        </Box>
-        <Box
-          display={component.enabledComponent === 'gpsmap' ? undefined : 'none'}
-          width="100%"
-          height="100%"
-        >
-          <ReactMap visible={component.enabledComponent === 'gpsmap'} />
-        </Box>
-      </GridItem>
-    </Grid>
+      <Box
+        display={component.enabledComponent === 'ai' ? undefined : 'none'}
+        width="100%"
+        height="100%"
+        overflowY="scroll"
+        padding={'unset'}
+      >
+        <Chat />
+      </Box>
+      <Box
+        display={component.enabledComponent === 'gpsmap' ? undefined : 'none'}
+        width="100%"
+        height="100%"
+        padding={'unset'}
+      >
+        <ReactMap visible={component.enabledComponent === 'gpsmap'} />
+      </Box>
+    </Box>
   );
 }

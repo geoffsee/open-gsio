@@ -37,7 +37,7 @@ const key =
 function Map(props: { visible: boolean }) {
   return (
     /* Full-screen wrapper — fills the viewport and becomes the positioning context */
-    <Box w="100%" h="100vh" position="relative" overflow="hidden">
+    <Box position={'absolute'} top={0} w="100vw" h={'100vh'} overflow="hidden">
       {/* Button bar — absolutely positioned inside the wrapper */}
 
       <MapNext mapboxPublicKey={atob(key)} />

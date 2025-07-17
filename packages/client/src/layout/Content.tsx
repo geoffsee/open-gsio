@@ -6,7 +6,7 @@ import { useIsMobile } from '../components/contexts/MobileContext';
 function Content({ children }) {
   const isMobile = useIsMobile();
   return (
-    <Flex flexDirection="column" w="100%" h="100vh" p={!isMobile ? 4 : 1}>
+    <Flex flexDirection="column" w="100%" h="100vh">
       {children}
     </Flex>
   );

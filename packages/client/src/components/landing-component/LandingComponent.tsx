@@ -27,7 +27,7 @@ export const LandingComponent: React.FC = () => {
   }, []);
 
   return (
-    <Box as="section" bg="background.primary" overflow="hidden" position="relative">
+    <Box as="section" bg="background.primary" overflow="hidden">
       <Box position="fixed" right={0} maxWidth="300px" minWidth="200px" zIndex={1000}>
         <Tweakbox
           sliders={{
