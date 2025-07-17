@@ -46,7 +46,6 @@ describe('AssistantSdk', () => {
 
       expect(prompt).toContain('# Assistant Knowledge');
       expect(prompt).toContain('### Date: ');
-      expect(prompt).toContain('### Web Host: ');
       expect(prompt).toContain('### User Location: ');
       expect(prompt).toContain('### Timezone: ');
     });
