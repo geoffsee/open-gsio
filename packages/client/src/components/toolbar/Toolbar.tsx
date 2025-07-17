@@ -2,7 +2,7 @@ import { Flex } from '@chakra-ui/react';
 import React from 'react';
 
 import BuiltWithButton from '../BuiltWithButton';
-import InstallButton from '../InstallButton.tsx';
+import InstallButton from '../install/InstallButton.tsx';
 
 import GithubButton from './GithubButton';
 import SupportThisSiteButton from './SupportThisSiteButton';
