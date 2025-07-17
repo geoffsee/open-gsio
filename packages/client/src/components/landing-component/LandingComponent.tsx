@@ -1,5 +1,5 @@
 import { Box } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 
 import { useComponent } from '../contexts/ComponentContext.tsx';
 
@@ -11,6 +11,23 @@ export const LandingComponent: React.FC = () => {
   const [mapActive, setMapActive] = useState(true);
   const [aiActive, setAiActive] = useState(false);
 
+  const appCtlState = `app-ctl-state`;
+
+  useLayoutEffect(() => {
+    const value = localStorage.getItem(appCtlState);
+    if (value) {
+      const parsed = JSON.parse(value);
+      setIntensity(parsed.intensity);
+      setMapActive(parsed.mapActive);
+      setAiActive(parsed.aiActive);
+    }
+  }, []);
+
+  // create a hook for saving the state as a json object when it changes
+  useEffect(() => {
+    localStorage.setItem(appCtlState, JSON.stringify({ intensity, mapActive, aiActive }));
+  });
+
   const component = useComponent();
   const { setEnabledComponent } = component;
 
@@ -21,12 +38,14 @@ export const LandingComponent: React.FC = () => {
     if (aiActive) {
       setEnabledComponent('ai');
     }
-  }, []);
+  }, [mapActive, aiActive, setEnabledComponent]);
 
   return (
     <Box as="section" bg="background.primary" overflow="hidden">
       <Box position="fixed" right={0} maxWidth="300px" minWidth="200px" zIndex={1000}>
         <Tweakbox
+          id="app-tweaker"
+          persist={true}
           sliders={{
             intensity: {
               value: intensity,
@@ -68,7 +87,6 @@ export const LandingComponent: React.FC = () => {
           }}
         />
       </Box>
-      {/*<BevyScene speed={speed} intensity={intensity} glow={glow} visible={bevyScene} />*/}
     </Box>
   );
 };

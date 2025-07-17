@@ -183,7 +183,7 @@ const ChatService = types
                 modelMeta.set(mdl.id, { ...mdl, ...meta });
               } catch (err) {
                 // logger.error(`Metadata fetch failed for ${mdl.id}`, err);
-                modelMeta.set(mdl.id, { provider: provider.name, mdl });
+                modelMeta.set(mdl.id, { provider: provider.name, ...mdl });
               }
             }
           } catch (err) {
@@ -277,7 +277,22 @@ const ChatService = types
       }) {
         const { streamConfig, streamParams, controller, encoder, streamId } = params;
 
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.runModelHandler: Processing model "${streamConfig.model}" for stream ${streamId}`,
+        );
+
         const modelFamily = await ProviderRepository.getModelFamily(streamConfig.model, self.env);
+
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.runModelHandler: Detected model family "${modelFamily}" for model "${streamConfig.model}"`,
+        );
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          '[DEBUG_LOG] ChatService.runModelHandler: Available model handlers:',
+          Object.keys(modelHandlers),
+        );
 
         const useModelHandler = () => {
           // @ts-expect-error - language server does not have enough information to validate modelFamily as an indexer for modelHandlers
@@ -287,9 +302,28 @@ const ChatService = types
         const handler = useModelHandler();
 
         if (handler) {
+          // eslint-disable-next-line prettier/prettier
+          console.log(
+            `[DEBUG_LOG] ChatService.runModelHandler: Found handler for model family "${modelFamily}"`,
+          );
+          // eslint-disable-next-line prettier/prettier
+          console.log(
+            `[DEBUG_LOG] ChatService.runModelHandler: Calling handler for model "${streamConfig.model}" with maxTokens: ${streamParams.maxTokens}`,
+          );
+
           try {
             await handler(streamParams, Common.Utils.handleStreamData(controller, encoder));
+            // eslint-disable-next-line prettier/prettier
+            console.log(
+              `[DEBUG_LOG] ChatService.runModelHandler: Successfully completed handler for model "${streamConfig.model}"`,
+            );
           } catch (error: any) {
+            // eslint-disable-next-line prettier/prettier
+            console.log(
+              `[DEBUG_LOG] ChatService.runModelHandler: Handler error for model "${streamConfig.model}":`,
+              error.message,
+            );
+
             const message = error.message.toLowerCase();
 
             if (
@@ -318,10 +352,80 @@ const ChatService = types
               );
             }
             if (message.includes('404')) {
-              throw new ClientError(`Something went wrong, try again.`, 413, {});
+              // Try to find a fallback model from the same provider
+              try {
+                // eslint-disable-next-line prettier/prettier
+                console.log(
+                  `[DEBUG_LOG] ChatService.runModelHandler: Model "${streamConfig.model}" not found, attempting fallback`,
+                );
+
+                const allModels = await self.env.KV_STORAGE.get('supportedModels');
+                const models = JSON.parse(allModels);
+
+                // Find all models from the same provider
+                const sameProviderModels = models.filter(
+                  (m: any) => m.provider === modelFamily && m.id !== streamConfig.model,
+                );
+
+                if (sameProviderModels.length > 0) {
+                  // Try the first available model from the same provider
+                  const fallbackModel = sameProviderModels[0];
+                  // eslint-disable-next-line prettier/prettier
+                  console.log(
+                    `[DEBUG_LOG] ChatService.runModelHandler: Trying fallback model "${fallbackModel.id}" from provider "${modelFamily}"`,
+                  );
+
+                  // Update streamParams with the fallback model
+                  const fallbackStreamParams = { ...streamParams, model: fallbackModel.id };
+
+                  // Try the fallback model
+                  await handler(
+                    fallbackStreamParams,
+                    Common.Utils.handleStreamData(controller, encoder),
+                  );
+                  // eslint-disable-next-line prettier/prettier
+                  console.log(
+                    `[DEBUG_LOG] ChatService.runModelHandler: Successfully completed handler with fallback model "${fallbackModel.id}"`,
+                  );
+                  return; // Success with fallback
+                } else {
+                  // eslint-disable-next-line prettier/prettier
+                  console.log(
+                    `[DEBUG_LOG] ChatService.runModelHandler: No fallback models available for provider "${modelFamily}"`,
+                  );
+                }
+              } catch (fallbackError: any) {
+                // eslint-disable-next-line prettier/prettier
+                console.log(
+                  `[DEBUG_LOG] ChatService.runModelHandler: Fallback attempt failed:`,
+                  fallbackError.message,
+                );
+              }
+
+              throw new ClientError(
+                `Model not found or unavailable. Please try a different model.`,
+                404,
+                {
+                  model: streamConfig.model,
+                },
+              );
             }
             throw error;
           }
+        } else {
+          // eslint-disable-next-line prettier/prettier
+          console.log(
+            `[DEBUG_LOG] ChatService.runModelHandler: No handler found for model family "${modelFamily}" (model: "${streamConfig.model}")`,
+          );
+          throw new ClientError(
+            `No handler available for model family "${modelFamily}". Model: "${streamConfig.model}"`,
+            500,
+            {
+              model: streamConfig.model,
+              modelFamily: modelFamily,
+              availableHandlers: Object.keys(modelHandlers),
+            },
+          );
         }
       },
 
@@ -333,11 +437,27 @@ const ChatService = types
       }) {
         const { streamId, streamConfig, savedStreamConfig, durableObject } = params;
 
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.createSseReadableStream: Creating stream ${streamId} for model "${streamConfig.model}"`,
+        );
+        // eslint-disable-next-line prettier/prettier
+        console.log(`[DEBUG_LOG] ChatService.createSseReadableStream: Stream config:`, {
+          model: streamConfig.model,
+          systemPrompt: streamConfig.systemPrompt?.substring(0, 100) + '...',
+          messageCount: streamConfig.messages?.length,
+        });
+
         return new ReadableStream({
           async start(controller) {
             const encoder = new TextEncoder();
 
             try {
+              // eslint-disable-next-line prettier/prettier
+              console.log(
+                `[DEBUG_LOG] ChatService.createSseReadableStream: Starting stream processing for ${streamId}`,
+              );
+
               const dynamicContext = Schema.Message.create(streamConfig.preprocessedContext);
 
               // Process the stream data using the appropriate handler
@@ -345,6 +465,16 @@ const ChatService = types
                 streamConfig,
                 dynamicContext,
                 durableObject,
+              );
+
+              // eslint-disable-next-line prettier/prettier
+              console.log(
+                `[DEBUG_LOG] ChatService.createSseReadableStream: Created stream params for ${streamId}:`,
+                {
+                  model: streamParams.model,
+                  maxTokens: streamParams.maxTokens,
+                  messageCount: streamParams.messages?.length,
+                },
               );
 
               await self.runModelHandler({
@@ -355,6 +485,11 @@ const ChatService = types
                 streamId,
               });
             } catch (error) {
+              // eslint-disable-next-line prettier/prettier
+              console.log(
+                `[DEBUG_LOG] ChatService.createSseReadableStream: Error in stream ${streamId}:`,
+                error,
+              );
               console.error(`chatService::handleSseStream::${streamId}::Error`, error);
 
               if (error instanceof ClientError) {
@@ -376,6 +511,10 @@ const ChatService = types
               controller.close();
             } finally {
               try {
+                // eslint-disable-next-line prettier/prettier
+                console.log(
+                  `[DEBUG_LOG] ChatService.createSseReadableStream: Closing stream ${streamId}`,
+                );
                 controller.close();
               } catch (_) {
                 // Ignore errors when closing the controller, as it might already be closed
@@ -388,10 +527,24 @@ const ChatService = types
       handleSseStream: flow(function* (
         streamId: string,
       ): Generator<Promise<string>, Response, unknown> {
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Handling SSE stream request for ${streamId}`,
+        );
+
         // Check if a stream is already active for this ID
         if (self.activeStreams.has(streamId)) {
+          // eslint-disable-next-line prettier/prettier
+          console.log(
+            `[DEBUG_LOG] ChatService.handleSseStream: Stream ${streamId} already active, returning 409`,
+          );
           return new Response('Stream already active', { status: 409 });
         }
+
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Retrieving stream configuration for ${streamId}`,
+        );
 
         // Retrieve the stream configuration from the durable object
         const objectId = self.env.SERVER_COORDINATOR.idFromName('stream-index');
@@ -399,10 +552,28 @@ const ChatService = types
         const savedStreamConfig: any = yield durableObject.getStreamData(streamId);
 
         if (!savedStreamConfig) {
+          // eslint-disable-next-line prettier/prettier
+          console.log(
+            `[DEBUG_LOG] ChatService.handleSseStream: No stream configuration found for ${streamId}, returning 404`,
+          );
           return new Response('Stream not found', { status: 404 });
         }
 
         const streamConfig = JSON.parse(savedStreamConfig);
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Retrieved stream config for ${streamId}:`,
+          {
+            model: streamConfig.model,
+            messageCount: streamConfig.messages?.length,
+            systemPrompt: streamConfig.systemPrompt?.substring(0, 100) + '...',
+          },
+        );
+
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Creating SSE readable stream for ${streamId}`,
+        );
 
         const stream = self.createSseReadableStream({
           streamId,
@@ -414,16 +585,35 @@ const ChatService = types
         // Use `tee()` to create two streams: one for processing and one for the response
         const [processingStream, responseStream] = stream.tee();
 
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Setting active stream for ${streamId}`,
+        );
+
         self.setActiveStream(streamId, {
           ...streamConfig,
         });
 
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Setting up processing stream pipeline for ${streamId}`,
+        );
+
         processingStream.pipeTo(
           new WritableStream({
             close() {
+              // eslint-disable-next-line prettier/prettier
+              console.log(
+                `[DEBUG_LOG] ChatService.handleSseStream: Processing stream closed for ${streamId}, removing active stream`,
+              );
               self.removeActiveStream(streamId);
             },
           }),
+        );
+
+        // eslint-disable-next-line prettier/prettier
+        console.log(
+          `[DEBUG_LOG] ChatService.handleSseStream: Returning response stream for ${streamId}`,
         );
 
         // Return the second stream as the response

@@ -236,7 +236,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
 
         // Process chunk normally for non-tool-call responses
         if (!chunk.choices[0]?.delta?.tool_calls) {
-          console.log('after-tool-call-chunk', chunk);
+          // console.log('after-tool-call-chunk', chunk);
           const shouldBreak = await this.processChunk(chunk, dataCallback);
           if (shouldBreak) {
             conversationComplete = true;

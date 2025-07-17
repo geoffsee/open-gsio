@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { observer } from 'mobx-react-lite';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Map, {
   FullscreenControl,
   GeolocateControl,
@@ -9,25 +10,36 @@ import Map, {
   ScaleControl,
 } from 'react-map-gl/mapbox';
 
+import clientChatStore from '../../stores/ClientChatStore';
+
 import PORTS from './nautical-base-data.json';
 import Pin from './pin';
 
-export default function MapNext(props: any = { mapboxPublicKey: '' } as any) {
+function MapNextComponent(props: any = { mapboxPublicKey: '', visible: true } as any) {
   const [popupInfo, setPopupInfo] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isTokenLoading, setIsTokenLoading] = useState(false);
   const [authenticated, setAuthenticated] = useState(false);
+  const mapRef = useRef<any>(null);
 
   useEffect(() => {
     setAuthenticated(true);
     setIsTokenLoading(false);
   }, []);
 
-  const [mapView, setMapView] = useState({
-    longitude: -122.4,
-    latitude: 37.8,
-    zoom: 14,
-  });
+  // Handle map resize when component becomes visible
+  useEffect(() => {
+    if (props.visible && mapRef.current) {
+      // Small delay to ensure the container is fully visible
+      const timer = setTimeout(() => {
+        if (mapRef.current) {
+          mapRef.current.resize();
+        }
+      }, 100);
+
+      return () => clearTimeout(timer);
+    }
+  }, [props.visible]);
 
   const handleNavigationClick = useCallback(async () => {
     console.log('handling navigation in map');
@@ -39,7 +51,10 @@ export default function MapNext(props: any = { mapboxPublicKey: '' } as any) {
 
   const handleMapViewChange = useCallback(async (evt: any) => {
     const { longitude, latitude, zoom } = evt.viewState;
-    setMapView({ longitude, latitude, zoom });
+    clientChatStore.setMapView(longitude, latitude, zoom);
+    // setMapView({ longitude, latitude, zoom });
+
+    // Update the store with the new view state
   }, []);
 
   const pins = useMemo(
@@ -98,13 +113,15 @@ Type '{ city: string; population: string; image: string; state: string; latitude
       {/*  </Button>*/}
       {/*</HStack>*/}
       <Map
+        ref={mapRef}
         initialViewState={{
-          latitude: 40,
-          longitude: -100,
-          zoom: 3.5,
-          bearing: 0,
-          pitch: 0,
+          latitude: clientChatStore.mapState.latitude,
+          longitude: clientChatStore.mapState.longitude,
+          zoom: clientChatStore.mapState.zoom,
+          bearing: clientChatStore.mapState.bearing,
+          pitch: clientChatStore.mapState.pitch,
         }}
+        onMove={handleMapViewChange}
         mapStyle="mapbox://styles/geoffsee/cmd1qz39x01ga01qv5acea02y"
         attributionControl={false}
         mapboxAccessToken={props.mapboxPublicKey}
@@ -170,3 +187,6 @@ Type '{ city: string; population: string; image: string; state: string; latitude
     </Box>
   );
 }
+
+const MapNext = observer(MapNextComponent);
+export default MapNext;

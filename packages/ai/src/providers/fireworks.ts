@@ -18,7 +18,7 @@ export class FireworksAiChatProvider extends BaseChatProvider {
     }
 
     return {
-      model: `${modelPrefix}${param.model}`,
+      model: `${param.model}`,
       messages: safeMessages,
       stream: true,
     };

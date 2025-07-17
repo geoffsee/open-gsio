@@ -1,4 +1,4 @@
-import { Box } from '@chakra-ui/react';
+import { Box, useMediaQuery } from '@chakra-ui/react';
 import React, { useEffect } from 'react';
 
 import Chat from '../../components/chat/Chat.tsx';
@@ -21,10 +21,11 @@ export default function IndexPage() {
 
   const component = useComponent();
 
+  const mediaQuery = useMediaQuery();
+
   return (
     <Box height="100%" width="100%">
       <LandingComponent />
-
       <Box
         display={component.enabledComponent === 'ai' ? undefined : 'none'}
         width="100%"
@@ -36,8 +37,8 @@ export default function IndexPage() {
       </Box>
       <Box
         display={component.enabledComponent === 'gpsmap' ? undefined : 'none'}
-        width="100%"
-        height="100%"
+        width={{ base: '100%', md: '100%' }}
+        height={{ base: '100%', md: '100%' }}
         padding={'unset'}
       >
         <ReactMap visible={component.enabledComponent === 'gpsmap'} />

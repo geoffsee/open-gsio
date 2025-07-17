@@ -2,6 +2,8 @@ import { flow, getParent, type Instance, types } from 'mobx-state-tree';
 
 import Message, { batchContentUpdate } from '../models/Message';
 
+import clientChatStore from './ClientChatStore.ts';
+import type { MapControlCommand } from './MapStore';
 import type { RootDeps } from './RootDeps.ts';
 import UserOptionsStore from './UserOptionsStore';
 
@@ -92,6 +94,30 @@ export const StreamStore = types
               return;
             }
 
+            // Handle tool call responses
+            if (parsed.type === 'tool_result') {
+              console.log('[DEBUG_LOG] Received tool result:', parsed);
+
+              // Check if this is a map control tool call
+              if (parsed.tool_name === 'maps_control' && parsed.result?.data) {
+                const mapCommand: MapControlCommand = {
+                  action: parsed.result.data.action,
+                  value: parsed.args?.value,
+                  data: parsed.result.data,
+                };
+
+                console.log('[DEBUG_LOG] Processing map command:', mapCommand);
+
+                // Execute the map command through the store
+                if ('executeMapCommand' in root) {
+                  (root as any).executeMapCommand(mapCommand);
+                } else {
+                  console.warn('[DEBUG_LOG] MapStore not available in root');
+                }
+              }
+              return;
+            }
+
             // Get the last message
             const lastMessage = root.items[root.items.length - 1];
 
@@ -152,4 +178,4 @@ export const StreamStore = types
     return { sendMessage, stopIncomingMessage, cleanup, setEventSource, setStreamId };
   });
 
-export interface IStreamStore extends Instance<typeof StreamStore> {}
+export type IStreamStore = Instance<typeof StreamStore>;

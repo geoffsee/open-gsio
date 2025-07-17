@@ -9,14 +9,14 @@ export interface MapsControlResult {
  */
 export const MapsTools = {
   type: 'function',
-  description:
-    'Interface for controlling a web-rendered map to explore publicly available geospatial data',
 
   /**
    * Mock implementation of a maps control command.
    */
   function: {
     name: 'maps_control',
+    description:
+      'Interface for controlling a web-rendered map to explore publicly available geospatial data',
     parameters: {
       type: 'object',
       properties: {

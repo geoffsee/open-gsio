@@ -14,7 +14,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface SliderControl {
   value: number;
@@ -34,6 +34,8 @@ interface SwitchControl {
 }
 
 interface TweakboxProps {
+  id: string;
+  persist: boolean;
   sliders: {
     speed: SliderControl;
     intensity: SliderControl;
@@ -44,7 +46,7 @@ interface TweakboxProps {
   } & Record<string, SwitchControl>;
 }
 
-const Tweakbox = observer(({ sliders, switches }: TweakboxProps) => {
+const Tweakbox = observer(({ id, persist, sliders, switches }: TweakboxProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (

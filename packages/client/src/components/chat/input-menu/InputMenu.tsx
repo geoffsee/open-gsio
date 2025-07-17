@@ -8,6 +8,7 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Spinner,
   Text,
   useDisclosure,
   useOutsideClick,
@@ -41,19 +42,38 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(({ isDisabled }) 
 
   const [controlledOpen, setControlledOpen] = useState<boolean>(false);
   const [supportedModels, setSupportedModels] = useState<any[]>([]);
+  const [isLoadingModels, setIsLoadingModels] = useState<boolean>(true);
 
   useEffect(() => {
     setControlledOpen(isOpen);
   }, [isOpen]);
 
   useEffect(() => {
+    setIsLoadingModels(true);
     fetch('/api/models')
       .then(response => response.json())
       .then(models => {
         setSupportedModels(models);
+
+        // Update the ModelStore with supported models
+        const modelIds = models.map((model: any) => model.id);
+        clientChatStore.setSupportedModels(modelIds);
+
+        // If no model is currently selected or the current model is not in the list,
+        // select a random model from the available ones
+        if (!clientChatStore.model || !modelIds.includes(clientChatStore.model)) {
+          if (models.length > 0) {
+            const randomIndex = Math.floor(Math.random() * models.length);
+            const randomModel = models[randomIndex];
+            clientChatStore.setModel(randomModel.id);
+          }
+        }
+
+        setIsLoadingModels(false);
       })
       .catch(err => {
         console.error('Could not fetch models: ', err);
+        setIsLoadingModels(false);
       });
   }, []);
 
@@ -108,8 +128,8 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(({ isDisabled }) 
         <MenuButton
           as={IconButton}
           bg="text.accent"
-          icon={<Settings size={20} />}
-          isDisabled={isDisabled}
+          icon={isLoadingModels ? <Spinner size="sm" /> : <Settings size={20} />}
+          isDisabled={isDisabled || isLoadingModels}
           aria-label="Settings"
           _hover={{ bg: 'rgba(255, 255, 255, 0.2)' }}
           _focus={{ boxShadow: 'none' }}
@@ -118,8 +138,8 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(({ isDisabled }) 
       ) : (
         <MenuButton
           as={Button}
-          rightIcon={<ChevronDown size={16} />}
-          isDisabled={isDisabled}
+          rightIcon={isLoadingModels ? <Spinner size="sm" /> : <ChevronDown size={16} />}
+          isDisabled={isDisabled || isLoadingModels}
           variant="ghost"
           display="flex"
           justifyContent="space-between"
@@ -128,7 +148,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(({ isDisabled }) 
           {...MsM_commonButtonStyles}
         >
           <Text noOfLines={1} maxW="100px" fontSize="sm">
-            {clientChatStore.model}
+            {isLoadingModels ? 'Loading...' : clientChatStore.model}
           </Text>
         </MenuButton>
       )}
