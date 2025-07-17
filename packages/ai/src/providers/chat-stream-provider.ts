@@ -1,8 +1,8 @@
 import { OpenAI } from 'openai';
 
 import ChatSdk from '../chat-sdk/chat-sdk.ts';
+import { mapControlAi, MapsTools } from '../tools/maps.ts';
 import { getWeather, WeatherTool } from '../tools/weather.ts';
-import { yachtpitAi, YachtpitTools } from '../tools/yachtpit.ts';
 import type { GenericEnv } from '../types';
 
 export interface CommonProviderParams {
@@ -38,14 +38,14 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
 
     const client = this.getOpenAIClient(param);
 
-    const tools = [WeatherTool, YachtpitTools];
+    const tools = [WeatherTool, MapsTools];
 
     const callFunction = async (name, args) => {
       if (name === 'get_weather') {
         return getWeather(args.latitude, args.longitude);
       }
-      if (name === 'ship_control') {
-        return yachtpitAi({ action: args.action, value: args.value });
+      if (name === 'maps_control') {
+        return mapControlAi({ action: args.action, value: args.value });
       }
     };
 
