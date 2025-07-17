@@ -8,6 +8,7 @@ import Map, {
   NavigationControl,
   Popup,
   ScaleControl,
+  Source,
 } from 'react-map-gl/mapbox';
 
 import clientChatStore from '../../stores/ClientChatStore';
@@ -122,6 +123,8 @@ Type '{ city: string; population: string; image: string; state: string; latitude
           pitch: clientChatStore.mapState.pitch,
         }}
         onMove={handleMapViewChange}
+        terrain={{ source: 'mapbox-dem', exaggeration: 1.5 }}
+        maxPitch={85}
         mapStyle="mapbox://styles/geoffsee/cmd1qz39x01ga01qv5acea02y"
         attributionControl={false}
         mapboxAccessToken={props.mapboxPublicKey}
@@ -135,6 +138,13 @@ Type '{ city: string; population: string; image: string; state: string; latitude
           right: 0,
         }}
       >
+        <Source
+          id="mapbox-dem"
+          type="raster-dem"
+          url="mapbox://mapbox.mapbox-terrain-dem-v1"
+          tileSize={512}
+          maxzoom={14}
+        />
         <GeolocateControl position="top-left" style={{ marginTop: '6rem' }} />
         <FullscreenControl position="top-left" />
         <NavigationControl position="top-left" />

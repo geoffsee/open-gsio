@@ -9,26 +9,31 @@ export interface MapControlCommand {
 export const MapStore = types
   .model('MapStore', {
     // Current map view state
-    longitude: types.optional(types.number, -122.4),
-    latitude: types.optional(types.number, 37.8),
-    zoom: types.optional(types.number, 14),
+    // 37°47'21"N 122°23'52"W
+    longitude: types.optional(types.number, -87.6319),
+    latitude: types.optional(types.number, 41.883415),
+    zoom: types.optional(types.number, 14.5),
+    bearing: types.optional(types.number, 15.165878375019094),
+    pitch: types.optional(types.number, 45),
     // Map control state
     isControlActive: types.optional(types.boolean, false),
   })
   .volatile(self => ({
     // Store pending map commands from AI
     pendingCommands: [] as MapControlCommand[],
+    // 41.88341413374059-87.630091075785714.57273962016686450
     mapState: {
       latitude: self.latitude,
       longitude: self.longitude,
       zoom: self.zoom,
-      bearing: 0,
-      pitch: 0,
+      bearing: self.bearing,
+      pitch: self.pitch,
     } as any,
   }))
   .actions(self => ({
     // Update map view state
     setMapView(longitude: number, latitude: number, zoom: number) {
+      console.log(latitude, longitude, zoom, self.mapState.pitch, self.mapState.bearing);
       self.longitude = longitude;
       self.latitude = latitude;
       self.zoom = zoom;
