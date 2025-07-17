@@ -171,7 +171,7 @@ const InputMenu: React.FC<{ isDisabled?: boolean }> = observer(({ isDisabled }) 
           bg="background.tertiary"
           color="text.primary"
           onClick={() => {
-            clientChatStore.setActiveConversation('conversation:new');
+            clientChatStore.reset();
             onClose();
           }}
           _hover={{ bg: 'rgba(0, 0, 0, 0.05)' }}
