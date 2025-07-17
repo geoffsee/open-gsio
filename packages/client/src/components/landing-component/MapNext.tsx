@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Input } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import Map, {
   FullscreenControl,
@@ -118,11 +118,10 @@ Type '{ city: string; population: string; image: string; state: string; latitude
           right: 0,
         }}
       >
-        <GeolocateControl position="top-left" />
+        <GeolocateControl position="top-left" style={{ marginTop: '6rem' }} />
         <FullscreenControl position="top-left" />
         <NavigationControl position="top-left" />
         <ScaleControl position="top-left" />
-
         {pins}
 
         {popupInfo && (
