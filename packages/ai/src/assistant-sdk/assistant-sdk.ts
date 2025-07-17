@@ -23,7 +23,7 @@ export class AssistantSdk {
 
     return `# Assistant Knowledge
 ## Assistant Name
-### yachtpit-ai
+### open-gsio
 ## Current Context
 ### Date: ${currentDate} ${currentTime}
 ${maxTokens ? `### Max Response Length: ${maxTokens} tokens (maximum)` : ''}

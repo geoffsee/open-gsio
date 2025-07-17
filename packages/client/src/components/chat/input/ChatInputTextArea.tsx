@@ -49,7 +49,7 @@ const InputTextArea: React.FC<InputTextAreaProps> = observer(
             color="text.primary"
             borderRadius="20px"
             border="none"
-            placeholder="To Gilligan's island!"
+            placeholder="Free my mind..."
             _placeholder={{
               color: 'gray.400',
               textWrap: 'nowrap',

@@ -51,7 +51,7 @@ const MessageBubble = observer(({ msg, scrollRef }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const isUser = msg.role === 'user';
-  const senderName = isUser ? 'You' : 'yachtpit-ai';
+  const senderName = isUser ? 'You' : 'open-gsio';
   const isLoading = !msg.content || !(msg.content.trim().length > 0);
   const messageRef = useRef();
 

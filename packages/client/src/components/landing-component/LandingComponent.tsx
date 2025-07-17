@@ -27,22 +27,8 @@ export const LandingComponent: React.FC = () => {
   }, []);
 
   return (
-    <Box
-      as="section"
-      bg="background.primary"
-      w="100%"
-      h="100vh"
-      overflow="hidden"
-      position="relative"
-    >
-      <Box
-        position="fixed"
-        bottom="100x"
-        right="12px"
-        maxWidth="300px"
-        minWidth="200px"
-        zIndex={1000}
-      >
+    <Box as="section" bg="background.primary" overflow="hidden" position="relative">
+      <Box position="fixed" right={0} maxWidth="300px" minWidth="200px" zIndex={1000}>
         <Tweakbox
           sliders={{
             intensity: {
@@ -56,13 +42,6 @@ export const LandingComponent: React.FC = () => {
             },
           }}
           switches={{
-            bevyScene: {
-              value: bevyScene,
-              onChange(enabled) {
-                setBevyScene(enabled);
-              },
-              label: 'Instruments',
-            },
             GpsMap: {
               value: mapActive,
               onChange(enabled) {
@@ -74,7 +53,7 @@ export const LandingComponent: React.FC = () => {
                 }
                 setMapActive(enabled);
               },
-              label: 'Map',
+              label: 'GPS',
             },
             AI: {
               value: aiActive,
@@ -92,7 +71,7 @@ export const LandingComponent: React.FC = () => {
           }}
         />
       </Box>
-      <BevyScene speed={speed} intensity={intensity} glow={glow} visible={bevyScene} />
+      {/*<BevyScene speed={speed} intensity={intensity} glow={glow} visible={bevyScene} />*/}
     </Box>
   );
 };

@@ -1,5 +1,5 @@
 export const welcome_home_text = `
-# yachtpit-ai
+# open-gsio
 ---
 
 <br/>

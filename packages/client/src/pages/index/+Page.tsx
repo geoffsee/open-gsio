@@ -22,11 +22,10 @@ export default function IndexPage() {
   const component = useComponent();
 
   return (
-    <Grid templateColumns="repeat(2, 1fr)" height="100%" width="100%" gap={0}>
+    <Grid templateColumns="1" height="100%" width="100%" gap={0}>
       <GridItem>
         <LandingComponent />
-      </GridItem>
-      <GridItem p={2}>
+
         <Box
           display={component.enabledComponent === 'ai' ? undefined : 'none'}
           width="100%"

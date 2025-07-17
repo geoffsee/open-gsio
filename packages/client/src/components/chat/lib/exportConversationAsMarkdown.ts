@@ -9,7 +9,7 @@ export function formatConversationMarkdown(messages: Instance<typeof IMessage>[]
       if (message.role === 'user') {
         return `**You**: ${message.content}`;
       } else if (message.role === 'assistant') {
-        return `**yachtpit-ai**: ${message.content}`;
+        return `**open-gsio**: ${message.content}`;
       }
       return '';
     })
