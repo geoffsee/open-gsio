@@ -1,4 +1,4 @@
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 import {
   existsSync,
   readdirSync,
@@ -175,7 +175,7 @@ function optimizeWasmSize() {
 
   if (sizeInMb > 30) {
     logger.info(`WASM size is ${sizeInMb.toFixed(2)}MB, optimizing...`);
-    execSync(`wasm-opt -Oz -o ${wasmPath} ${wasmPath}`, {
+    execFileSync('wasm-opt', ['-Oz', '-o', wasmPath, wasmPath], {
       encoding: 'utf-8',
     });
     logger.info(`✅ WASM size optimized`);
