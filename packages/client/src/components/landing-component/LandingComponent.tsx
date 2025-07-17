@@ -3,16 +3,13 @@ import React, { useEffect, useState } from 'react';
 
 import { useComponent } from '../contexts/ComponentContext.tsx';
 
-import { BevyScene } from './BevyScene.tsx';
+// import { BevyScene } from './BevyScene.tsx';
 import Tweakbox from './Tweakbox.tsx';
 
 export const LandingComponent: React.FC = () => {
-  const [speed, setSpeed] = useState(0.2);
   const [intensity, setIntensity] = useState(0.99);
-  const [glow, setGlow] = useState(false);
-  const [bevyScene, setBevyScene] = useState(true);
-  const [mapActive, setMapActive] = useState(true);
-  const [aiActive, setAiActive] = useState(false);
+  const [mapActive, setMapActive] = useState(false);
+  const [aiActive, setAiActive] = useState(true);
 
   const component = useComponent();
   const { setEnabledComponent } = component;
