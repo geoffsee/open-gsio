@@ -10,7 +10,7 @@
     "@open-gsio/services": "workspace:*",
     "itty-router": "^5.0.18",
     "mobx": "^6.13.5",
-    "mobx-state-tree": "^6.0.1",
+    "mobx-state-tree": "^7.0.2",
     "vitest": "^3.1.4",
     "vite": "^6.3.5"
   }

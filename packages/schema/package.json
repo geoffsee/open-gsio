@@ -20,6 +20,6 @@
   },
   "devDependencies": {
     "typescript": "^5.7.2",
-    "mobx-state-tree": "^6.0.1"
+    "mobx-state-tree": "^7.0.2"
   }
 }
