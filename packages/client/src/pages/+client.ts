@@ -1,4 +1,6 @@
 // runs before anything else
+import { registerSW } from 'virtual:pwa-register';
+
 import UserOptionsStore from '../stores/UserOptionsStore';
 
 UserOptionsStore.initialize();
@@ -6,7 +8,11 @@ UserOptionsStore.initialize();
 try {
   const isLocal = window.location.hostname.includes('localhost');
   if (!isLocal) {
-    navigator.serviceWorker.register('/service-worker.js');
+    if ('serviceWorker' in navigator) {
+      // && !/localhost/.test(window.location)) {
+      registerSW();
+    }
+    // navigator.serviceWorker.register('/service-worker.js');
   } else {
     (async () => {
       await navigator.serviceWorker.getRegistrations().then(registrations => {
