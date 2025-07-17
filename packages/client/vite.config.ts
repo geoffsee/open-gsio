@@ -22,10 +22,6 @@ const prebuildPlugin = () => ({
       console.log('Generated robots.txt -> public/robots.txt');
       child_process.execSync('bun run generate:fonts');
       console.log('Copied fonts -> public/static/fonts');
-      child_process.execSync('bun run generate:bevy:bundle', {
-        stdio: 'inherit',
-      });
-      console.log('Bundled bevy app -> public/yachtpit.html');
     }
   },
 });
