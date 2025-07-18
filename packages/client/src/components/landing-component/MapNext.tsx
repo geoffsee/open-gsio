@@ -13,10 +13,13 @@ import Map, {
 
 import clientChatStore from '../../stores/ClientChatStore';
 
+import type { Layer } from './Map.tsx';
 import PORTS from './nautical-base-data.json';
 import Pin from './pin';
 
-function MapNextComponent(props: any = { mapboxPublicKey: '', visible: true } as any) {
+function MapNextComponent(
+  props: any = { mapboxPublicKey: '', visible: true, layer: {} as Layer } as any,
+) {
   const [popupInfo, setPopupInfo] = useState(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isTokenLoading, setIsTokenLoading] = useState(false);
@@ -122,10 +125,11 @@ Type '{ city: string; population: string; image: string; state: string; latitude
           bearing: clientChatStore.mapState.bearing,
           pitch: clientChatStore.mapState.pitch,
         }}
+        viewState={clientChatStore.mapState}
         onMove={handleMapViewChange}
         terrain={{ source: 'mapbox-dem', exaggeration: 1.5 }}
         maxPitch={85}
-        mapStyle="mapbox://styles/geoffsee/cmd1qz39x01ga01qv5acea02y"
+        mapStyle={props.layer.value}
         attributionControl={false}
         mapboxAccessToken={props.mapboxPublicKey}
         style={{
