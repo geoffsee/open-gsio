@@ -10,7 +10,6 @@
   ],
   "scripts": {
     "clean": "packages/scripts/cleanup.sh",
-    "restore:submodules": "rm -rf crates/yachtpit && (git rm --cached crates/yachtpit) && git submodule add --force https://github.com/seemueller-io/yachtpit.git crates/yachtpit ",
     "test:all": "bun run --filter='*' tests",
     "client:dev": "(cd packages/client && bun run dev)",
     "server:dev": "bun build:client && (cd packages/server && bun run dev)",

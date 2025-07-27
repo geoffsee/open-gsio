@@ -9,7 +9,6 @@
     "generate:sitemap": "bun ./scripts/generate_sitemap.js open-gsio.seemueller.workers.dev",
     "generate:robotstxt": "bun ./scripts/generate_robots_txt.js open-gsio.seemueller.workers.dev",
     "generate:fonts": "cp -r ../../node_modules/katex/dist/fonts public/static",
-    "generate:bevy:bundle": "bun scripts/generate-bevy-bundle.js",
     "generate:pwa:assets": "test ! -f public/pwa-64x64.png && pwa-assets-generator --preset minimal-2023  public/logo.png || echo 'PWA assets already exist'"
   },
   "exports": {
