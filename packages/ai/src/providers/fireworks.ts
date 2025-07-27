@@ -15,10 +15,21 @@ export class FireworksAiChatProvider extends BaseChatProvider {
     let modelPrefix = 'accounts/fireworks/models/';
     if (param.model.toLowerCase().includes('yi-')) {
       modelPrefix = 'accounts/yi-01-ai/models/';
+    } else if (param.model.toLowerCase().includes('/perplexity/')) {
+      modelPrefix = 'accounts/perplexity/models/';
+    } else if (param.model.toLowerCase().includes('/sentientfoundation/')) {
+      modelPrefix = 'accounts/sentientfoundation/models/';
+    } else if (param.model.toLowerCase().includes('/sentientfoundation-serverless/')) {
+      modelPrefix = 'accounts/sentientfoundation-serverless/models/';
+    } else if (param.model.toLowerCase().includes('/instacart/')) {
+      modelPrefix = 'accounts/instacart/models/';
     }
-
+    const finalModelIdentifier = param.model.includes(modelPrefix)
+      ? param.model
+      : `${modelPrefix}${param.model}`;
+    console.log('using fireworks model', finalModelIdentifier);
     return {
-      model: `${modelPrefix}${param.model}`,
+      model: finalModelIdentifier,
       messages: safeMessages,
       stream: true,
     };

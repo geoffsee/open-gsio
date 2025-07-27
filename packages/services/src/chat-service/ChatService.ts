@@ -168,12 +168,19 @@ const ChatService = types
 
             providerModels.set(
               provider.name,
-              models.filter(
-                (mdl: any) =>
+              models.filter((mdl: any) => {
+                if ('supports_chat' in mdl && mdl.supports_chat) {
+                  return true;
+                } else if ('supports_chat' in mdl && !mdl.supports_chat) {
+                  return false;
+                }
+
+                return (
                   !mdl.id.includes('whisper') &&
                   !mdl.id.includes('tts') &&
-                  !mdl.id.includes('guard'),
-              ),
+                  !mdl.id.includes('guard')
+                );
+              }),
             );
 
             // 2‑b. Retrieve metadata
@@ -318,7 +325,8 @@ const ChatService = types
               );
             }
             if (message.includes('404')) {
-              throw new ClientError(`Something went wrong, try again.`, 413, {});
+              console.log(message);
+              throw new ClientError(`Something went wrong, try again.`, 404, {});
             }
             throw error;
           }
