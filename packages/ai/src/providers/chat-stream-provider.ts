@@ -50,6 +50,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
     let toolCallIterations = 0;
     const maxToolCallIterations = 5; // Prevent infinite loops
     let toolsExecuted = false; // Track if we've executed tools
+    const attemptedToolCalls = new Set<string>(); // Track attempted tool calls to prevent duplicates
 
     while (!conversationComplete && toolCallIterations < maxToolCallIterations) {
       const streamParams = this.getStreamParams(param, safeMessages);
@@ -112,6 +113,21 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
             // Execute tool calls and add results to conversation
             console.log('Executing tool calls:', toolCalls);
 
+            // Limit to one tool call per iteration to prevent concurrent execution issues
+            // Also filter out duplicate tool calls
+            const uniqueToolCalls = toolCalls.filter(toolCall => {
+              const toolCallKey = `${toolCall.function.name}:${toolCall.function.arguments}`;
+              return !attemptedToolCalls.has(toolCallKey);
+            });
+            const toolCallsToExecute = uniqueToolCalls.slice(0, 1);
+
+            if (toolCallsToExecute.length === 0) {
+              console.log('All tool calls have been attempted already, forcing completion');
+              toolsExecuted = true;
+              conversationComplete = true;
+              break;
+            }
+
             // Send feedback to user about tool invocation
             dataCallback({
               type: 'chat',
@@ -119,7 +135,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
                 choices: [
                   {
                     delta: {
-                      content: `\n\n🔧 Invoking ${toolCalls.length} tool${toolCalls.length > 1 ? 's' : ''}...\n`,
+                      content: `\n\n🔧 Invoking ${toolCallsToExecute.length} tool${toolCallsToExecute.length > 1 ? 's' : ''}...\n`,
                     },
                   },
                 ],
@@ -130,14 +146,19 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
             safeMessages.push({
               role: 'assistant',
               content: assistantMessage || null,
-              tool_calls: toolCalls,
+              tool_calls: toolCallsToExecute,
             });
 
             // Execute each tool call and add results
-            for (const toolCall of toolCalls) {
+            let needsMoreRetrieval = false;
+            for (const toolCall of toolCallsToExecute) {
               if (toolCall.type === 'function') {
                 const name = toolCall.function.name;
                 console.log(`Calling function: ${name}`);
+
+                // Track this tool call attempt
+                const toolCallKey = `${toolCall.function.name}:${toolCall.function.arguments}`;
+                attemptedToolCalls.add(toolCallKey);
 
                 // Send feedback about specific tool being called
                 dataCallback({
@@ -159,6 +180,36 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
 
                   const result = await callFunction(name, args);
                   console.log(`Function result:`, result);
+
+                  // Check if agentic-rag indicates more retrieval is needed
+                  if (
+                    name === 'agentic_rag' &&
+                    result?.data?.analysis?.needsRetrieval === true &&
+                    (!result?.data?.retrieved_documents ||
+                      result.data.retrieved_documents.length === 0)
+                  ) {
+                    needsMoreRetrieval = true;
+                    console.log('Agentic RAG indicates more retrieval needed');
+
+                    // Add context about previous attempts to help LLM make better decisions
+                    const attemptedActions = Array.from(attemptedToolCalls)
+                      .filter(key => key.startsWith('agentic_rag:'))
+                      .map(key => {
+                        try {
+                          const args = JSON.parse(key.split(':', 2)[1]);
+                          return `${args.action} with query: "${args.query}"`;
+                        } catch {
+                          return 'unknown action';
+                        }
+                      });
+
+                    if (attemptedActions.length > 0) {
+                      safeMessages.push({
+                        role: 'system',
+                        content: `Previous retrieval attempts: ${attemptedActions.join(', ')}. Consider trying a different approach or more specific query.`,
+                      });
+                    }
+                  }
 
                   // Send feedback about tool completion
                   dataCallback({
@@ -206,8 +257,10 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
               }
             }
 
-            // Mark that tools have been executed to prevent repeated calls
-            toolsExecuted = true;
+            // Only mark tools as executed if we don't need more retrieval
+            if (!needsMoreRetrieval) {
+              toolsExecuted = true;
+            }
 
             // Send feedback that tool execution is complete
             dataCallback({

@@ -50,24 +50,48 @@ export const AgenticRAGTools = {
       properties: {
         action: {
           type: 'string',
-          enum: ['search', 'list_collections', 'report_status'],
+          enum: [
+            'list_collections',
+            'report_status',
+            'semantic_search',
+            'search_knowledge',
+            'analyze_query',
+            'get_context',
+          ],
           description: 'Action to perform with the agentic RAG system.',
         },
         query: {
           type: 'string',
           description: 'User query or search term for knowledge retrieval.',
         },
-        document: {
-          type: 'object',
-          properties: {
-            content: { type: 'string', description: 'Document content to store' },
-            metadata: { type: 'object', description: 'Additional metadata for the document' },
-            id: { type: 'string', description: 'Unique identifier for the document' },
-          },
-          description: 'Document to store in the knowledge base.',
-        },
+        // document: {
+        //   type: 'object',
+        //   properties: {
+        //     content: { type: 'string', description: 'Document content to store' },
+        //     metadata: { type: 'object', description: 'Additional metadata for the document' },
+        //     id: { type: 'string', description: 'Unique identifier for the document' },
+        //   },
+        //   description: 'Document to store in the knowledge base.',
+        // },
         collection_name: {
           type: 'string',
+          // todo: make this fancy w/ dynamic collection
+          enum: [
+            'business_corporate',
+            'civil_procedure',
+            'criminal_justice',
+            'education_professions',
+            'environmental_infrastructure',
+            'family_domestic',
+            'foundational_law',
+            'government_administration',
+            'health_social_services',
+            'miscellaneous',
+            'property_real_estate',
+            'special_documents',
+            'taxation_finance',
+            'transportation_motor_vehicles',
+          ],
           description: 'Name of the collection to work with.',
         },
         top_k: {
@@ -83,7 +107,7 @@ export const AgenticRAGTools = {
           description: 'Maximum number of context tokens to include (default: 2000).',
         },
       },
-      required: ['action'],
+      required: ['action', 'collection_name'],
       additionalProperties: false,
     },
     strict: true,
@@ -95,10 +119,10 @@ export const AgenticRAGTools = {
  */
 const DEFAULT_CONFIG: AgenticRAGConfig = {
   milvusAddress: 'localhost:19530',
-  collectionName: 'knowledge_base',
+  collectionName: 'family_domestic',
   embeddingDimension: 768,
   topK: 5,
-  similarityThreshold: 0.58,
+  similarityThreshold: 0.5,
 };
 
 /**
@@ -200,14 +224,16 @@ function analyzeQueryForRetrieval(query: string): {
         'Query appears to be asking for factual information that may benefit from knowledge retrieval.',
       queryType: 'factual',
     };
-  } else if (creativeScore > conversationalScore) {
+  } else if (creativeScore > conversationalScore && creativeScore > 1) {
+    // Only skip retrieval for clearly creative tasks with multiple creative keywords
     return {
       needsRetrieval: false,
       confidence: 0.8,
       reasoning: 'Query appears to be requesting creative content generation.',
       queryType: 'creative',
     };
-  } else if (conversationalScore > 0) {
+  } else if (conversationalScore > 1 && conversationalScore > factualScore) {
+    // Only skip retrieval for clearly conversational queries with multiple conversational keywords
     return {
       needsRetrieval: false,
       confidence: 0.7,
@@ -215,10 +241,11 @@ function analyzeQueryForRetrieval(query: string): {
       queryType: 'conversational',
     };
   } else {
+    // Default to retrieval for most cases to ensure comprehensive responses
     return {
       needsRetrieval: true,
-      confidence: 0.6,
-      reasoning: 'Query type unclear, defaulting to retrieval for comprehensive response.',
+      confidence: 0.8,
+      reasoning: 'Defaulting to retrieval to provide comprehensive and accurate information.',
       queryType: 'analytical',
     };
   }
@@ -235,8 +262,8 @@ export async function agenticRAG(args: {
   top_k?: number;
   similarity_threshold?: number;
   context_window?: number;
+  user_confirmed?: boolean;
 }): Promise<AgenticRAGResult> {
-  console.log('calling agentic rag tool', args);
   const config = { ...DEFAULT_CONFIG };
   const collectionName = args.collection_name || config.collectionName!;
   const topK = args.top_k || config.topK!;
@@ -297,9 +324,9 @@ export async function agenticRAG(args: {
         // eslint-disable-next-line no-case-declarations
         const searchResult = await milvusClient.search({
           collection_name: collectionName,
-          query_vectors: [queryEmbedding],
-          top_k: topK,
-          params: { nprobe: 16 },
+          vector: queryEmbedding,
+          topk: topK,
+          params: { nprobe: 8 },
           output_fields: ['content', 'metadata'],
         });
 
@@ -385,8 +412,7 @@ export async function agenticRAG(args: {
               ],
             };
 
-            // @ts-expect-error - idk man
-            await milvusClient.createCollection(collectionSchema);
+            await milvusClient.createCollection(collectionSchema as any);
 
             // Create index for efficient similarity search
             await milvusClient.createIndex({
@@ -426,9 +452,9 @@ export async function agenticRAG(args: {
         // eslint-disable-next-line no-case-declarations
         const semanticResults = await milvusClient.search({
           collection_name: collectionName,
-          query_vectors: [semanticEmbedding],
-          top_k: topK,
-          params: { nprobe: 16 },
+          vector: semanticEmbedding,
+          topk: topK,
+          params: { nprobe: 8 },
           output_fields: ['content', 'metadata'],
         });
 
@@ -452,14 +478,13 @@ export async function agenticRAG(args: {
         // This is a comprehensive context retrieval that combines analysis and search
         // eslint-disable-next-line no-case-declarations
         const contextAnalysis = analyzeQueryForRetrieval(args.query);
-
         if (contextAnalysis.needsRetrieval) {
           const contextEmbedding = await generateEmbedding(args.query);
           const contextSearch = await milvusClient.search({
             collection_name: collectionName,
-            query_vectors: [contextEmbedding],
-            top_k: topK,
-            params: { nprobe: 16 },
+            vector: contextEmbedding,
+            topk: topK,
+            params: { nprobe: 8 },
             output_fields: ['content', 'metadata'],
           });
 

@@ -39,19 +39,19 @@ export const LandingComponent: React.FC = () => {
             },
           }}
           switches={{
-            GpsMap: {
-              value: mapActive,
-              onChange(enabled) {
-                if (enabled) {
-                  setEnabledComponent('gpsmap');
-                  setAiActive(false);
-                } else {
-                  setEnabledComponent('');
-                }
-                setMapActive(enabled);
-              },
-              label: 'GPS',
-            },
+            // GpsMap: {
+            //   value: mapActive,
+            //   onChange(enabled) {
+            //     if (enabled) {
+            //       setEnabledComponent('gpsmap');
+            //       setAiActive(false);
+            //     } else {
+            //       setEnabledComponent('');
+            //     }
+            //     setMapActive(enabled);
+            //   },
+            //   label: 'GPS',
+            // },
             AI: {
               value: aiActive,
               onChange(enabled) {
