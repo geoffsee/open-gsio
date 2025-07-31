@@ -1,5 +1,5 @@
 export default {
-  '/': { sidebarLabel: 'Home', heroLabel: 'o-gsio' },
+  '/': { sidebarLabel: 'Home', heroLabel: 'va-chat' },
   '/connect': { sidebarLabel: 'Connect', heroLabel: 'connect' },
   '/privacy-policy': {
     sidebarLabel: '',

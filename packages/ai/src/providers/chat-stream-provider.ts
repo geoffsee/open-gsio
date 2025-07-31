@@ -1,8 +1,7 @@
 import { OpenAI } from 'openai';
 
 import ChatSdk from '../chat-sdk/chat-sdk.ts';
-import { getWeather, WeatherTool } from '../tools/weather.ts';
-import { yachtpitAi, YachtpitTools } from '../tools/yachtpit.ts';
+import { agenticRAG, AgenticRAGTools } from '../tools/agentic-rag.ts';
 import type { GenericEnv } from '../types';
 
 export interface CommonProviderParams {
@@ -38,14 +37,11 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
 
     const client = this.getOpenAIClient(param);
 
-    const tools = [WeatherTool, YachtpitTools];
+    const tools = [AgenticRAGTools];
 
     const callFunction = async (name, args) => {
-      if (name === 'get_weather') {
-        return getWeather(args.latitude, args.longitude);
-      }
-      if (name === 'ship_control') {
-        return yachtpitAi({ action: args.action, value: args.value });
+      if (name === 'agentic_rag') {
+        return agenticRAG(args);
       }
     };
 
@@ -59,6 +55,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
       const streamParams = this.getStreamParams(param, safeMessages);
       // Only provide tools on the first call, after that force text response
       const currentTools = toolsExecuted ? undefined : tools;
+
       const stream = await client.chat.completions.create({ ...streamParams, tools: currentTools });
 
       let assistantMessage = '';
@@ -170,7 +167,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
                       choices: [
                         {
                           delta: {
-                            content: ` ✅\n`,
+                            content: ` ✅\n ${JSON.stringify(result)}`,
                           },
                         },
                       ],
@@ -181,7 +178,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
                   safeMessages.push({
                     role: 'tool',
                     tool_call_id: toolCall.id,
-                    content: result?.toString() || '',
+                    content: JSON.stringify(result),
                   });
                 } catch (error) {
                   console.error(`Error executing tool ${name}:`, error);
@@ -236,7 +233,7 @@ export abstract class BaseChatProvider implements ChatStreamProvider {
 
         // Process chunk normally for non-tool-call responses
         if (!chunk.choices[0]?.delta?.tool_calls) {
-          console.log('after-tool-call-chunk', chunk);
+          // console.log('after-tool-call-chunk', chunk);
           const shouldBreak = await this.processChunk(chunk, dataCallback);
           if (shouldBreak) {
             conversationComplete = true;
