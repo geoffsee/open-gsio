@@ -161,7 +161,15 @@ const ChatService = types
 
           const openai = new OpenAI({ apiKey: provider.key, baseURL: provider.endpoint });
 
-          // 2‑a. List models
+          const basicFilters = (model: any) => {
+            return (
+              !model.id.includes('whisper') &&
+              !model.id.includes('flux') &&
+              !model.id.includes('ocr') &&
+              !model.id.includes('tts') &&
+              !model.id.includes('guard')
+            );
+          }; // 2‑a. List models
           try {
             const listResp: any = yield openai.models.list(); // <‑‑ async
             const models = 'data' in listResp ? listResp.data : listResp;
@@ -170,16 +178,11 @@ const ChatService = types
               provider.name,
               models.filter((mdl: any) => {
                 if ('supports_chat' in mdl && mdl.supports_chat) {
-                  return true;
+                  return basicFilters(mdl);
                 } else if ('supports_chat' in mdl && !mdl.supports_chat) {
                   return false;
                 }
-
-                return (
-                  !mdl.id.includes('whisper') &&
-                  !mdl.id.includes('tts') &&
-                  !mdl.id.includes('guard')
-                );
+                return basicFilters(mdl);
               }),
             );
 
