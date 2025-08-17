@@ -19,7 +19,7 @@
   },
   "devDependencies": {
     "@chakra-ui/icons": "^2.2.4",
-    "@chakra-ui/react": "^2.10.6",
+    "@chakra-ui/react": "^3.24.2",
     "@cloudflare/workers-types": "^4.20241205.0",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
